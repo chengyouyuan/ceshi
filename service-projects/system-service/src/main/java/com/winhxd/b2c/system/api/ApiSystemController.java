@@ -31,7 +31,7 @@ public class ApiSystemController {
 
     @ApiOperation(value = "检查版本号", notes = "检查版本号")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
+                   @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @RequestMapping(value = "/security/3040/v1/appSubmitCheckedVersion", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> appSubmitCheckedVersion(@RequestBody AppVersionCondition appVersionCondition) {
         LOGGER.info("/api-system/3040/v1/appSubmitCheckedVersion接口开始--{}", appVersionCondition);

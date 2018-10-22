@@ -38,7 +38,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int save(SysUser sysUser) {
+    public int saveSysUser(SysUser sysUser) {
         int count = sysUserMapper.insertSelective(sysUser);
         SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
@@ -49,7 +49,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int modify(SysUser sysUser) {
+    public int modifySysUser(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
         sysUserRoleMapper.deleteByUserId(sysUser.getId());
         SysUserRole sysUserRule = new SysUserRole();
@@ -78,7 +78,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public PagedList<SysUser> find(SysUserCondition condition) {
+    public PagedList<SysUser> findSysUserPagedList(SysUserCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysUser> pagedList = new PagedList();
         Page<SysUser> users = sysUserMapper.selectSysUser(condition);
@@ -93,12 +93,12 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser getByAccount(String account) {
+    public SysUser getSysUserByAccount(String account) {
         return sysUserMapper.getByAccount(account);
     }
 
     @Override
-    public SysUser get(Long id) {
+    public SysUser getSysUserById(Long id) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserId(id);
         List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);

@@ -27,7 +27,7 @@ public interface RoleServiceClient {
      * @return
      */
     @RequestMapping(value = "/role/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Long> save(@RequestBody SysRole sysRole);
+    ResponseResult<Long> saveSysRole(@RequestBody SysRole sysRole);
 
     /**
      * 修改权限组     * @author zhangzhengyang
@@ -36,7 +36,7 @@ public interface RoleServiceClient {
      * @return
      */
     @RequestMapping(value = "/role/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Integer> modify(@RequestBody SysRole sysRole);
+    ResponseResult<Integer> modifySysRole(@RequestBody SysRole sysRole);
 
     /**
      * 查询权限组列表    * @author zhangzhengyang
@@ -45,7 +45,7 @@ public interface RoleServiceClient {
      * @return
      */
     @RequestMapping(value = "/role/3012/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<PagedList<SysRole>> find(@RequestBody SysRoleCondition condition);
+    ResponseResult<PagedList<SysRole>> findSysRolePagedList(@RequestBody SysRoleCondition condition);
 
 
     /**
@@ -55,7 +55,7 @@ public interface RoleServiceClient {
      * @return
      */
     @RequestMapping(value = "/role/3013/v1/get/{id}", method = RequestMethod.GET)
-    ResponseResult<SysRole> get(@PathVariable("id") Long id);
+    ResponseResult<SysRole> getSysRoleById(@PathVariable("id") Long id);
 
     /**
      * 根据主键获取权限组信息    * @author zhangzhengyang
@@ -64,7 +64,7 @@ public interface RoleServiceClient {
      * @return
      */
     @RequestMapping(value = "/role/3014/v1/remove/{id}", method = RequestMethod.DELETE)
-    ResponseResult<Integer> remove(@PathVariable("id") Long id);
+    ResponseResult<Integer> removeSysRoleById(@PathVariable("id") Long id);
 
 }
 
@@ -81,31 +81,31 @@ class RoleServiceClientFallback implements RoleServiceClient, FallbackFactory<Ro
     }
 
     @Override
-    public ResponseResult<Long> save(SysRole sysRole) {
+    public ResponseResult<Long> saveSysRole(SysRole sysRole) {
         logger.error("RoleServiceClientFallback -> save", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<Integer> modify(SysRole sysRole) {
+    public ResponseResult<Integer> modifySysRole(SysRole sysRole) {
         logger.error("RoleServiceClientFallback -> modify", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<PagedList<SysRole>> find(SysRoleCondition condition) {
+    public ResponseResult<PagedList<SysRole>> findSysRolePagedList(SysRoleCondition condition) {
         logger.error("RoleServiceClientFallback -> find", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<SysRole> get(Long roleId) {
+    public ResponseResult<SysRole> getSysRoleById(Long roleId) {
         logger.error("RoleServiceClientFallback -> get", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<Integer> remove(Long id) {
+    public ResponseResult<Integer> removeSysRoleById(Long id) {
         logger.error("RoleServiceClientFallback -> remove", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

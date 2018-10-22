@@ -14,7 +14,7 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int save(SysUser sysUser);
+    int saveSysUser(SysUser sysUser);
 
     /**
      * 修改用户
@@ -23,7 +23,7 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int modify(SysUser sysUser);
+    int modifySysUser(SysUser sysUser);
 
     /**
      * 修改密码
@@ -41,7 +41,7 @@ public interface SysUserService {
      * @param condition
      * @return java.util.List<com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO>
      */
-    PagedList<SysUser> find(SysUserCondition condition);
+    PagedList<SysUser> findSysUserPagedList(SysUserCondition condition);
 
     /**
      * 根据登录账号获取用户信息
@@ -50,7 +50,7 @@ public interface SysUserService {
      * @param userCode
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUser getByAccount(String userCode);
+    SysUser getSysUserByAccount(String userCode);
 
     /**
      * 根据主键获取用户信息
@@ -59,7 +59,7 @@ public interface SysUserService {
      * @param id
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUser get(Long id);
+    SysUser getSysUserById(Long id);
 
     /**
      * 根据主键禁用用户

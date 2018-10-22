@@ -76,7 +76,7 @@ public class SqlJobHandler implements IBaseJob {
             job.setResultValue(resultValue+"");
             result.setIsSuccess(true);
             job.setIsSuccess(true);
-            if(resultValue!=null){
+            if(resultValue != null){
                 String oprate = job.getOperate();
                 Integer optValue = job.getOptValue();
                 if(StringUtils.isNotBlank(oprate)){

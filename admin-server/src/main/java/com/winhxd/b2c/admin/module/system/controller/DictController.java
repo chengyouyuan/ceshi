@@ -47,7 +47,7 @@ public class DictController {
     public ResponseResult add(@RequestBody SysDict sysDict) {
         logger.info("{} - 新增字典, 参数：sysDict={}", MODULE_NAME, sysDict);
 
-        List<SysDictItem> items = dictServiceClient.findByDictCode(sysDict.getCode()).getData();
+        List<SysDictItem> items = dictServiceClient.findSysDictItemByDictCode(sysDict.getCode()).getData();
         if(!CollectionUtils.isEmpty(items)){
             logger.warn("{} - 字典编码已被使用, 参数：sysDict={}", MODULE_NAME, sysDict);
             return new ResponseResult(BusinessCode.CODE_303001);
@@ -63,7 +63,7 @@ public class DictController {
         sysDict.setUpdatedBy(userInfo.getId());
         sysDict.setUpdatedByName(userInfo.getUsername());
 
-        return dictServiceClient.save(sysDict);
+        return dictServiceClient.saveSysDict(sysDict);
     }
 
     @ApiOperation("编辑字典")
@@ -82,7 +82,7 @@ public class DictController {
         sysDict.setUpdatedBy(userInfo.getId());
         sysDict.setUpdatedByName(userInfo.getUsername());
 
-        return dictServiceClient.modify(sysDict);
+        return dictServiceClient.modifySysDict(sysDict);
     }
 
     @ApiOperation(value = "查询字典列表")
@@ -90,7 +90,7 @@ public class DictController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})
     public ResponseResult<PagedList<SysDict>> list(@RequestBody SysDictCondition condition){
         logger.info("{} - 查询字典列表, 参数：condition={}", MODULE_NAME, condition);
-       return dictServiceClient.find(condition);
+       return dictServiceClient.findSysDictPagedList(condition);
     }
 
     @ApiOperation(value = "根据主键获取字典信息")
@@ -101,7 +101,7 @@ public class DictController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})
     public ResponseResult<SysDict> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取字典信息, 参数：id={}", MODULE_NAME, id);
-        return dictServiceClient.get(id);
+        return dictServiceClient.getSysDictById(id);
     }
 
     @ApiOperation(value = "根据主键删除字典")
@@ -112,7 +112,7 @@ public class DictController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT_DELETE})
     public ResponseResult<Void> remove(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用字典, 参数：id={}", MODULE_NAME, id);
-        return dictServiceClient.remove(id);
+        return dictServiceClient.removeSysDictById(id);
     }
 
     @ApiOperation(value = "根据字典编码获取字典信息")
@@ -123,6 +123,6 @@ public class DictController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})
     public ResponseResult<List<SysDictItem>> findByDictCode(@PathVariable("code") String code){
         logger.info("{} - 根据字典编码获取字典信息, 参数：code={}", MODULE_NAME, code);
-        return dictServiceClient.findByDictCode(code);
+        return dictServiceClient.findSysDictItemByDictCode(code);
     }
 }

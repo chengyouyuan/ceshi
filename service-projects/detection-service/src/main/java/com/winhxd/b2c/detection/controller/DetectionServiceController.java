@@ -39,6 +39,13 @@ public class DetectionServiceController implements DetectionServiceClient {
     @Autowired
     private QuartzHandlerService quartzHandlerService;
 
+    /**
+     * @param quartzJobCondition 查询条件对象
+     * @return 分页数据
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 根据条件查询定时任务列表页数据，分页查询
+     */
     @Override
     public ResponseResult<PagedList<QuartzJobVo>> findQuartzJobPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
         ResponseResult<PagedList<QuartzJobVo>> responseResult = new ResponseResult<PagedList<QuartzJobVo>>();
@@ -51,12 +58,19 @@ public class DetectionServiceController implements DetectionServiceClient {
             PagedList<QuartzJobVo> page = quartzJobService.findQuartzJobPageList(quartzJobCondition);
             responseResult.setData(page);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("", e);e.printStackTrace();
             responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;
     }
 
+    /**
+     * @param quartzJobId
+     * @return 任务详情
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 根据ID查询定时任务详细信息
+     */
     @Override
     public ResponseResult<QuartzJobVo> findQuartzJobVoById(@RequestBody Long quartzJobId) {
         ResponseResult<QuartzJobVo> responseResult = new ResponseResult<QuartzJobVo>();
@@ -102,6 +116,13 @@ public class DetectionServiceController implements DetectionServiceClient {
         return responseResult;
     }
 
+    /**
+     * @param quartzJobVo
+     * @return 返回主键ID
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 添加定时任务
+     */
     @Override
     public ResponseResult<Integer> addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
         ResponseResult responseResult = new ResponseResult();
@@ -132,6 +153,13 @@ public class DetectionServiceController implements DetectionServiceClient {
         return responseResult;
     }
 
+    /**
+     * @param quartzJobId
+     * @return
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 删除定时任务
+     */
     @Override
     public ResponseResult<Void> deleteQuartzJob(@RequestBody Long quartzJobId) {
         ResponseResult responseResult = new ResponseResult<>();
@@ -139,6 +167,7 @@ public class DetectionServiceController implements DetectionServiceClient {
             QuartzJob job = new QuartzJob();
             job.setId(quartzJobId);
             job.setJobStatus(JobStatusEnum.STATE_DELETED.name());
+            //逻辑删除
             quartzJobService.updateByPrimaryKeySelective(job);
             job = quartzJobService.selectByPrimaryKey(quartzJobId);
             quartzHandlerService.deleteJob(job);
@@ -149,6 +178,13 @@ public class DetectionServiceController implements DetectionServiceClient {
         return responseResult;
     }
 
+    /**
+     * @param quartzJobCondition
+     * @return 执行结果列表
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 查询定时任务执行结果的分页数据信息
+     */
     @Override
     public ResponseResult<PagedList<QuartzJobResult>> findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
         ResponseResult<PagedList<QuartzJobResult>> responseResult = new ResponseResult<PagedList<QuartzJobResult>>();

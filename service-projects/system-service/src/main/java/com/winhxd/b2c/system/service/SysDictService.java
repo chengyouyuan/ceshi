@@ -21,7 +21,7 @@ public interface SysDictService {
      * @param sysDict
      * @return int
      */
-    int save(SysDict sysDict);
+    int saveSysDict(SysDict sysDict);
 
     /**
      * 修改字典组
@@ -30,7 +30,7 @@ public interface SysDictService {
      * @param sysDict
      * @return int
      */
-    int modify(SysDict sysDict);
+    int modifySysDict(SysDict sysDict);
 
     /**
      * 查询字典组列表
@@ -39,7 +39,7 @@ public interface SysDictService {
      * @param condition
      * @return
      */
-    PagedList<SysDict> find(SysDictCondition condition);
+    PagedList<SysDict> findSysDictPagedList(SysDictCondition condition);
 
     /**
      * 根据字典code查询字典数据
@@ -48,7 +48,7 @@ public interface SysDictService {
      * @param dictCode
      * @return
      */
-    List<SysDictItem> findByDictCode(String dictCode);
+    List<SysDictItem> findSysDictItemByDictCode(String dictCode);
 
     /**
      * 根据主键获取字典组信息
@@ -57,7 +57,7 @@ public interface SysDictService {
      * @param id
      * @return
      */
-    SysDict get(Long id);
+    SysDict getSysDictById(Long id);
 
     /**
      * 根据主键删除
@@ -65,6 +65,6 @@ public interface SysDictService {
      * @date 2018/9/26
      * @param id
      */
-    int remove(Long id);
+    int removeSysDictById(Long id);
 
 }

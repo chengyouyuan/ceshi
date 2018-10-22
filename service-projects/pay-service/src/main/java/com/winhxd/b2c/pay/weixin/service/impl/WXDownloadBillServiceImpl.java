@@ -225,7 +225,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					//业务成功，记录到记录表
 					this.dealSuccess(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 					logger.info("对账单插入成功");
-					
+
 //					=====================处理统计数据=================================================================================
 
 					this.dealStatementCountData(statementCountRecord, billDate, payStatementCount);
@@ -556,7 +556,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					//业务成功，记录到记录表
 					this.dealSuccess(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 					logger.info("资金账单插入成功");
-					
+
 //					=====================处理统计数据=================================================================================
 					this.dealFinancialBillCountData(billCountRecord, billDate, payFinancialBillCount);
 

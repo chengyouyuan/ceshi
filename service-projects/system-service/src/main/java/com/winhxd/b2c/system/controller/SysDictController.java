@@ -47,10 +47,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "新增字典")
-    public ResponseResult<Long> save(@RequestBody SysDict sysDict){
+    public ResponseResult<Long> saveSysDict(@RequestBody SysDict sysDict){
         logger.info("{} - 新增字典, 参数：sysDict={}", MODULE_NAME, sysDict);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        sysDictService.save(sysDict);
+        sysDictService.saveSysDict(sysDict);
         result.setData(sysDict.getId());
         return result;
     }
@@ -64,10 +64,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "修改字典")
-    public ResponseResult<Void> modify(@RequestBody SysDict sysDict){
+    public ResponseResult<Void> modifySysDict(@RequestBody SysDict sysDict){
         logger.info("{} - 修改字典, 参数：sysDict={}", MODULE_NAME, sysDict);
         ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
-        sysDictService.modify(sysDict);
+        sysDictService.modifySysDict(sysDict);
         return result;
     }
 
@@ -80,10 +80,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "查询字典列表")
-    public ResponseResult<PagedList<SysDict>> find(@RequestBody SysDictCondition condition){
+    public ResponseResult<PagedList<SysDict>> findSysDictPagedList(@RequestBody SysDictCondition condition){
         logger.info("{} - 查询字典列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysDict>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        PagedList<SysDict> page = sysDictService.find(condition);
+        PagedList<SysDict> page = sysDictService.findSysDictPagedList(condition);
         result.setData(page);
         return result;
     }
@@ -97,10 +97,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "根据登录账号获取字典信息")
-    public ResponseResult<List<SysDictItem>> findByDictCode(@PathVariable("dictCode") String dictCode){
+    public ResponseResult<List<SysDictItem>> findSysDictItemByDictCode(@PathVariable("dictCode") String dictCode){
         logger.info("{} - 根据登录账号获取字典信息, 参数：dictCode={}", MODULE_NAME, dictCode);
         ResponseResult<List<SysDictItem>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        List<SysDictItem> sysDictItems = sysDictService.findByDictCode(dictCode);
+        List<SysDictItem> sysDictItems = sysDictService.findSysDictItemByDictCode(dictCode);
         result.setData(sysDictItems);
         return result;
     }
@@ -114,10 +114,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键获取字典信息")
-    public ResponseResult<SysDict> get(@PathVariable("id") Long id){
+    public ResponseResult<SysDict> getSysDictById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取字典信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysDict> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        SysDict sysDict = sysDictService.get(id);
+        SysDict sysDict = sysDictService.getSysDictById(id);
         result.setData(sysDict);
         return result;
     }
@@ -131,10 +131,10 @@ public class SysDictController implements DictServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键删除字典")
-    public ResponseResult<Void> remove(@PathVariable("id") Long id){
+    public ResponseResult<Void> removeSysDictById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键删除字典, 参数：id={}", MODULE_NAME, id);
         ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
-        result.setData(sysDictService.remove(id));
+        result.setData(sysDictService.removeSysDictById(id));
         return result;
     }
 }

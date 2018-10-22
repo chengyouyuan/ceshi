@@ -31,7 +31,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int save(SysRole sysRole) {
+    public int saveSysRole(SysRole sysRole) {
         int count = sysRoleMapper.insertSelective(sysRole);
         if(null != sysRole.getPermissions()){
             for(SysRolePermission permission : sysRole.getPermissions()){
@@ -44,7 +44,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int modify(SysRole sysRole) {
+    public int modifySysRole(SysRole sysRole) {
         int count = sysRoleMapper.updateByPrimaryKeySelective(sysRole);
         sysRolePermissionMapper.deleteByRoleId(sysRole.getId());
         if(null != sysRole.getPermissions()){
@@ -57,7 +57,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public PagedList<SysRole> find(SysRoleCondition condition) {
+    public PagedList<SysRole> findSysRolePagedList(SysRoleCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysRole> pagedList = new PagedList();
         pagedList.setData(sysRoleMapper.selectSysRole(condition));
@@ -69,12 +69,12 @@ public class SysRoleServiceImpl implements SysRoleService {
 
 
     @Override
-    public SysRole get(Long id) {
+    public SysRole getSysRoleById(Long id) {
         return sysRoleMapper.getSysRoleById(id);
     }
 
     @Override
-    public int remove(Long id) {
+    public int removeSysRoleById(Long id) {
         sysRolePermissionMapper.deleteByRoleId(id);
         return sysRoleMapper.deleteByPrimaryKey(id);
     }

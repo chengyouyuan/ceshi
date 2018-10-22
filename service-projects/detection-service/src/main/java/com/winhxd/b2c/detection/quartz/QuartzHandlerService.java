@@ -21,8 +21,7 @@ import java.util.Set;
 @Service
 public class QuartzHandlerService {
 
-    @SuppressWarnings("unused")
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(QuartzHandlerService.class);
 
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
@@ -60,15 +59,14 @@ public class QuartzHandlerService {
         job.setDescription("触发器:" + trigger.getKey());
         job.setNextTime(trigger.getNextFireTime());
         job.setPreviousTime(trigger.getPreviousFireTime());
-
         Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
         job.setJobStatus(triggerState.name());
-
         if(trigger instanceof CronTrigger) {
             CronTrigger cronTrigger = (CronTrigger)trigger;
             String cronExpression = cronTrigger.getCronExpression();
             job.setCronExpression(cronExpression);
         }
+        logger.info("创建{}定时任务成功！",jobName);
         return job;
     }
 
@@ -146,7 +144,6 @@ public class QuartzHandlerService {
                 trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey)
                                                      .startAt(job.getStartTime()==null ? (new Date()) : job.getStartTime()) // 设置job不早于这个时间进行运行,和调用trigger的setStartTime方法效果一致
                                                      .withSchedule(scheduleBuilder).build();
-
                 //是否允许并发执行
                 JobDetail jobDetail = getJobDetail(job);
                 // 将 job 信息存入数据库
@@ -172,6 +169,7 @@ public class QuartzHandlerService {
                 scheduler.rescheduleJob(triggerKey, trigger);
             }
         }
+        logger.info("添加{}定时任务成功！",jobName);
         return true;
     }
 
@@ -191,23 +189,18 @@ public class QuartzHandlerService {
      * @param job
      * @return
      */
-    @Transactional
     public boolean pauseJob(QuartzJob job){
         Scheduler scheduler = getScheduler();
         JobKey jobKey = JobKey.jobKey(job.getJobName(), job.getId()+"");
         boolean result;
         try {
             scheduler.pauseJob(jobKey);
-
-            // 更新任务状态到数据库
-//            job.setJobStatus(QuartzJobBean.STATUS_NOT_RUNNING);
-//            repository.modifyByStatus(job.getJobStatus(), job.getJobId());
-
             result = true;
         } catch (SchedulerException e) {
             result = false;
             e.printStackTrace();
         }
+        logger.info("暂停{}定时任务成功！",job.getJobName());
         return result;
     }
 
@@ -216,7 +209,6 @@ public class QuartzHandlerService {
      * @param job
      * @return
      */
-    @Transactional
     public boolean resumeJob(QuartzJob job){
         Scheduler scheduler = getScheduler();
         JobKey jobKey = JobKey.jobKey(job.getJobName(), job.getId()+"");
@@ -231,12 +223,8 @@ public class QuartzHandlerService {
                                             .withSchedule(scheduleBuilder).build();
             scheduler.rescheduleJob(triggerKey, trigger);
             scheduler.resumeJob(jobKey);
-
-            // 更新任务状态到数据库
-//            job.setJobStatus(QuartzJobBean.STATUS_RUNNING);
-//            repository.modifyByStatus(job.getJobStatus(), job.getJobId());
-
             result = true;
+            logger.info("恢复{}定时任务成功！",job.getJobName());
         } catch (SchedulerException e) {
             result = false;
             e.printStackTrace();
@@ -247,19 +235,14 @@ public class QuartzHandlerService {
     /**
      * 删除任务
      */
-    @Transactional
     public boolean deleteJob(QuartzJob job){
         Scheduler scheduler = getScheduler();
         JobKey jobKey = JobKey.jobKey(job.getJobName(), job.getId()+"");
         boolean result;
         try{
             scheduler.deleteJob(jobKey);
-
-            // 更新任务状态到数据库
-//            job.setJobStatus(QuartzJobBean.STATUS_DELETED);
-//            repository.modifyByStatus(job.getJobStatus(), job.getJobId());
-
             result = true;
+            logger.info("删除{}定时任务成功！",job.getJobName());
         } catch (SchedulerException e) {
             result = false;
             e.printStackTrace();
@@ -276,6 +259,7 @@ public class QuartzHandlerService {
         Scheduler scheduler = getScheduler();
         JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getId()+"");
         scheduler.triggerJob(jobKey);
+        logger.info("执行{}定时任务成功！",scheduleJob.getJobName());
     }
 
     /**
@@ -283,7 +267,6 @@ public class QuartzHandlerService {
      * @param job
      * @throws SchedulerException
      */
-    @Transactional
     public void updateCronExpression(QuartzJob job) throws SchedulerException {
         Scheduler scheduler = getScheduler();
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getJobName(), job.getId()+"");
@@ -295,13 +278,10 @@ public class QuartzHandlerService {
         trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
         //按新的trigger重新设置job执行
         scheduler.rescheduleJob(triggerKey, trigger);
-
         // 更新 job 信息到数据库
         job.setStartTime(trigger.getStartTime());
         job.setNextTime(trigger.getNextFireTime());
         job.setPreviousTime(trigger.getPreviousFireTime());
-        //job = repository.save(job);
-        //getJobDetail(job).getJobDataMap().put(getJobIdentity(job), job);
     }
 
     /**
@@ -309,7 +289,6 @@ public class QuartzHandlerService {
      * @param job
      * @throws SchedulerException
      */
-    @Transactional
     public void updateStartTime(QuartzJob job) throws SchedulerException {
         Scheduler scheduler = getScheduler();
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getJobName(), job.getId()+"");
@@ -318,13 +297,10 @@ public class QuartzHandlerService {
         trigger.setStartTime(job.getStartTime());
         //按新的trigger重新设置job执行
         scheduler.rescheduleJob(triggerKey, trigger);
-
         // 更新 job 信息到数据库
         job.setStartTime(trigger.getStartTime());
         job.setNextTime(trigger.getNextFireTime());
         job.setPreviousTime(trigger.getPreviousFireTime());
-        //job = repository.save(job);
-        //getJobDetail(job).getJobDataMap().put(getJobIdentity(job), job);
     }
 
 }

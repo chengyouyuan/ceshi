@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition;
 import com.winhxd.b2c.common.domain.detection.model.DbSource;
 import com.winhxd.b2c.common.domain.detection.model.DetectionUser;
+import com.winhxd.b2c.common.domain.detection.model.QuartzJobResult;
 import com.winhxd.b2c.common.domain.detection.vo.QuartzJobVo;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -34,17 +35,45 @@ public interface DetectionServiceClient {
     @RequestMapping(value = "/detection/9001/v1/findQuartzJobPageList", method = RequestMethod.POST)
     ResponseResult<PagedList<QuartzJobVo>> findQuartzJobPageList(@RequestBody QuartzJobCondition quartzJobCondition);
 
+    /**
+     * @param quartzJobId
+     * @return 任务详情
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 根据ID查询定时任务详细信息
+     */
     @RequestMapping(value = "/detection/9002/v1/findQuartzJobVoById", method = RequestMethod.POST)
     ResponseResult<QuartzJobVo> findQuartzJobVoById(@RequestBody Long quartzJobId);
 
+    /**
+     * @param quartzJobVo
+     * @return 返回主键ID
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 添加定时任务
+     */
     @RequestMapping(value = "/detection/9003/v1/addQuartzJob", method = RequestMethod.POST)
-    ResponseResult addQuartzJob(@RequestBody QuartzJobVo quartzJobVo);
+    ResponseResult<Integer> addQuartzJob(@RequestBody QuartzJobVo quartzJobVo);
 
+    /**
+     * @param quartzJobId
+     * @return
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 删除定时任务
+     */
     @RequestMapping(value = "/detection/9004/v1/deleteQuartzJob", method = RequestMethod.POST)
-    ResponseResult deleteQuartzJob(@RequestBody Long quartzJobId);
+    ResponseResult<Void> deleteQuartzJob(@RequestBody Long quartzJobId);
 
+    /**
+     * @param quartzJobCondition
+     * @return 执行结果列表
+     * @author Louis
+     * @date 2018/8/30 14:59
+     * @Description 查询定时任务执行结果的分页数据信息
+     */
     @RequestMapping(value = "/detection/9005/v1/findQuartzJobResultPageList", method = RequestMethod.POST)
-    ResponseResult findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition);
+    ResponseResult<PagedList<QuartzJobResult>> findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition);
 
     @RequestMapping(value = "/detection/9006/v1/findUserPageList", method = RequestMethod.POST)
     ResponseResult<PagedList<DetectionUser>> findUserPageList();

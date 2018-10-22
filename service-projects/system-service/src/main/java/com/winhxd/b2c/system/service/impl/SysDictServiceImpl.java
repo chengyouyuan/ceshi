@@ -38,7 +38,7 @@ public class SysDictServiceImpl implements SysDictService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int save(SysDict sysDict) {
+    public int saveSysDict(SysDict sysDict) {
         int result = sysDictMapper.insertSelective(sysDict);
 
         List<SysDictItem> items = sysDict.getItems();
@@ -55,7 +55,7 @@ public class SysDictServiceImpl implements SysDictService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int modify(SysDict sysDict) {
+    public int modifySysDict(SysDict sysDict) {
         //字典组修改前校验编码是否重复
         List<SysDict> sysDicts = sysDictMapper.selectSysDictExpectId(sysDict);
         sysDicts = sysDicts.stream().filter(dict -> dict.getCode().equals(sysDict.getCode())).collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class SysDictServiceImpl implements SysDictService {
 
 
     @Override
-    public PagedList<SysDict> find(SysDictCondition condition) {
+    public PagedList<SysDict> findSysDictPagedList(SysDictCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysDict> pagedList = new PagedList();
         pagedList.setData(sysDictMapper.selectSysDict(condition));
@@ -85,18 +85,18 @@ public class SysDictServiceImpl implements SysDictService {
     }
 
     @Override
-    public List<SysDictItem> findByDictCode(String dictCode) {
+    public List<SysDictItem> findSysDictItemByDictCode(String dictCode) {
         return sysDictItemMapper.selectByDictCode(dictCode);
     }
 
     @Override
-    public SysDict get(Long id) {
+    public SysDict getSysDictById(Long id) {
         return sysDictMapper.selectByPrimaryKey(id);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int remove(Long id) {
+    public int removeSysDictById(Long id) {
         return sysDictMapper.deleteByPrimaryKey(id);
     }
 

@@ -46,10 +46,10 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "新增权限组")
-    public ResponseResult<Long> save(@RequestBody SysRole sysRole){
+    public ResponseResult<Long> saveSysRole(@RequestBody SysRole sysRole){
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        sysRoleService.save(sysRole);
+        sysRoleService.saveSysRole(sysRole);
         result.setData(sysRole.getId());
         return result;
     }
@@ -63,10 +63,10 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "修改权限组")
-    public ResponseResult<Integer> modify(@RequestBody SysRole sysRole){
+    public ResponseResult<Integer> modifySysRole(@RequestBody SysRole sysRole){
         logger.info("{} - 修改权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Integer> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        result.setData(sysRoleService.modify(sysRole));
+        result.setData(sysRoleService.modifySysRole(sysRole));
         return result;
     }
 
@@ -79,10 +79,10 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "查询权限组列表")
-    public ResponseResult<PagedList<SysRole>> find(@RequestBody SysRoleCondition condition){
+    public ResponseResult<PagedList<SysRole>> findSysRolePagedList(@RequestBody SysRoleCondition condition){
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysRole>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        PagedList<SysRole> page = sysRoleService.find(condition);
+        PagedList<SysRole> page = sysRoleService.findSysRolePagedList(condition);
         result.setData(page);
         return result;
     }
@@ -96,10 +96,10 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键获取权限组信息")
-    public ResponseResult<SysRole> get(@PathVariable("id") Long id){
+    public ResponseResult<SysRole> getSysRoleById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取权限组信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysRole> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        SysRole sysRole = sysRoleService.get(id);
+        SysRole sysRole = sysRoleService.getSysRoleById(id);
         result.setData(sysRole);
         return result;
     }
@@ -113,15 +113,15 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键删除权限组信息")
-    public ResponseResult<Integer> remove(@PathVariable("id") Long id) {
+    public ResponseResult<Integer> removeSysRoleById(@PathVariable("id") Long id) {
         logger.info("{} - 根据主键删除权限组信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<Integer> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        SysRole role = sysRoleService.get(id);
+        SysRole role = sysRoleService.getSysRoleById(id);
         if (role.getUserCount() > 0) {
             // 权限组内有成员则不允许删除
             throw new BusinessException(BusinessCode.CODE_301000);
         } else {
-            result.setData(sysRoleService.remove(id));
+            result.setData(sysRoleService.removeSysRoleById(id));
         }
         return result;
     }

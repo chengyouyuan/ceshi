@@ -32,7 +32,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3030/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Long> save(@RequestBody SysDict sysDict);
+    ResponseResult<Long> saveSysDict(@RequestBody SysDict sysDict);
 
     /**
      * 修改字典
@@ -42,7 +42,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3031/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Void> modify(@RequestBody SysDict sysDict);
+    ResponseResult<Void> modifySysDict(@RequestBody SysDict sysDict);
     
     /**
      * 查询字典列表
@@ -52,7 +52,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3033/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<PagedList<SysDict>> find(@RequestBody SysDictCondition condition);
+    ResponseResult<PagedList<SysDict>> findSysDictPagedList(@RequestBody SysDictCondition condition);
 
     /**
      * 根据登录账号获取字典信息
@@ -62,7 +62,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3034/v1/get/{dictCode}", method = RequestMethod.GET)
-    ResponseResult<List<SysDictItem>> findByDictCode(@PathVariable("dictCode") String dictCode);
+    ResponseResult<List<SysDictItem>> findSysDictItemByDictCode(@PathVariable("dictCode") String dictCode);
 
     /**
      * 根据主键获取字典信息
@@ -72,7 +72,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3035/v1/get/{id}", method = RequestMethod.GET)
-    ResponseResult<SysDict> get(@PathVariable("id") Long id);
+    ResponseResult<SysDict> getSysDictById(@PathVariable("id") Long id);
 
     /**
      * 根据主键删除字典
@@ -82,7 +82,7 @@ public interface DictServiceClient {
      * @return
      */
     @RequestMapping(value = "/dict/3036/v1/remove/{id}", method = RequestMethod.PUT)
-    ResponseResult<Void> remove(@PathVariable("id") Long id);
+    ResponseResult<Void> removeSysDictById(@PathVariable("id") Long id);
 
 }
 
@@ -99,37 +99,37 @@ class DictServiceClientFallback implements DictServiceClient, FallbackFactory<Di
     }
 
     @Override
-    public ResponseResult<Long> save(SysDict sysDict) {
+    public ResponseResult<Long> saveSysDict(SysDict sysDict) {
         logger.error("DictServiceClientFallback -> save", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult modify(SysDict sysDict) {
+    public ResponseResult modifySysDict(SysDict sysDict) {
         logger.error("DictServiceClientFallback -> modify", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<PagedList<SysDict>> find(SysDictCondition condition) {
+    public ResponseResult<PagedList<SysDict>> findSysDictPagedList(SysDictCondition condition) {
         logger.error("DictServiceClientFallback -> find", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<List<SysDictItem>> findByDictCode(@PathVariable("dictCode") String dictCode) {
+    public ResponseResult<List<SysDictItem>> findSysDictItemByDictCode(@PathVariable("dictCode") String dictCode) {
         logger.error("DictServiceClientFallback -> findByDictCode", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<SysDict> get(Long dictId) {
+    public ResponseResult<SysDict> getSysDictById(Long dictId) {
         logger.error("DictServiceClientFallback -> get", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult remove(Long id) {
+    public ResponseResult removeSysDictById(Long id) {
         logger.error("DictServiceClientFallback -> remove", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }

@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition;
 import com.winhxd.b2c.common.domain.detection.model.DbSource;
 import com.winhxd.b2c.common.domain.detection.model.DetectionUser;
+import com.winhxd.b2c.common.domain.detection.model.QuartzJobResult;
 import com.winhxd.b2c.common.domain.detection.vo.QuartzJobVo;
 import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
@@ -40,18 +41,18 @@ public class DetectionController {
     @PostMapping(value = "/addQuartzJob")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @ApiOperation(value = "根据条件查询定时任务的分页数据信息", notes = "根据条件查询定时任务的分页数据信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询定时任务列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
+    @ApiOperation(value = "添加定时任务", notes = "添加定时任务")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,添加定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseResult<Integer> addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
         return detectionServiceClient.addQuartzJob(quartzJobVo);
     }
 
     @GetMapping(value = "/deleteQuartzJob")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @ApiOperation(value = "根据条件查询定时任务的分页数据信息", notes = "根据条件查询定时任务的分页数据信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询定时任务列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult deleteQuartzJob(@RequestParam Long id) {
+    @ApiOperation(value = "删除定时任务", notes = "删除定时任务")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,删除定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseResult<Void> deleteQuartzJob(@RequestParam Long id) {
         return detectionServiceClient.deleteQuartzJob(id);
     }
 
@@ -69,7 +70,7 @@ public class DetectionController {
     @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @ApiOperation(value = "查询定时任务执行结果的分页数据信息", notes = "查询定时任务执行结果的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询定时任务执行结果列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
+    public ResponseResult<PagedList<QuartzJobResult>> findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
         return detectionServiceClient.findQuartzJobResultPageList(quartzJobCondition);
     }
 

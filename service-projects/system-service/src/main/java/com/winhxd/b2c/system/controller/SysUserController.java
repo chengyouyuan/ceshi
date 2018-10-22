@@ -48,10 +48,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "新增用户")
-    public ResponseResult<Long> save(@RequestBody SysUser sysUser){
+    public ResponseResult<Long> saveSysUser(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        sysUserService.save(sysUser);
+        sysUserService.saveSysUser(sysUser);
         result.setData(sysUser.getId());
         return result;
     }
@@ -65,10 +65,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "修改用户")
-    public ResponseResult<Void> modify(@RequestBody SysUser sysUser){
+    public ResponseResult<Void> modifySysUser(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
-        sysUserService.modify(sysUser);
+        sysUserService.modifySysUser(sysUser);
         return result;
     }
 
@@ -97,10 +97,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "查询用户列表")
-    public ResponseResult<PagedList<SysUser>> find(@RequestBody SysUserCondition condition){
+    public ResponseResult<PagedList<SysUser>> findSysUserPagedList(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysUser>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        PagedList<SysUser> page = sysUserService.find(condition);
+        PagedList<SysUser> page = sysUserService.findSysUserPagedList(condition);
         result.setData(page);
         return result;
     }
@@ -117,7 +117,7 @@ public class SysUserController implements UserServiceClient {
     public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        SysUser sysUser = sysUserService.getByAccount(account);
+        SysUser sysUser = sysUserService.getSysUserByAccount(account);
         if (null != sysUser) {
             sysUser.setPermissions(sysRoleService.getPermissionsByUser(sysUser.getId()));
         }
@@ -134,10 +134,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键获取用户信息")
-    public ResponseResult<SysUser> get(@PathVariable("id") Long id){
+    public ResponseResult<SysUser> getSysUserById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        SysUser sysUser = sysUserService.get(id);
+        SysUser sysUser = sysUserService.getSysUserById(id);
         result.setData(sysUser);
         return result;
     }

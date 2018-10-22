@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -93,14 +94,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
-        List<Long> storeIdList = new ArrayList<>();
-        for (int j=0;j<list.size();j++){
-            storeIdList.add(Long.valueOf(list.get(j).getStoreId()));
-        }
-        //list去重
-        HashSet h = new HashSet<>(storeIdList);
-        storeIdList.clear();
-        storeIdList.addAll(h);
+
+        List<Long> storeIdList = list.stream().map(caiv -> Long.valueOf(caiv.getStoreId())).distinct().collect(Collectors.toList());
+
         //调接口判断数据有效性
         ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<List<StoreUserInfoVO>>();
         StoreListByKeywordsCondition storeListByKeywordsCondition = new StoreListByKeywordsCondition();
@@ -113,20 +109,16 @@ public class CouponActivityController implements CouponActivityServiceClient {
         return result;
     }
 
+
     @Override
     public ResponseResult<List<CustomerUserInfoVO>> couponActivityCustomerUserImportExcel(@RequestBody List<CouponActivityImportCustomerVO> list) {
         if(CollectionUtils.isEmpty(list)){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult<List<CustomerUserInfoVO>> result = new ResponseResult<List<CustomerUserInfoVO>>();
-        List<String> userPhoneList = new ArrayList<>();
-        for (int j=0;j<list.size();j++){
-            userPhoneList.add(list.get(j).getPhone());
-        }
-        //list去重
-        HashSet h = new HashSet<>(userPhoneList);
-        userPhoneList.clear();
-        userPhoneList.addAll(h);
+
+        List<String> userPhoneList = list.stream().map(caic -> caic.getPhone()).distinct().collect(Collectors.toList());
+
         //调接口判断数据有效性
         ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<List<CustomerUserInfoVO>>();
         responseResult = customerServiceClient.findCustomerUserByPhones(userPhoneList);
@@ -243,6 +235,10 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         if(null == condition.getType()){
             throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(!CollectionUtils.isEmpty(condition.getCouponActivityCustomerList())
+                && !CollectionUtils.isEmpty(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList())){
+            throw new BusinessException(BusinessCode.CODE_503701);
         }
         //判断推券和领券活动的每类券，最多给门店推送100张或让门店可领100张。
         Integer maxNum = 100;

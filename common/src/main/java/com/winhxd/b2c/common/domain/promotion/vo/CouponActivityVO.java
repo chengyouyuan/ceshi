@@ -40,7 +40,7 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动")
     private Short couponType;
 
-    @ApiModelProperty(value = "活动状态1开启2停止")
+    @ApiModelProperty(value = "活动状态1开启2停止3停止并撤销")
     private Short activityStatus;
 
     @ApiModelProperty(value = "活动状态名称1开启2停止3停止并撤销")

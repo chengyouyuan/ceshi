@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -158,7 +159,8 @@ public class CouponController {
 		ResponseResult<List<StoreUserInfoVO>> resultStore = couponActivityServiceClient.couponActivityStoreImportExcel(list);
 
 		StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
-		scrc.setStoreUserInfoIds(getStrings(list));
+		List<String> storeIdList = list.stream().map(caiv -> caiv.getStoreId()).distinct().collect(Collectors.toList());
+		scrc.setStoreUserInfoIds(storeIdList);
 		ResponseResult<List<Long>> storeCustomerRegions = storeServiceClient.findStoreCustomerRegions(scrc);
 		bscc.setStoreCustomerNum(storeCustomerRegions.getData() == null ?0:(long)storeCustomerRegions.getData().size());
 		bscc.setStoresInfos(resultStore.getData());
@@ -166,17 +168,7 @@ public class CouponController {
 		return result;
     }
 
-	private List<String> getStrings(List<CouponActivityImportStoreVO> list) {
-		List<String> storeIdList = new ArrayList<>();
-		for (int j=0;j<list.size();j++){
-			storeIdList.add(list.get(j).getStoreId());
-		}
-		//list去重
-		HashSet h = new HashSet<>(storeIdList);
-		storeIdList.clear();
-		storeIdList.addAll(h);
-		return storeIdList;
-	}
+
 
 	@ApiOperation("优惠券活动导入用戶信息")
 	@PostMapping(value = "/5060/v1/couponActivityCustomerImportExcel")

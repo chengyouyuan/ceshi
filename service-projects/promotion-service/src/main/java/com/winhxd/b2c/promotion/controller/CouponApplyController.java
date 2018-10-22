@@ -65,7 +65,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
         if(count>0){
             responseResult.setCode(BusinessCode.CODE_OK);
             responseResult.setMessage("设置成功");
-        }else {
+        } else {
             throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
         }
         return responseResult;
@@ -99,11 +99,11 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
-            int flag = couponApplyService.addCouponApply(condition);
-            if(flag==0){
-                responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("添加成功");
-            }
+        int flag = couponApplyService.addCouponApply(condition);
+        if(flag==0){
+            responseResult.setCode(BusinessCode.CODE_OK);
+            responseResult.setMessage("添加成功");
+        }
         return responseResult;
 
     }

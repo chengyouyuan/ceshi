@@ -454,10 +454,10 @@ public class PayServiceImpl implements PayService{
 		try{
 			lock.lock();
 			PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
-			BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
-			BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
-			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
-			BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
+			BigDecimal presentedFrozenMoney = condition.getPresentedFrozenMoney() == null ? BigDecimal.valueOf(0) : condition.getPresentedFrozenMoney();
+			BigDecimal presentedMoney = condition.getPresentedMoney() == null ? BigDecimal.valueOf(0) : condition.getPresentedMoney();
+			BigDecimal settlementSettledMoney = condition.getSettlementSettledMoney() == null ? BigDecimal.valueOf(0) : condition.getSettlementSettledMoney();
+			BigDecimal alreadyPresentedMoney = condition.getAlreadyPresentedMoney() == null ? BigDecimal.valueOf(0) : condition.getAlreadyPresentedMoney();
 			
 //			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
 //			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
@@ -476,7 +476,7 @@ public class PayServiceImpl implements PayService{
 				payBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				payBankroll.setStatus(StatusEnums.EFFECTIVE.getCode());
 				payBankrollMapper.insertSelective(payBankroll);
-			}else {
+			} else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
 					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
@@ -490,9 +490,9 @@ public class PayServiceImpl implements PayService{
 				
 				
 				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
-				presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
-				alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
-				settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
+				presentedMoney = presentedMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : presentedMoney;
+				alreadyPresentedMoney = alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : alreadyPresentedMoney;
+				settlementSettledMoney = settlementSettledMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : settlementSettledMoney;
 				
 				payBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
 				payBankroll.setPresentedMoney(presentedMoney);
@@ -780,24 +780,24 @@ public class PayServiceImpl implements PayService{
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
 		logger.info("提现流水号111:{},对象信息：",payTransfersToWxChangeVO.toString());
-		if(payTransfersToWxChangeVO.isTransfersResult()){
+		if (payTransfersToWxChangeVO.isTransfersResult()) {
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
-		}else{
+		} else {
 			//是否需要用户重新申请提现流程
-			if(payTransfersToWxChangeVO.isAbleContinue()){
+			if (payTransfersToWxChangeVO.isAbleContinue()) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
-			}else{
+			} else {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 			}
 		}
 		//C端展示提现失败原因
-		if(payTransfersToWxChangeVO.getErrorCode()!=null){
+		if (payTransfersToWxChangeVO.getErrorCode() != null) {
 			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
 				payWithdrawals.setErrorMessage("当日累积限额超过2万，请重新提现。");
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())){
+			} else if (payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())) {
 				payWithdrawals.setErrorMessage("请至微信实名认证后再次提现");
 
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())){
+			} else if (payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())) {
 				//TODO 提示文案信息
 				payWithdrawals.setErrorMessage("");
 			}
@@ -808,7 +808,7 @@ public class PayServiceImpl implements PayService{
 		payWithdrawals.setTimeEnd(payTransfersToWxChangeVO.getPaymentTime());
 		int transfersResult = this.transfersPublic(payWithdrawals,log);
 		//成功发送云信
-		if(payTransfersToWxChangeVO.isTransfersResult()){
+		if (payTransfersToWxChangeVO.isTransfersResult()) {
 			// 发送云信
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(payWithdrawals.getCreated());
@@ -819,8 +819,8 @@ public class PayServiceImpl implements PayService{
 			PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 		}
 		//失败根据code发送云信
-		if(payTransfersToWxChangeVO.getErrorCode()!=null){
-			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+		if (payTransfersToWxChangeVO.getErrorCode() != null) {
+			if (payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())) {
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());
@@ -829,7 +829,7 @@ public class PayServiceImpl implements PayService{
 				String notifyMsg = PayNotifyMsg.STORE_MONEY_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())){
+			} else if (payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())) {
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());
@@ -838,7 +838,7 @@ public class PayServiceImpl implements PayService{
 				String notifyMsg = PayNotifyMsg.STORE_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())){
+			} else if (payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())) {
 				//TODO 发送云信
 			}
 		}
@@ -882,13 +882,13 @@ public class PayServiceImpl implements PayService{
 		updateStoreBankRollCondition.setStoreId(payWithdrawals.getStoreId());
 		updateStoreBankRollCondition.setWithdrawalsNo(payWithdrawals.getWithdrawalsNo());
 		updateStoreBankRollCondition.setMoney(payWithdrawals.getTotalFee());
-		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
+		if (WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()) {
 			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode());
 			this.updateStoreBankroll(updateStoreBankRollCondition);
-		}else if(WithdrawalsStatusEnum.INVALID.getStatusCode() == payWithdrawals.getCallbackStatus()){
+		} else if (WithdrawalsStatusEnum.INVALID.getStatusCode() == payWithdrawals.getCallbackStatus()) {
 			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
 			this.updateStoreBankroll(updateStoreBankRollCondition);
-		}else if(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode() == payWithdrawals.getCallbackStatus()){
+		} else if (WithdrawalsStatusEnum.BANK_FAIL.getStatusCode() == payWithdrawals.getCallbackStatus()) {
 			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.BANK_FAIL.getCode());
 			this.updateStoreBankroll(updateStoreBankRollCondition);
 		}
@@ -908,20 +908,20 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
-        if(null == payTransfersToWxBankVO){
+		if (null == payTransfersToWxBankVO) {
             logger.error(log+"--transfersService.transfersToChange返回结果为空");
 			throw new BusinessException(BusinessCode.CODE_610039);
         }
 
 		PayWithdrawals payWithdrawals = new PayWithdrawals();
-		if(payTransfersToWxBankVO.isTransfersResult()){
+		if (payTransfersToWxBankVO.isTransfersResult()) {
 			//提现到银行卡状态为微信处理中
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.HANDLE.getStatusCode());
-		}else{
+		} else {
 			//是否需要用户重新申请提现流程
-			if(payTransfersToWxBankVO.isAbleContinue()){
+			if (payTransfersToWxBankVO.isAbleContinue()) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
-			}else{
+			} else {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 
 				//退回提现用户资金
@@ -938,7 +938,7 @@ public class PayServiceImpl implements PayService{
 			}
 		}
 		//C端展示提现失败原因
-		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null) {
+		if (payTransfersToWxBankVO.getErrorCode() != null && payTransfersToWxBankVO.getErrorDesc() != null) {
 			if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡") >= 0) {
 				payWithdrawals.setErrorMessage("银行卡信息有误，请重新填写。");
 			} else if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
@@ -953,7 +953,7 @@ public class PayServiceImpl implements PayService{
 		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
 
 		//提现失败根据code发送云信
-		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null) {
+		if (payTransfersToWxBankVO.getErrorCode() != null && payTransfersToWxBankVO.getErrorDesc() != null) {
 			List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
 			if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡") >= 0) {
 				Calendar cal = Calendar.getInstance();
@@ -990,17 +990,17 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsMapper.selectByPrimaryKey(condition.getWithdrawalsId());
-		if(payWithdrawals == null){
+		if (payWithdrawals == null) {
 			logger.error(log+"--提现申请不存在");
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		//无效需要用户重新发起申请
-		if(payWithdrawals.getCallbackStatus()!=null && payWithdrawals.getCallbackStatus() == WithdrawalsStatusEnum.INVALID.getStatusCode()){
+		if (payWithdrawals.getCallbackStatus() != null && payWithdrawals.getCallbackStatus() == WithdrawalsStatusEnum.INVALID.getStatusCode()) {
 			logger.error(log+"流水号{}审核失败,请重新发起申请",payWithdrawals.getWithdrawalsNo());
 			throw new BusinessException(BusinessCode.CODE_600311);
 		}
 
-		if(payWithdrawals.getFlowDirectionType()== PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
+		if (payWithdrawals.getFlowDirectionType() == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()) {
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
 			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
@@ -1008,14 +1008,14 @@ public class PayServiceImpl implements PayService{
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
 			payTransfersToWxBankCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			payTransfersToWxBankCondition.setOperaterID(condition.getOperaterID());
-			for(TransfersChannelCodeTypeEnum channelCodeTypeEnum : TransfersChannelCodeTypeEnum.values()){
+			for (TransfersChannelCodeTypeEnum channelCodeTypeEnum : TransfersChannelCodeTypeEnum.values()) {
 				if(payWithdrawals.getSwiftCode().equals(String.valueOf(channelCodeTypeEnum.getCode()))){
 					payTransfersToWxBankCondition.setChannelCode(channelCodeTypeEnum);
 					break;
 				}
 			}
 			return this.transfersToBank(payTransfersToWxBankCondition);
-		}else{
+		} else {
 			PayTransfersToWxChangeCondition toWxBalanceCondition = new PayTransfersToWxChangeCondition();
 			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
@@ -1023,9 +1023,9 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
-			if(null == payWithdrawals.getSpbillCreateIp()){
+			if (null == payWithdrawals.getSpbillCreateIp()) {
 				toWxBalanceCondition.setSpbillCreateIp("127.0.0.1");
-			}else{
+			} else {
 				toWxBalanceCondition.setSpbillCreateIp(payWithdrawals.getSpbillCreateIp());
 			}
 			return this.transfersToChange(toWxBalanceCondition);
@@ -1037,7 +1037,7 @@ public class PayServiceImpl implements PayService{
 		String log=logLabel+"查询门店绑定钱包selectPayStoreWalletByStoreId";
 		logger.info(log+"--开始");
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser==null||storeUser.getBusinessId()==null) {
+		if (storeUser == null || storeUser.getBusinessId() == null) {
 			logger.info(log+"--未获取到门店信息");
 			throw new BusinessException(BusinessCode.CODE_600601);
 		}
@@ -1048,7 +1048,7 @@ public class PayServiceImpl implements PayService{
 	public Boolean orderIsPay(OrderIsPayCondition condition) {
 		String log=logLabel+"查询订单是否支付过orderIsPay";
 		logger.info(log+"--开始");
-		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+		if (condition == null || StringUtils.isBlank(condition.getOrderNo())) {
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_601601);
 		}
@@ -1072,7 +1072,7 @@ public class PayServiceImpl implements PayService{
 		}
 		int len = unclearStatus.size();
 		//确认结果,更新提现状态
-		for (int i = 0; i < len; i++){
+		for (int i = 0; i < len; i++) {
 			PayWithdrawals payWithdrawals = unclearStatus.get(i);
 			PayTransfersQueryToWxBankVO resultForWxBank = wxTransfersService.getExactResultForWxBank(payWithdrawals.getWithdrawalsNo());
 			String transfersStatus = resultForWxBank.getStatus();
@@ -1094,10 +1094,10 @@ public class PayServiceImpl implements PayService{
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				}
 				doesModify = true;
-			}else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
+			} else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode());
-				if(resultForWxBank.getPaySuccTime()!=null){
+				if (resultForWxBank.getPaySuccTime() != null) {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				}
@@ -1105,14 +1105,14 @@ public class PayServiceImpl implements PayService{
 			}
 
 			//C端展示提现失败原因
-			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
-				if(resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&resultForWxBank.getErrCodeDes().indexOf("银行卡")>=0){
+			if (resultForWxBank.getErrCode() != null && resultForWxBank.getErrCodeDes() != null) {
+				if (resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && resultForWxBank.getErrCodeDes().indexOf("银行卡") >= 0) {
 					payWithdrawals.setErrorMessage("银行卡信息有误，请重新填写。");
-				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+				} else if (resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
 					payWithdrawals.setErrorMessage("当日累积限额超过5万，请重新提现。");
 				}
 			}
-			if(doesModify){
+			if (doesModify) {
 				this.transfersPublic(payWithdrawals,log);
 				wxTransfersService.modifyTransfersToBankStatus(resultForWxBank);
 			}
@@ -1127,8 +1127,8 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 			}
 			//提现失败根据code发送云信
-			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
-				if(resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&resultForWxBank.getErrCodeDes().indexOf("银行卡")>=0){
+			if (resultForWxBank.getErrCode() != null && resultForWxBank.getErrCodeDes() != null) {
+				if (resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && resultForWxBank.getErrCodeDes().indexOf("银行卡") >= 0) {
 					// 发送云信
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(payWithdrawals.getCreated());
@@ -1137,7 +1137,7 @@ public class PayServiceImpl implements PayService{
 					String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 					PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
-				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+				} else if (resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(payWithdrawals.getCreated());
 					int month=cal.get(Calendar.MONTH)+1;

@@ -1,27 +1,5 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-
-import com.winhxd.b2c.common.domain.pay.model.*;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -37,6 +15,10 @@ import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.ReviewStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayBankCard;
+import com.winhxd.b2c.common.domain.pay.model.PayBankroll;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
@@ -44,14 +26,23 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
-import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
-import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
-import com.winhxd.b2c.pay.dao.PayWithdrawalsTypeMapper;
-import com.winhxd.b2c.pay.dao.PayBankCardMapper;
-import com.winhxd.b2c.pay.dao.PayBankrollMapper;
+import com.winhxd.b2c.pay.dao.*;
 import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
-import com.winhxd.b2c.pay.util.NumberUtil;
 import com.winhxd.b2c.pay.util.PayUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @Author zhanghaun
@@ -101,12 +92,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition) {
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-		if(condition.getWithdrawType() == 0){
-			LOGGER.info("请传入提现类型参数");
-			throw new BusinessException(BusinessCode.CODE_610022);
-		}
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if(storeUser==null||storeUser.getBusinessId()==null){
+		if (storeUser.getBusinessId() == null) {
 			LOGGER.info("未获取到门店数据");
 			throw new BusinessException(BusinessCode.CODE_610801);
 		}
@@ -176,7 +163,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public void validWithdrawCount(Long storeId){
 		int maxcount = payWithDrawalConfig.getMaxCount();
 		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
-		if (maxcount!=0) {//等于0不限制提现次数
+		//等于0不限制提现次数
+		if (maxcount != 0) {
 			if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
 				LOGGER.info("您本日提现已达"+maxcount+"次");
 				throw new BusinessException(BusinessCode.CODE_610902);
@@ -186,12 +174,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
-
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if(storeUser==null||storeUser.getBusinessId()==null){
+		if (storeUser.getBusinessId() == null) {
 			LOGGER.info("未获取到门店数据");
 			throw new BusinessException(BusinessCode.CODE_610901);
 		}
@@ -208,9 +195,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		// 验证提现次数
 		validWithdrawCount(businessId);
-		
-		// 验证入参是否传入正确
-		valiApplyWithDrawCondition(condition);
+
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		PayWithdrawals payWithdrawal = new PayWithdrawals();
@@ -315,97 +300,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		return cmms;
 	}
-	
-	private void valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
-		int res= 0;
-		short  withdralType = condition.getWithdrawType();
-		if(withdralType != PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode() && withdralType != PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
-			LOGGER.info("提现类型为空");
-			res = BusinessCode.CODE_610022;
-			throw new BusinessException(res);
-		}
-		
-		BigDecimal totalFee = condition.getTotalFee();
-		if(totalFee == null||(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString()))){
-			LOGGER.info("提现金额输入有误");
-			res = BusinessCode.CODE_610032;
-			throw new BusinessException(res);
-		}
-		String totalFeeStr=totalFee.toString();
-		if (totalFeeStr.indexOf(".")!=-1) {
-			//最多支持两位小数
-			String [] totalFeeArr=totalFeeStr.split("\\.");
-			if (totalFeeArr!=null&&totalFeeArr[1].length()>2) {
-				LOGGER.info("提现金额超过了两位小数");
-				res = BusinessCode.CODE_610032;
-				throw new BusinessException(res);
-			}
-		}
-		
-		short type = condition.getFlowDirectionType();
-		if(type == 0){
-			res = BusinessCode.CODE_610033;
-			throw new BusinessException(res);
-		}
-		
-		String name = condition.getFlowDirectionName();
-		if(StringUtils.isEmpty(name)){
-			res = BusinessCode.CODE_610034;
-			throw new BusinessException(res);
-		}
-		short withdrawType = condition.getWithdrawType();
-		if(withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()){
-			String openId = condition.getBuyerId();
-			if(StringUtils.isEmpty(openId)){
-				res = BusinessCode.CODE_610031;
-				throw new BusinessException(res);
-			}
-			String nick = condition.getNick(); 
-			if(StringUtils.isEmpty(nick)){
-				res = BusinessCode.CODE_610036;
-				throw new BusinessException(res);
-			}
-		}
-		String paymentAccount = condition.getPaymentAccount();
-		if(StringUtils.isEmpty(paymentAccount)){
-			res = BusinessCode.CODE_610012;
-			throw new BusinessException(res);
-		}
-		
-		String mobile = condition.getMobile();
-		if(StringUtils.isEmpty(mobile)){
-			res = BusinessCode.CODE_610015;
-			throw new BusinessException(res);
-		}
-		
-		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
-			String swiftCode = condition.getSwiftCode();
-			if(StringUtils.isEmpty(swiftCode)){
-				res = BusinessCode.CODE_610029;
-				throw new BusinessException(res);
-			}
-			String storeName = condition.getStroeName();
-			if(StringUtils.isEmpty(storeName)){
-				res = BusinessCode.CODE_610037;
-				throw new BusinessException(res);
-			}
-			
-		}
-		//最小手续费
-		BigDecimal min = payWithDrawalConfig.getMinMoney();
-		if (totalFee.compareTo(min)<=0) {
-			LOGGER.info("提现金额须大于1元");
-			throw new BusinessException(BusinessCode.CODE_611107);
-		}
-		// 最大提现额度
-		BigDecimal max = payWithDrawalConfig.getMaxMoney();
-		if (totalFee.compareTo(max)>0) {
-			LOGGER.info("单笔提现须小于2万元");
-			throw new BusinessException(BusinessCode.CODE_611108);
-		}
-	}
 
-	
 	/**验证通过之后保存当前的用户提现信息*/
 	public void saveStoreWithdrawalInfo(Long businessId,PayWithdrawals payWithdrawals){
 		payWithdrawalsMapper.insertSelective(payWithdrawals);
@@ -444,7 +339,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
     /**
      * 校验提现单号生成是否重复
      *
-     * @param orderNo
+	 * @param withdrawalsNo
      * @param date
      * @return
      * @author wangbin
@@ -480,10 +375,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public CalculationCmmsAmtVO calculationCmmsAmt(CalculationCmmsAmtCondition condition) {
 		String log="门店提现计算手续费---";
 		LOGGER.info(log+"开始");
-		if (condition==null) {
-			LOGGER.info(log+"参数为空");
-			throw new BusinessException(BusinessCode.CODE_611101);
-		}
 	    StoreUser storeUser = UserContext.getCurrentStoreUser();
         if(storeUser==null||storeUser.getBusinessId()==null){
 			LOGGER.info("未获取到门店数据");
@@ -494,42 +385,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
         BigDecimal totalFee=condition.getTotalFee();
 		// 验证提现次数
         validWithdrawCount(storeId);
-		if (withdrawType==null) {
-			LOGGER.info(log+"提现类型为空");
-			throw new BusinessException(BusinessCode.CODE_611102);
-		}
-		if (totalFee==null) {
-			LOGGER.info(log+"提现金额为空");
-			throw new BusinessException(BusinessCode.CODE_611103);
-		}
-		if(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString())){
-			LOGGER.info("提现金额输入有误");
-			throw new BusinessException(BusinessCode.CODE_611106);
-		}
-		String totalFeeStr=totalFee.toString();
-		if (totalFeeStr.indexOf(".")!=-1) {
-			//最多支持两位小数
-			String [] totalFeeArr=totalFeeStr.split("\\.");
-			if (totalFeeArr!=null&&totalFeeArr[1].length()>2) {
-				LOGGER.info("提现金额超过了两位小数");
-				throw new BusinessException(BusinessCode.CODE_611106);
-			}
-		}
-		//最小手续费
-		BigDecimal min = payWithDrawalConfig.getMinMoney();
-		if (totalFee.compareTo(min)<=0) {
-			LOGGER.info("提现金额须大于1元");
-			throw new BusinessException(BusinessCode.CODE_611107);
-		}
-		// 最大提现额度
-		BigDecimal max = payWithDrawalConfig.getMaxMoney();
-		if (totalFee.compareTo(max)>0) {
-			LOGGER.info("单笔提现须小于2万元");
-			throw new BusinessException(BusinessCode.CODE_611108);
-		}
-		
-		LOGGER.info(log+"参数为--"+condition.toString());
-		
         PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(payBankroll == null|| payBankroll.getStoreId()==null){
         	LOGGER.info(log+"可提现金额不足");

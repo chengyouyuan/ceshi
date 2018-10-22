@@ -5,21 +5,27 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.pay.service.PayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 @Api(tags = "ApiPay")
 @RestController
 public class PayController implements PayServiceClient {
-   
 
+	private static final Logger logger = LoggerFactory.getLogger(PayController.class);
 
 	@Autowired
 	private PayService payService;
@@ -33,6 +39,44 @@ public class PayController implements PayServiceClient {
 	 */
 	@Override
 	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition){
+		String log = "订单支付orderPay";
+		logger.info(log + "支付的参数为---{}", condition.toString());
+		if (condition == null) {
+			logger.info(log + "--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
+		String orderNo = condition.getOutOrderNo();
+		String spbillCreateIp = condition.getSpbillCreateIp();
+		String body = condition.getBody();
+		String openid = condition.getOpenid();
+		Short payType = condition.getPayType();
+		BigDecimal totalAmount = condition.getTotalAmount();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log + "--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600102);
+		}
+		log += "订单号为--：" + orderNo;
+		if (StringUtils.isBlank(body)) {
+			logger.info(log + "--商品描述为空");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log + "--用户openid为空");
+			throw new BusinessException(BusinessCode.CODE_600104);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log + "--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600105);
+		}
+		if (payType == null) {
+			logger.info(log + "--支付方式为空");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
+		if (totalAmount == null) {
+			logger.info(log + "--支付金额为空");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
 		OrderPayVO vo = payService.unifiedOrder(condition);
 		ResponseResult<OrderPayVO> result=new ResponseResult<>();
 		result.setData(vo);

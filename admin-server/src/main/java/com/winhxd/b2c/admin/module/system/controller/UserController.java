@@ -83,7 +83,7 @@ public class UserController {
         sysUser.setUpdatedBy(userInfo.getId());
         sysUser.setUpdatedByName(userInfo.getUsername());
 
-        return userServiceClient.save(sysUser);
+        return userServiceClient.saveSysUser(sysUser);
     }
 
     @ApiOperation("编辑用户")
@@ -120,7 +120,7 @@ public class UserController {
 
         // 清除操作的用户缓存
         UserManager.delUserCache(sysUser.getId(), cache);
-        return userServiceClient.modify(sysUser);
+        return userServiceClient.modifySysUser(sysUser);
     }
 
     @ApiOperation(value = "修改密码")
@@ -163,7 +163,7 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
-       return userServiceClient.find(condition);
+       return userServiceClient.findSysUserPagedList(condition);
     }
 
     @ApiOperation(value = "根据主键获取用户信息")
@@ -180,7 +180,7 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
-        return userServiceClient.get(id);
+        return userServiceClient.getSysUserById(id);
     }
 
     @ApiOperation("验证用户是否已存在")
@@ -222,7 +222,7 @@ public class UserController {
     public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
 
-        SysUser sysUser = userServiceClient.get(id).getData();
+        SysUser sysUser = userServiceClient.getSysUserById(id).getData();
         if (null != sysUser.getIdentity() && sysUser.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
             logger.warn("{} - 操作被禁止", MODULE_NAME);
             return new ResponseResult(BusinessCode.CODE_1015);

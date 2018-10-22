@@ -62,7 +62,7 @@ public class RoleController {
         sysRole.setUpdatedBy(userInfo.getId());
         sysRole.setUpdatedByName(userInfo.getUsername());
 
-        return roleServiceClient.save(sysRole);
+        return roleServiceClient.saveSysRole(sysRole);
     }
 
     @ApiOperation("编辑权限组")
@@ -90,7 +90,7 @@ public class RoleController {
         sysRole.setUpdatedBy(userInfo.getId());
         sysRole.setUpdatedByName(userInfo.getUsername());
 
-        return roleServiceClient.modify(sysRole);
+        return roleServiceClient.modifySysRole(sysRole);
     }
 
     @ApiOperation(value = "查询权限组列表")
@@ -104,7 +104,7 @@ public class RoleController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
     public ResponseResult<PagedList<SysRole>> list(@RequestBody SysRoleCondition condition){
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
-       return roleServiceClient.find(condition);
+       return roleServiceClient.findSysRolePagedList(condition);
     }
 
     @ApiOperation(value = "根据主键获取权限组信息")
@@ -121,7 +121,7 @@ public class RoleController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
     public ResponseResult<SysRole> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取权限组信息, 参数：id={}", MODULE_NAME, id);
-        return roleServiceClient.get(id);
+        return roleServiceClient.getSysRoleById(id);
     }
 
     @ApiOperation("根据编号删除权限组")
@@ -139,6 +139,6 @@ public class RoleController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_DELETE})
     public ResponseResult remove(@PathVariable("id") Long id) {
         logger.info("{} - 根据编号删除权限组, 参数：id={}", MODULE_NAME, id);
-        return roleServiceClient.remove(id);
+        return roleServiceClient.removeSysRoleById(id);
     }
 }

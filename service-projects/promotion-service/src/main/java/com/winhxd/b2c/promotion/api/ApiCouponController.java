@@ -89,7 +89,7 @@ public class ApiCouponController{
     public ResponseResult<PagedList<CouponVO>> myCouponList(@RequestBody CouponCondition couponCondition) {
         LOGGER.info("=/api-promotion/coupon/5003/v1/myCouponList-我的优惠券列表=--开始--{}", couponCondition);
         ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
-        PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
+        PagedList<CouponVO> pages = couponService.myCouponList(couponCondition,UserContext.getCurrentCustomerUser());
         result.setData(pages);
         LOGGER.info("=/api-promotion/coupon/5003/v1/myCouponList-我的优惠券列表=--结束 result:{}", result);
         return result;
@@ -107,7 +107,7 @@ public class ApiCouponController{
     public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {
         LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--开始--{}", condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-        Boolean flag = couponService.userReceiveCoupon(condition);
+        Boolean flag = couponService.userReceiveCoupon(condition,UserContext.getCurrentCustomerUser());
         result.setData(flag);
         LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--结束 result:{}", result);
         return result;
@@ -129,7 +129,7 @@ public class ApiCouponController{
         logTitle="=/api-promotion/coupon/5008/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
         LOGGER.info(logTitle+"开始--{}--");
         ResponseResult<CouponKindsVo> result = new ResponseResult<>();
-        CouponKindsVo couponKindsVo = couponService.getStoreCouponKinds();
+        CouponKindsVo couponKindsVo = couponService.getStoreCouponKinds(UserContext.getCurrentCustomerUser());
         result.setData(couponKindsVo);
         LOGGER.info(logTitle + "结束 result:{}", result);
         return result;
@@ -150,7 +150,7 @@ public class ApiCouponController{
         logTitle="=/api-promotion/coupon/5009/v1/getStoreCouponList-用户查询门店优惠券列表=--";
         LOGGER.info(logTitle+"开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        List<CouponVO> pages = couponService.findStoreCouponList();
+        List<CouponVO> pages = couponService.findStoreCouponList(UserContext.getCurrentCustomerUser());
         result.setData(pages);
         LOGGER.info(logTitle + "结束 result:{}", result);
         return result;
@@ -169,7 +169,7 @@ public class ApiCouponController{
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
+        List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition,UserContext.getCurrentCustomerUser());
         result.setData(pages);
         LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result:{}", result);
         return result;
@@ -208,7 +208,7 @@ public class ApiCouponController{
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult<CouponVO> result = new ResponseResult<>();
-        CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
+        CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition,UserContext.getCurrentCustomerUser());
         result.setData(couponVO);
         LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果 result:{}", result);
         return result;
@@ -227,7 +227,7 @@ public class ApiCouponController{
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
-        CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition);
+        CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition,UserContext.getCurrentCustomerUser());
         result.setData(couponDiscountVO);
         LOGGER.info("/api-promotion/coupon/5057/v1/getCouponDiscountAmount结果 result:{}", result);
         return result;

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
@@ -64,7 +65,7 @@ public class CouponController implements CouponServiceClient{
 		}
 
 		ResponseResult<Boolean> result = new ResponseResult<>();
-		Boolean flag =  couponService.orderUseCoupon(condition);
+		Boolean flag =  couponService.orderUseCoupon(condition,UserContext.getCurrentCustomerUser());
 		result.setData(flag);
 		LOGGER.info("=/coupon/orderUseCoupon-订单使用优惠券=--结束 result={}", result);
 		return result;
@@ -220,7 +221,7 @@ public class CouponController implements CouponServiceClient{
 		}
 
 		ResponseResult<CouponVO> result = new ResponseResult<>();
-		CouponVO couponVO = couponService.findDefaultCouponByOrder(condition);
+		CouponVO couponVO = couponService.findDefaultCouponByOrder(condition,UserContext.getCurrentCustomerUser());
 		result.setData(couponVO);
 		LOGGER.info("=/promotion/5058/v1/findDefaultCoupon-最优惠的优惠券=--结束 result={}", result);
 		return result;

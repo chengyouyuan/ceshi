@@ -45,21 +45,21 @@ public interface CouponService {
      * @param couponCondition 入参
      * @return
      */
-    PagedList<CouponVO> myCouponList(CouponCondition couponCondition);
+    PagedList<CouponVO> myCouponList(CouponCondition couponCondition,CustomerUser customerUser);
 
     /**
      * 领取优惠券
      * @param condition
      * @return
      */
-    Boolean userReceiveCoupon(ReceiveCouponCondition condition);
+    Boolean userReceiveCoupon(ReceiveCouponCondition condition,CustomerUser customerUser);
 
     /**
      * 订单使用优惠券
      * @param condition
      * @return
      */
-    Boolean orderUseCoupon(OrderUseCouponCondition condition);
+    Boolean orderUseCoupon(OrderUseCouponCondition condition,CustomerUser customerUser);
 
     /**
      * 订单退回优惠券
@@ -100,20 +100,20 @@ public interface CouponService {
      * 用户查询门店优惠券列表
      * @return
      */
-    List<CouponVO> findStoreCouponList();
+    List<CouponVO> findStoreCouponList(CustomerUser customerUser);
 
     /**
      * 订单可用优惠券
      * @param couponCondition
      * @return
      */
-    List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition);
+    List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser);
 
     /**
      * 获取用户可领取门店优惠券种类数
      * @return
      */
-    CouponKindsVo getStoreCouponKinds();
+    CouponKindsVo getStoreCouponKinds(CustomerUser customerUser);
 
     /**
      * 根据订单获取优惠券费用承担信息
@@ -130,14 +130,14 @@ public interface CouponService {
      * @param couponCondition
      * @return
      */
-    CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition);
+    CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser);
 
     /**
      * C端获取优惠券优惠金额
      * @param couponCondition
      * @return
      */
-    CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition);
+    CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition,CustomerUser customerUser);
 
     /**
      * 校验是否有新用户活动
@@ -145,5 +145,5 @@ public interface CouponService {
      */
     Boolean verifyNewUserActivity();
 
-    List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition);
+    List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser);
 }

@@ -1,24 +1,21 @@
 package com.winhxd.b2c.pay.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
-import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
-import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.service.VerifyService;
-import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
-import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
-import com.winhxd.b2c.pay.weixin.model.PayBill;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * TransfersTest
@@ -99,4 +96,9 @@ public class StoreBankrollTest {
         System.out.println(payConfig.getAppID());
     }
 
+
+	@Test
+	public void testEmail() {
+		System.out.print("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$");
+	}
 }

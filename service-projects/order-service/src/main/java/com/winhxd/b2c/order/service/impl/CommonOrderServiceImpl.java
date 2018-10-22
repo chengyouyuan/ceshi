@@ -842,7 +842,7 @@ public class CommonOrderServiceImpl implements OrderService {
     /**
      * 手工退款
      *
-     * @param orderNo
+     * @param condition
      * @return
      */
     @Override

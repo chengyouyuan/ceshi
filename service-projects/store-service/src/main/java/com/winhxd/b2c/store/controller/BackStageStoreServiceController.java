@@ -107,12 +107,8 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> responseResult=new ResponseResult<>();
-		 AdminUser adminUser=UserContext.getCurrentAdminUser();
-		 
-		 if(adminUser==null){
-			 responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
-			 return responseResult;
-		 }
+		 AdminUser adminUser = UserContext.getCurrentAdminUser();
+
 		if(condition!=null){
 			//商品名称
 			if(StringUtils.isNotEmpty(condition.getProdName())){
@@ -187,13 +183,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	@Override
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<BackStageStoreProdVO> responseResult=new ResponseResult<>();
-		 AdminUser adminUser=UserContext.getCurrentAdminUser();
-		 
-		 if(adminUser==null){
-			 responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
-			 return responseResult;
-		 }
-		 
 		PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
 		if(resultVO!=null&&resultVO.getData()!=null&&resultVO.getData().size()>0){
 			BackStageStoreProdVO vo=resultVO.getData().get(0);
@@ -230,12 +219,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
 	        @RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> responseResult = null;
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
-
-		if (adminUser == null) {
-			responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-			return responseResult;
-		}
 		if (condition != null) {
 			responseResult = new ResponseResult<>();
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -251,12 +234,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	@Override
 	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<BackStageStoreSubmitProdVO> responseResult = null;
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
 
-		if (adminUser == null) {
-			responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-			return responseResult;
-		}
 		if (condition != null) {
 			responseResult = new ResponseResult<>();
 			PagedList<BackStageStoreSubmitProdVO> list = this.storeSubmitProductService
@@ -275,11 +253,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     public ResponseResult<Void> modifyStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> responseResult = null;
         AdminUser adminUser = UserContext.getCurrentAdminUser();
-        //校验权限
-        if (adminUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
         
         if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
             //主键

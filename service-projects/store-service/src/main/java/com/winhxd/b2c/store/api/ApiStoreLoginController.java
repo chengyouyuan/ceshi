@@ -503,10 +503,6 @@ public class ApiStoreLoginController {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		StoreUser user = UserContext.getCurrentStoreUser();
-		if (null == user) {
-			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
-			throw new BusinessException(BusinessCode.CODE_1002);
-		}
 		info.setId(user.getBusinessId());
 		info.setAppLoginStatus((short) 1);
 		storeLoginService.modifyStoreUserInfo(info);

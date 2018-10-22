@@ -59,9 +59,6 @@ public class OrderServiceController implements OrderServiceClient {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             //查询当天数据
             result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeUser.getBusinessId()));
         } catch (BusinessException e) {

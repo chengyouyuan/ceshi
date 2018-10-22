@@ -61,9 +61,6 @@ public class ApiOrderController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             condition.setStoreId(storeUser.getBusinessId());
             this.orderService.orderPriceChange4Store(condition);
         } catch (BusinessException e) {
@@ -96,9 +93,6 @@ public class ApiOrderController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             condition.setStoreId(storeUser.getBusinessId());
             this.orderService.orderPickup4Store(condition);
         } catch (BusinessException e) {
@@ -131,9 +125,6 @@ public class ApiOrderController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             condition.setStoreId(storeUser.getBusinessId());
             this.orderService.orderConfirm4Store(condition);
         } catch (BusinessException e) {

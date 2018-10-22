@@ -246,10 +246,6 @@ public class ApiCustomerLoginController {
 		}
 		CustomerUserInfo info = new CustomerUserInfo();
 		CustomerUser user = UserContext.getCurrentCustomerUser();
-		if (null == user) {
-			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
-			throw new BusinessException(BusinessCode.CODE_1002);
-		}
 		customerUserInfo.setOpenid(user.getOpenid());
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {

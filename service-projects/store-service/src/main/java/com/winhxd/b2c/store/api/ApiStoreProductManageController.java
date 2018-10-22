@@ -119,10 +119,6 @@ public class ApiStoreProductManageController {
         }
         // 账号信息校验
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
 
         // 判断查询可上架商品类型
         Byte prodType = condition.getProdType();
@@ -605,8 +601,6 @@ public class ApiStoreProductManageController {
             throws  Exception{
         ResponseResult<PagedList<ProductImageVO>> responseResult = new ResponseResult<>();
 
-        // 获取当前门店用户
-        StoreUser storeUser = UserContext.getCurrentStoreUser();
         logger.info("提报商品图片上传接口：imageFiles:{}",imageFiles);
         if (imageFiles == null) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_104901);

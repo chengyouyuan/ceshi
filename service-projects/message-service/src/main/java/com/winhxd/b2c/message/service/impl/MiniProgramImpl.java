@@ -66,10 +66,6 @@ public class MiniProgramImpl implements MiniProgramService {
     @Override
     public void saveFormIds(MiniFormIdCondition miniFormIdCondition) {
         CustomerUser user = UserContext.getCurrentCustomerUser();
-        if (user == null || user.getCustomerId() == null || StringUtils.isEmpty(user.getOpenid())){
-            LOGGER.error("MiniProgramImpl ->saveFormIds,保存formid出错，用户凭证无效");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         if (CollectionUtils.isEmpty(miniFormIdCondition.getFormIds())){
             LOGGER.error("MiniProgramImpl ->saveFormIds,保存formid出错，formids为空");
             throw new BusinessException(BusinessCode.CODE_702401);

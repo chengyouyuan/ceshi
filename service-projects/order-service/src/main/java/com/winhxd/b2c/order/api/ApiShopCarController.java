@@ -248,10 +248,6 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
-            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
-            throw new BusinessException(BusinessCode.CODE_1004);
-        }
         return customerUser.getCustomerId();
     }
 }

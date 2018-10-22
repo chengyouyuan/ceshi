@@ -172,9 +172,6 @@ public class ApiOrderQueryController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             PagedList<OrderInfoDetailVO> list = this.orderQueryService.listOrder4Store(condition, storeUser.getBusinessId());
             result.setData(list);
         } catch (BusinessException e) {
@@ -205,9 +202,6 @@ public class ApiOrderQueryController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
-            }
             LOGGER.info("{}=--开始--storeId={}", logTitle, storeUser.getBusinessId());
             OrderCountByStatus4StoreVO orderCountByStatus4StoreVO = this.orderQueryService.getOrderCountByStatus(storeUser.getBusinessId());
             result.setData(orderCountByStatus4StoreVO);
@@ -245,9 +239,6 @@ public class ApiOrderQueryController {
         ResponseResult<OrderPayVO> result = new ResponseResult<>();
         //获取当前登录门店Id
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null || customerUser.getCustomerId() == null || StringUtils.isBlank(customerUser.getOpenid())) {
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         result.setData(orderQueryService.getOrderPayInfo(condition.getOrderNo(), condition.getSpbillCreateIp(), condition.getDeviceInfo(), customerUser.getCustomerId(), customerUser.getOpenid()));
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;

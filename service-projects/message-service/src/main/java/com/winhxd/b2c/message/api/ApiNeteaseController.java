@@ -49,10 +49,6 @@ public class ApiNeteaseController {
 	@RequestMapping(value = "netease/7011/v1/findNeteaseMsgBox", method = RequestMethod.POST)
 	public ResponseResult<PagedList<NeteaseMsgVO>> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition condition) {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
-		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
-			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox当前用户登录的凭证无效 ");
-			throw new BusinessException(BusinessCode.CODE_1002);
-		}
 		if (condition == null || condition.getTimeType() == null) {
 			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
@@ -75,10 +71,6 @@ public class ApiNeteaseController {
 	@RequestMapping(value = "netease/7010/v1/modifyNeteaseMsgReadStatus", method = RequestMethod.POST)
 	public ResponseResult<Boolean> modifyNeteaseMsgReadStatus(@RequestBody NeteaseMsgReadStatusCondition condition) {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
-		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
-			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus当前用户登录的凭证无效 ");
-			throw new BusinessException(BusinessCode.CODE_1002);
-		}
 		/**
 		 * 全部已读时必须要传 区分是当天还是历史的时间类型 timeType
 		 */

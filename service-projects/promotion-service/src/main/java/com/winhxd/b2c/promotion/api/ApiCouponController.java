@@ -59,7 +59,7 @@ public class ApiCouponController{
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
         result.setData(couponVOs);
-        LOGGER.info("=/api-promotion/coupon/5001/v1/getNewUserCouponList-查询新人专享优惠列表=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5001/v1/getNewUserCouponList-查询新人专享优惠列表=--结束 result:{}", result);
         return result;
     }
 
@@ -74,7 +74,7 @@ public class ApiCouponController{
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.unclaimedCouponList();
         result.setData(pages);
-        LOGGER.info("=/api-promotion/coupon/5002/v1/unclaimedCouponList-待领取优惠券列表=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5002/v1/unclaimedCouponList-待领取优惠券列表=--结束 result:{}", result);
         return result;
     }
 
@@ -89,7 +89,7 @@ public class ApiCouponController{
         ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
         PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
         result.setData(pages);
-        LOGGER.info("=/api-promotion/coupon/5003/v1/myCouponList-我的优惠券列表=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5003/v1/myCouponList-我的优惠券列表=--结束 result:{}", result);
         return result;
     }
 
@@ -107,7 +107,7 @@ public class ApiCouponController{
         ResponseResult<Boolean> result = new ResponseResult<>();
         Boolean flag = couponService.userReceiveCoupon(condition);
         result.setData(flag);
-        LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--结束 result:{}", result);
         return result;
     }
 
@@ -129,7 +129,7 @@ public class ApiCouponController{
         ResponseResult<CouponKindsVo> result = new ResponseResult<>();
         CouponKindsVo couponKindsVo = couponService.getStoreCouponKinds();
         result.setData(couponKindsVo);
-        LOGGER.info(logTitle+"结束 result={}", result);
+        LOGGER.info(logTitle + "结束 result:{}", result);
         return result;
     }
 
@@ -150,7 +150,7 @@ public class ApiCouponController{
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.findStoreCouponList();
         result.setData(pages);
-        LOGGER.info(logTitle+"结束 result={}", result);
+        LOGGER.info(logTitle + "结束 result:{}", result);
         return result;
     }
 
@@ -169,7 +169,7 @@ public class ApiCouponController{
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
         result.setData(pages);
-        LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result:{}", result);
         return result;
     }
 
@@ -189,7 +189,7 @@ public class ApiCouponController{
         ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
         PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,codition);
         result.setData(pages);
-        LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
+        LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果 result:{}", result);
         return result;
     }
 
@@ -208,7 +208,7 @@ public class ApiCouponController{
         ResponseResult<CouponVO> result = new ResponseResult<>();
         CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
         result.setData(couponVO);
-        LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果:"+result);
+        LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果 result:{}", result);
         return result;
     }
 
@@ -227,7 +227,7 @@ public class ApiCouponController{
         ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
         CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition);
         result.setData(couponDiscountVO);
-        LOGGER.info("/api-promotion/coupon/5057/v1/getCouponDiscountAmount结果:"+result);
+        LOGGER.info("/api-promotion/coupon/5057/v1/getCouponDiscountAmount结果 result:{}", result);
         return result;
     }
 
@@ -241,7 +241,7 @@ public class ApiCouponController{
 
         ResponseResult<Boolean> result = new ResponseResult<>();
         result.setData(couponService.verifyNewUserActivity());
-        LOGGER.info("/api-promotion/coupon/security/5059/v1/verifyNewUserActivity结果:"+result);
+        LOGGER.info("/api-promotion/coupon/security/5059/v1/verifyNewUserActivity结果 result:{}", result);
         return result;
     }
 
@@ -256,7 +256,7 @@ public class ApiCouponController{
 
         ResponseResult<List<CouponPushVO>> result = new ResponseResult<>();
         result.setData(couponPushService.getSpecifiedPushCoupon());
-        LOGGER.info("/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon结果:"+result);
+        LOGGER.info("/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon结果 result:{}", result);
         return result;
     }
 

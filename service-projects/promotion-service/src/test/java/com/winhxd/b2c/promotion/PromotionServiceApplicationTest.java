@@ -29,12 +29,8 @@ public class PromotionServiceApplicationTest {
      * 指定推送优惠券测试
      */
     @Test
-    public void getSpecifiedPushCoupon() {
-        try {
-            TestUtils.setCurrCustomer(25L);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void getSpecifiedPushCoupon() throws Exception {
+        TestUtils.setCurrCustomer(25L);
         List<CouponPushVO> result = couponPushService.getSpecifiedPushCoupon();
         System.err.println("================>" + JsonUtil.toJSONString(result));
     }

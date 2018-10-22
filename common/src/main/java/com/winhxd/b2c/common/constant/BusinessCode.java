@@ -555,7 +555,7 @@ public final class BusinessCode {
     @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息错误（需查询官方错误码）")
     public static final int CODE_702207 = 702207;
     @ApiModelProperty("消息服务 保存formid formid为空")
-    public static final int CODE_702301 = 702301;
+    public static final int CODE_702401 = 702401;
     @ApiModelProperty("后台消息管理 手动给门店推送消息 推送配置不存在")
     public static final int CODE_703501 = 703501;
     @ApiModelProperty("后台消息管理 手动给门店推送消息 云信门店记录不存在")

@@ -72,7 +72,7 @@ public class MiniProgramImpl implements MiniProgramService {
         }
         if (CollectionUtils.isEmpty(miniFormIdCondition.getFormIds())){
             LOGGER.error("MiniProgramImpl ->saveFormIds,保存formid出错，formids为空");
-            throw new BusinessException(BusinessCode.CODE_702301);
+            throw new BusinessException(BusinessCode.CODE_702401);
         }
         //批量保存C端用户formid
         List<MessageCustomerFormIds> list = new ArrayList<>();

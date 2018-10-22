@@ -39,7 +39,7 @@ public class ApiMiniProgramController {
 			@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-			@ApiResponse(code = BusinessCode.CODE_702301, message = "参数错误，formids为空")
+			@ApiResponse(code = BusinessCode.CODE_702401, message = "参数错误，formids为空")
 	})
 	@RequestMapping(value = "mini/7024/v1/saveFormIds", method = RequestMethod.POST)
 	public ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition condition) {

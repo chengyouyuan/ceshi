@@ -61,9 +61,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             if(condition.getDateInterval().getStart() != null){
                 condition.setCreatedStart(DateDealUtils.getStartDate(condition.getDateInterval().getStart()));
             }
-            if(condition.getDateInterval().getEnd() != null){
-                condition.setCreatedEnd(DateDealUtils.getEndDate(condition.getDateInterval().getEnd()));
-            }
+        }
+        if (condition.getDateInterval().getEnd() != null) {
+            condition.setCreatedEnd(DateDealUtils.getEndDate(condition.getDateInterval().getEnd()));
         }
 
         List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);

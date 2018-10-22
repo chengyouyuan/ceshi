@@ -320,7 +320,7 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> results = new ArrayList<>(size);
         for (CouponVO couponVO : couponVOS) {
             //根据优惠券总数限制用户领取
-            if (couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))) {
+            if (String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()).equals(couponVO.getCouponNumType())) {
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(), couponVO.getTemplateId());
                 //获取某个优惠券用户领取的数量
@@ -383,7 +383,7 @@ public class CouponServiceImpl implements CouponService {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
 
         //我的优惠券列表不分页，一页显示全部
-        if (null == couponCondition.getStatus()) {
+        if (StringUtils.isBlank(couponCondition.getStatus())) {
             List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(), null, couponCondition.getStatus());
             couponCondition.setPageSize(couponVOS.size());
             couponCondition.setPageNo(1);
@@ -572,7 +572,7 @@ public class CouponServiceImpl implements CouponService {
 
         couponDiscountVO.setCouponTitle(couponTemplate.getTitle());
         //通用券，按订单金额计算优惠金额
-        if (String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()).equals(couponApply.getApplyRuleType())) {
+        if (CouponApplyEnum.COMMON_COUPON.getCode() == couponApply.getApplyRuleType()) {
             //计算订单总额
             BigDecimal amountPrice = new BigDecimal(0);
             for (CouponProductCondition couponProductCondition : couponCondition.getProducts()) {
@@ -587,7 +587,7 @@ public class CouponServiceImpl implements CouponService {
             return couponDiscountVO;
         }
         //品牌券，按品牌总额计算优惠金额
-        if (String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()).equals(couponApply.getApplyRuleType())) {
+        if (CouponApplyEnum.BRAND_COUPON.getCode() == couponApply.getApplyRuleType()) {
             List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponApply.getId());
             if (couponApplyBrands.isEmpty()) {
                 logger.error("优惠券适用的品牌参数不存在");
@@ -614,7 +614,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         //商品券，按商品总额计算优惠金额
-        if (String.valueOf(CouponApplyEnum.PRODUCT_COUPON.getCode()).equals(couponApply.getApplyRuleType())) {
+        if (CouponApplyEnum.PRODUCT_COUPON.getCode() == couponApply.getApplyRuleType()) {
             List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponApply.getId());
             if (couponApplyProducts.isEmpty()) {
                 logger.error("优惠券适用的商品参数不存在");
@@ -711,11 +711,13 @@ public class CouponServiceImpl implements CouponService {
         StoreUserInfoVO storeUserInfo = result.getData();
 
         List<CouponVO> couponVOS = couponActivityMapper.selectStoreCouponList(storeUserInfo.getId());
-        List<CouponVO> results = new ArrayList<>();
+        // 初始化list size
+        int size = CollectionUtils.isEmpty(couponVOS) ? 0 : couponVOS.size();
+        List<CouponVO> results = new ArrayList<>(size);
         for (CouponVO couponVO : couponVOS) {
             //根据优惠券总数限制用户领取
             logger.info("findStoreCouponList-优惠券数量的限制类型{},数量{}", couponVO.getCouponNumType(), couponVO.getCouponNum());
-            if (couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))) {
+            if (String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()).equals(couponVO.getCouponNumType())) {
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(), couponVO.getTemplateId());
                 logger.info("findStoreCouponList-优惠券总数{},已领取了{}张", couponVO.getCouponNum(), templateNum);
@@ -741,7 +743,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
-            if (couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))) {
+            if (String.valueOf(CouponActivityEnum.STORE_NUM.getCode()).equals(couponVO.getCouponNumType())) {
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(), couponVO.getTemplateId(), storeUserInfo.getId());
                 logger.info("findStoreCouponList-门店{}可领取{}张,已领取了{}张优惠券", storeUserInfo.getId(), couponVO.getCouponNum(), storeNum);
@@ -783,16 +785,7 @@ public class CouponServiceImpl implements CouponService {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
 
         //获取购物车商品信息
-        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
-        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
-        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
-        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
-        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
-            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
-            throw new BusinessException(responseResult.getCode());
-        }
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
-        logger.info("availableCouponListByOrder-购物车信息{}", shopCarProdInfoVOS.toString());
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);
 
         //查询当前用户下的所有优惠券
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(), null, null);
@@ -930,7 +923,7 @@ public class CouponServiceImpl implements CouponService {
             BigDecimal discountMoney = result.getData().getOrderInfoDetailVO().getDiscountMoney();
 
             for (CouponInvestorDetail couponInvestorDetail : couponInvestorDetails) {
-                if (String.valueOf(CouponTemplateEnum.INVERTOR_H_TYPE.getCode()).equals(couponInvestorDetail.getInvestorType())) {
+                if (CouponTemplateEnum.INVERTOR_H_TYPE.getCode() == couponInvestorDetail.getInvestorType()) {
                     couponInvestorAmountVO.setPlatformAmount(discountMoney.multiply(new BigDecimal(couponInvestorDetail.getPercent())));
                 } else {
                     couponInvestorAmountVO.setBrandAmount(discountMoney.multiply(new BigDecimal(couponInvestorDetail.getPercent())));
@@ -1070,10 +1063,9 @@ public class CouponServiceImpl implements CouponService {
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
 
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
         // 添加list初始化size
-        List<CouponProductCondition> productConditions = new ArrayList<>(shopCarProdInfoVOS.size());
-        for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
+        List<CouponProductCondition> productConditions = new ArrayList<>(responseResult.getData().size());
+        for (ShopCarProdInfoVO shopCarProdInfoVO : responseResult.getData()) {
             CouponProductCondition couponProductCondition = new CouponProductCondition();
             couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
             couponProductCondition.setBrandCode(shopCarProdInfoVO.getBrandCode());
@@ -1113,11 +1105,10 @@ public class CouponServiceImpl implements CouponService {
             logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
             throw new BusinessException(responseResult.getCode());
         }
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
 
         // 指定list初始化size
-        List<CouponProductCondition> productConditions = new ArrayList<>(shopCarProdInfoVOS.size());
-        for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
+        List<CouponProductCondition> productConditions = new ArrayList<>(responseResult.getData().size());
+        for (ShopCarProdInfoVO shopCarProdInfoVO : responseResult.getData()) {
             CouponProductCondition couponProductCondition = new CouponProductCondition();
             couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
             couponProductCondition.setBrandCode(shopCarProdInfoVO.getBrandCode());
@@ -1140,7 +1131,7 @@ public class CouponServiceImpl implements CouponService {
      */
     public void getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS) {
         for (CouponInStoreGetedAndUsedVO vo : couponVOS) {
-            if (vo.getApplyRuleType() != null && vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())) {
+            if (CouponApplyEnum.PRODUCT_COUPON.getCode() == vo.getApplyRuleType()) {
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
                 if (!couponApplyProducts.isEmpty()) {
                     List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
@@ -1162,7 +1153,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
 
-            if (vo.getApplyRuleType() != null && vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())) {
+            if (CouponApplyEnum.BRAND_COUPON.getCode() == vo.getApplyRuleType()) {
                 List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(vo.getApplyId());
                 if (!couponApplyBrands.isEmpty()) {
                     List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
@@ -1237,7 +1228,6 @@ public class CouponServiceImpl implements CouponService {
             return false;
         }
 
-
         CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
         couponActivityTemplate.setCouponActivityId(couponActivities.get(0).getId());
         List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
@@ -1292,13 +1282,13 @@ public class CouponServiceImpl implements CouponService {
         for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
             logger.info("优惠券数量的限制类型{},数量{}", activityTemplate.getCouponNumType(), activityTemplate.getCouponNum());
             //根据优惠券总数限制用户领取
-            if (activityTemplate.getCouponNumType() == CouponActivityEnum.COUPON_SUM.getCode()) {
+            if (CouponActivityEnum.COUPON_SUM.getCode() == activityTemplate.getCouponNumType()) {
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
                 logger.info("优惠券总数{},已领取了{}张", activityTemplate.getCouponNum(), templateNum);
 
                 result = checkCouponIsReceive(templateNum, activityTemplate, customerUser);
-            } else if (activityTemplate.getCouponNumType() == CouponActivityEnum.STORE_NUM.getCode()) {
+            } else if (CouponActivityEnum.STORE_NUM.getCode() == activityTemplate.getCouponNumType()) {
                 //根据每个门店可领取的优惠券数量限制用户领取
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());
@@ -1320,22 +1310,8 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
 
-        if (null == couponCondition.getStoreId() || null == couponCondition.getPayType()) {
-            logger.error("CouponServiceImpl.availableCouponListByOrder 参数错误");
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-
         //获取购物车商品信息
-        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
-        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
-        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
-        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
-        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
-            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
-            throw new BusinessException(responseResult.getCode());
-        }
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
-        logger.info("availableCouponListByOrder-购物车信息{}", shopCarProdInfoVOS.toString());
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);
 
         //查询当前用户下的所有优惠券
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponListGroup(customerUser.getCustomerId(), null, null);
@@ -1351,7 +1327,7 @@ public class CouponServiceImpl implements CouponService {
             if (couponVO.getPayType().equals(couponCondition.getPayType())) {
                 logger.info("availableCouponListByOrder-优惠券支付方式:{},订单支付方式:{},优惠券类型:{}", couponVO.getPayType(), couponCondition.getPayType(), couponVO.getApplyRuleType());
                 //通用券
-                if (couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()))) {
+                if (String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()).equals(couponVO.getApplyRuleType())) {
                     //计算订单总额
                     BigDecimal amountPrice = new BigDecimal(0);
                     for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
@@ -1424,5 +1400,27 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         return this.getCouponDetail(results);
+    }
+
+    /**
+     * 获取购物车商品信息
+     *
+     * @param couponCondition
+     * @param customerUser
+     * @return
+     */
+    private List<ShopCarProdInfoVO> getShopCarProdInfoVOList(OrderAvailableCouponCondition couponCondition, CustomerUser customerUser) {
+        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
+        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
+        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
+        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
+            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
+            throw new BusinessException(responseResult.getCode());
+        }
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
+        logger.info("availableCouponListByOrder-购物车信息{}", shopCarProdInfoVOS.toString());
+
+        return shopCarProdInfoVOS;
     }
 }

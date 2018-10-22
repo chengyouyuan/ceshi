@@ -190,7 +190,7 @@ public class WechatShareServiceImpl implements WechatShareService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("上传图片错误：",e);
         }
         return null;
     }
@@ -233,11 +233,9 @@ public class WechatShareServiceImpl implements WechatShareService {
                 token = node.get("access_token").asText();
             }
         } catch (URISyntaxException e) {
-            logger.error("WechatShareServiceImpl ->getToken获取token是请求的url地址错误tokenUrl={}", tokenUrl);
-            e.printStackTrace();
+            logger.error("WechatShareServiceImpl ->getToken获取token是请求的url地址错误tokenUrl="+tokenUrl,e);
         } catch (IOException e) {
             logger.error("WechatShareServiceImpl ->getToken获取token是请求网络错误msg={}", e);
-            e.printStackTrace();
         }
         return token;
     }

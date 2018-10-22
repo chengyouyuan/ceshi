@@ -1,19 +1,7 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
-import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.service.PayFinancialManagerService;
 import org.slf4j.Logger;
@@ -22,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class PayFinancialManagerServiceImpl implements PayFinancialManagerService{
@@ -93,21 +80,14 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		payFinanceAccountDetailVO.setAllCharge(sumCmmsAmt);
 		//总进账
 		BigDecimal todayPreMoney = payFinanceAccountDetailMapper.getIncome("todayPreMoney");
-		if(todayPreMoney == null){
-			todayPreMoney = BigDecimal.valueOf(0);
-		}
 		BigDecimal todayRealMoney = payFinanceAccountDetailMapper.getIncome("todayRealMoney");
-		if(todayRealMoney == null){
-			todayRealMoney = BigDecimal.valueOf(0);
-		}
 		BigDecimal allInMoney = payFinanceAccountDetailMapper.getIncome("allInMoney");
-		if(allInMoney == null){
-			allInMoney = BigDecimal.valueOf(0);
-		}
-		payFinanceAccountDetailVO.setTodayPreMoney(todayPreMoney);
-		payFinanceAccountDetailVO.setTodayRealMoney(todayRealMoney);
-		payFinanceAccountDetailVO.setTodayInMoney(todayPreMoney.add(todayRealMoney));
-		payFinanceAccountDetailVO.setAllInMoney(allInMoney);
+
+		payFinanceAccountDetailVO.setTodayPreMoney(todayPreMoney == null ? BigDecimal.valueOf(0) : todayPreMoney);
+		payFinanceAccountDetailVO.setTodayRealMoney(todayRealMoney == null ? BigDecimal.valueOf(0) : todayRealMoney);
+		payFinanceAccountDetailVO.setTodayInMoney(payFinanceAccountDetailVO.getTodayPreMoney().add(payFinanceAccountDetailVO.getTodayRealMoney()));
+		payFinanceAccountDetailVO.setAllInMoney(allInMoney == null ? BigDecimal.valueOf(0) : allInMoney);
+
 		//优惠券抵用金额
 		BigDecimal useTodayCouponAllMoney = payFinanceAccountDetailMapper.getIncome("useTodayCouponAllMoney");
 		if(useTodayCouponAllMoney == null){
@@ -121,18 +101,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		payFinanceAccountDetailVO.setUseCouponAllMoney(useCouponAllMoney);
 		//公司补充总入账
 		BigDecimal companySupplementInMoney = payFinanceAccountDetailMapper.getCompanySupplementInMoney();
-		if(companySupplementInMoney == null){
-			companySupplementInMoney = BigDecimal.valueOf(0);
-		}
-		payFinanceAccountDetailVO.setCompanySupplementInMoney(companySupplementInMoney);
+		payFinanceAccountDetailVO.setCompanySupplementInMoney(companySupplementInMoney == null ? BigDecimal.valueOf(0) : companySupplementInMoney);
 		//营收金额
 		BigDecimal revenueMoney = payFinanceAccountDetailMapper.getRevenueMoney();
-		if(revenueMoney == null){
-			revenueMoney = BigDecimal.valueOf(0);
-		}
-		payFinanceAccountDetailVO.setRevenueMoney(revenueMoney);
+		payFinanceAccountDetailVO.setRevenueMoney(revenueMoney == null ? BigDecimal.valueOf(0) : revenueMoney);
 		//当前余额=总进账金额+公司总入账金额 - 总出账金额，curLeftMoney
-		BigDecimal curLeftMoney = allInMoney.add(payFinanceAccountDetailVO.getCompanySupplementInMoney()).subtract(payFinanceAccountDetailVO.getAllOutMoney());
+		BigDecimal curLeftMoney = payFinanceAccountDetailVO.getAllInMoney().add(payFinanceAccountDetailVO.getCompanySupplementInMoney()).subtract(payFinanceAccountDetailVO.getAllOutMoney());
 		payFinanceAccountDetailVO.setCurLeftMoney(curLeftMoney);
 		return payFinanceAccountDetailVO;
 	}

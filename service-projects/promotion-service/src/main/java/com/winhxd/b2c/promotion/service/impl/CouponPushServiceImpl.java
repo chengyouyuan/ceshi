@@ -80,6 +80,8 @@ public class CouponPushServiceImpl implements CouponPushService {
     private Cache cache;
     private static final int BACKROLL_LOCK_EXPIRES_TIME = 3000;
 
+    private static final int DEFAULT_COUPON_SEND_NUM = 1;
+
     @Override
     public List<CouponPushVO> getSpecifiedPushCoupon() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
@@ -308,7 +310,7 @@ public class CouponPushServiceImpl implements CouponPushService {
         couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
         couponTemplateSend.setCustomerId(customerUser.getCustomerId());
         couponTemplateSend.setCustomerMobile("");
-        couponTemplateSend.setCount(1);
+        couponTemplateSend.setCount(DEFAULT_COUPON_SEND_NUM);
         couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
         couponTemplateSend.setCreated(new Date());
         couponTemplateSend.setCreatedByName("");
@@ -336,7 +338,8 @@ public class CouponPushServiceImpl implements CouponPushService {
         // 优惠券是单品牌商就显示单品牌商logo
         Optional<String> logoUrl = null;
         if (result.size() == SINGLE_BRAND) {
-            logoUrl = result.stream().filter(brand -> StringUtils.isNotBlank(brand.getBrandImg()))
+            logoUrl = result.stream()
+                    .filter(brand -> StringUtils.isNotBlank(brand.getBrandImg()))
                     .map(brand -> brand.getBrandImg()).findAny();
         }
 

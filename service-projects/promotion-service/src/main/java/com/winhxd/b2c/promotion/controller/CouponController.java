@@ -213,6 +213,12 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<CouponVO> findDefaultCoupon(@RequestBody OrderAvailableCouponCondition condition) {
 		LOGGER.info("=/promotion/5058/v1/findDefaultCoupon-最优惠的优惠券=--开始--{}", condition);
+		// 校验参数
+		if (null == condition.getStoreId() || StringUtils.isBlank(condition.getPayType())) {
+			LOGGER.error("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder 参数错误");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+
 		ResponseResult<CouponVO> result = new ResponseResult<>();
 		CouponVO couponVO = couponService.findDefaultCouponByOrder(condition);
 		result.setData(couponVO);

@@ -201,6 +201,10 @@ public class ApiCouponController{
     public ResponseResult<CouponVO> findDefaultCouponByOrder(@RequestBody OrderAvailableCouponCondition couponCondition){
         LOGGER.info("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder");
 
+        if (null == couponCondition.getStoreId() || StringUtils.isBlank(couponCondition.getPayType())) {
+            LOGGER.error("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder 参数错误");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         ResponseResult<CouponVO> result = new ResponseResult<>();
         CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
         result.setData(couponVO);

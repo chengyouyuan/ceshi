@@ -110,8 +110,7 @@ public class CouponServiceImpl implements CouponService {
     CouponPushCustomerMapper couponPushCustomerMapper;
 
     @Override
-    public List<CouponVO> getNewUserCouponList() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> getNewUserCouponList(CustomerUser customerUser) {
 
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
@@ -305,8 +304,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> unclaimedCouponList() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> unclaimedCouponList(CustomerUser customerUser) {
 
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {

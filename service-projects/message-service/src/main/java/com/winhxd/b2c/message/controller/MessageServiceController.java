@@ -1,6 +1,8 @@
 package com.winhxd.b2c.message.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.MessageBatchPushCondition;
@@ -114,7 +116,8 @@ public class MessageServiceController implements MessageServiceClient {
     public ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition miniFormIdCondition) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
-            miniProgramService.saveFormIds(miniFormIdCondition);
+            CustomerUser user = UserContext.getCurrentCustomerUser();
+            miniProgramService.saveFormIds(miniFormIdCondition,user);
         } catch (BusinessException be) {
             LOGGER.error("/message/7023/v1/saveFormIds,保存用户formid出错，异常信息为={}", be);
             result.setCode(be.getErrorCode());

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -57,7 +58,8 @@ public class ApiCouponController{
     public ResponseResult<List<CouponVO>> getNewUserCouponList(@RequestBody ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/5001/v1/getNewUserCouponList-查询新人专享优惠列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        List<CouponVO> couponVOs =  couponService.getNewUserCouponList(customerUser);
         result.setData(couponVOs);
         LOGGER.info("=/api-promotion/coupon/5001/v1/getNewUserCouponList-查询新人专享优惠列表=--结束 result:{}", result);
         return result;
@@ -72,7 +74,7 @@ public class ApiCouponController{
     public ResponseResult<List<CouponVO>> unclaimedCouponList(@RequestBody ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/5002/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        List<CouponVO> pages = couponService.unclaimedCouponList();
+        List<CouponVO> pages = couponService.unclaimedCouponList(UserContext.getCurrentCustomerUser());
         result.setData(pages);
         LOGGER.info("=/api-promotion/coupon/5002/v1/unclaimedCouponList-待领取优惠券列表=--结束 result:{}", result);
         return result;
@@ -255,7 +257,7 @@ public class ApiCouponController{
         LOGGER.info("=/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon");
 
         ResponseResult<List<CouponPushVO>> result = new ResponseResult<>();
-        result.setData(couponPushService.getSpecifiedPushCoupon());
+        result.setData(couponPushService.getSpecifiedPushCoupon(UserContext.getCurrentCustomerUser()));
         LOGGER.info("/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon结果 result:{}", result);
         return result;
     }

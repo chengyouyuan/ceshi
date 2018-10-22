@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
@@ -19,7 +20,7 @@ public interface CouponService {
      * @author wangxiaoshun。
      * @return
      */
-    List<CouponVO> getNewUserCouponList();
+    List<CouponVO> getNewUserCouponList(CustomerUser customerUser);
     
     /**
      * @author liuhanning
@@ -36,7 +37,7 @@ public interface CouponService {
      * @author wangxiaoshun
      * @return
      */
-    List<CouponVO> unclaimedCouponList();
+    List<CouponVO> unclaimedCouponList(CustomerUser customerUser);
 
     /**
      * 我的优惠券列表

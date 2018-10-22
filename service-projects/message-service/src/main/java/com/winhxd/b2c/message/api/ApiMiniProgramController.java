@@ -1,6 +1,8 @@
 package com.winhxd.b2c.message.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -46,7 +48,8 @@ public class ApiMiniProgramController {
 		LOGGER.info("api-message/mini/7024/v1/saveFormIds,保存用户formid,condition={}",JsonUtil.toJSONString(condition));
 		ResponseResult<Void> result = new ResponseResult<>();
 		try {
-			miniProgramService.saveFormIds(condition);
+			CustomerUser user = UserContext.getCurrentCustomerUser();
+			miniProgramService.saveFormIds(condition,user);
 		}catch (BusinessException be) {
 			LOGGER.error("api-message/mini/7024/v1/saveFormIds,保存用户formid出错，异常信息为={}", be);
 			result.setCode(be.getErrorCode());

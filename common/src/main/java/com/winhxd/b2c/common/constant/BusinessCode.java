@@ -300,8 +300,6 @@ public final class BusinessCode {
     public static final int CODE_402021 = 402021;
     @ApiModelProperty("用户不存在")
     public static final int CODE_4010001 = 4010001;
-    @ApiModelProperty("查询订单参数异常")
-    public static final int CODE_4011001 = 4011001;
     @ApiModelProperty("订单状态不允许退款")
     public static final int CODE_4021002 = 4021002;
     @ApiModelProperty("参数异常")

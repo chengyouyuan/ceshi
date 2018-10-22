@@ -1,5 +1,8 @@
 package com.winhxd.b2c.order.service;
 
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
@@ -40,7 +43,7 @@ public interface OrderService {
      * @param condition 入参
      * @return 是否成功，true成功，false 不成功
      */
-    void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition);
+    void handleOrderRefundByStore(StoreUser store, OrderRefundStoreHandleCondition condition);
 
 
     /**
@@ -48,7 +51,7 @@ public interface OrderService {
      *
      * @param orderRefundCondition
      */
-    void orderRefundByCustomer(OrderRefundCondition orderRefundCondition);
+    void orderRefundByCustomer(CustomerUser customer,OrderRefundCondition orderRefundCondition);
 
     /**
      * 门店接单
@@ -100,14 +103,14 @@ public interface OrderService {
      *
      * @param orderCancelCondition 入参
      */
-    void cancelOrderByStore(OrderCancelCondition orderCancelCondition);
+    void cancelOrderByStore(StoreUser store,OrderCancelCondition orderCancelCondition);
 
     /**
      * C端取消订单
      *
      * @param orderCancelCondition 入参
      */
-    void cancelOrderByCustomer(OrderCancelCondition orderCancelCondition);
+    void cancelOrderByCustomer(CustomerUser customer,OrderCancelCondition orderCancelCondition);
 
     /**
      * C端申请退款订单3天未确认
@@ -154,8 +157,8 @@ public interface OrderService {
     boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition);
     /**
      * 手工退款
-     * @param orderNo
+     * @param adminUser, condition
      * @return
      */
-    int artificialRefund(OrderArtificialRefundCondition condition);
+    int artificialRefund(AdminUser adminUser, OrderArtificialRefundCondition condition);
 }

@@ -65,9 +65,10 @@ public class ApiOrderQueryController {
         String logTitle = "=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=";
         LOGGER.info(logTitle + "--开始--{}", condition);
         ResponseResult<PagedList<OrderListForCustomerVO>> result = new ResponseResult<>();
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
         try {
             PagedList<OrderListForCustomerVO> data = new PagedList<>();
-            PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(condition);
+            PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(customer,condition);
             List<OrderInfoDetailVO> orderInfoDetailVOS = list.getData();
             List<OrderListForCustomerVO> orderListForCustomerVOList = new ArrayList<>();
             for (OrderInfoDetailVO orderInfoDetailVO : orderInfoDetailVOS) {
@@ -100,15 +101,19 @@ public class ApiOrderQueryController {
     @ApiOperation(value = "C端订单详情查询接口", notes = "C端订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_4011001, message = "参数异常")
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空")
     })
     @RequestMapping(value = "/4011/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
         String logTitle = "=/api-order/order/4011/v1/getOrderDetailByOrderNo-C端订单详情查询接口=";
         LOGGER.info("{}--开始--condition={}", logTitle, orderQueryByCustomerCondition);
+        if (StringUtils.isBlank(orderQueryByCustomerCondition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
         try {
-            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);
+            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(customer,orderQueryByCustomerCondition);
             result.setData(orderVO);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
@@ -127,15 +132,19 @@ public class ApiOrderQueryController {
     @ApiOperation(value = "B端订单详情查询接口", notes = "B端订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_4011001, message = "参数异常")
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空")
     })
     @RequestMapping(value = "/4014/v1/getOrderDetailForStoreByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailForStoreByOrderNo(@RequestBody OrderQueryByStoreCondition condition) {
         String logTitle = "=/api-order/order/4014/v1/getOrderDetailForStoreByOrderNo-B端订单详情查询接口=";
         LOGGER.info("{}--开始--condition={}", logTitle, condition);
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
+        StoreUser store = UserContext.getCurrentStoreUser();
         try {
-            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderForStore(condition);
+            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderForStore(store,condition);
             result.setData(orderVO);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);

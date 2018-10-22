@@ -24,7 +24,6 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.event.EventMessageSender;
@@ -56,9 +55,6 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
     
     @Autowired
     private OrderQueryService orderQueryService;
-    
-    @Autowired
-    private StoreServiceClient storeServiceClient;
 
     private static final String ORDER_TYPE_DESC = "在线支付线下计价自提订单";
     

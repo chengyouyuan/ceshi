@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,6 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.event.EventMessageSender;
@@ -59,9 +59,6 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     
     @Autowired
     private OrderChangeLogService orderChangeLogService;
-    
-    @Autowired
-    private StoreServiceClient storeServiceClient;
     
     @Autowired
     private StringMessageSender stringMessageSender;

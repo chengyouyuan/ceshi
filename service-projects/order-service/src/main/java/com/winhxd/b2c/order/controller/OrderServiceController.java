@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -190,6 +191,9 @@ public class OrderServiceController implements OrderServiceClient {
     public ResponseResult<Boolean> updateOrderRefundCallback(@RequestBody OrderRefundCallbackCondition orderRefundCallbackCondition) {
         String logTitle = "/order/4057/v1/updateOrderRefundCallback/";
         logger.info("{} 后台订单列表查询开始", logTitle);
+        if (StringUtils.isBlank(orderRefundCallbackCondition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             result.setData(orderService.updateOrderRefundCallback(orderRefundCallbackCondition));
@@ -204,16 +208,22 @@ public class OrderServiceController implements OrderServiceClient {
 
     @Override
     @ApiOperation(value = "订单支付成功回调", notes = "订单支付成功回调")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<Void> orderPaySuccessNotify(@PathVariable(value = "orderNo") String orderNo, @PathVariable(value = "paymentSerialNum") String paymentSerialNum) {
         String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
         logger.info("{} 后台订单支付成功通知回调开始:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
-        ResponseResult<Void> result = new ResponseResult<>();
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单支付通知orderNo不能为空");
+        }
+        if (StringUtils.isBlank(paymentSerialNum)) {
+            throw new NullPointerException("订单支付流水号paymentSerialNum不能为空");
+        }
         orderService.orderPaySuccessNotify(orderNo, paymentSerialNum);
         logger.info("{} 后台订单支付成功通知回调结束:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
-        return result;
+        return new ResponseResult<>();
     }
 
     /**
@@ -236,7 +246,7 @@ public class OrderServiceController implements OrderServiceClient {
     /**
      * 手工退款
      *
-     * @param list
+     * @param condition
      * @return
      */
     @Override
@@ -244,7 +254,8 @@ public class OrderServiceController implements OrderServiceClient {
         String logTitle = "/order/4061/v1/orderPaySuccessNotify/";
         logger.info("{} 手工退款开始:orderNo={}", logTitle, condition);
         ResponseResult<Integer> result = new ResponseResult<>();
-        int updateResult = orderService.artificialRefund(condition);
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        int updateResult = orderService.artificialRefund(adminUser,condition);
         result.setData(updateResult);
         logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
         return result;

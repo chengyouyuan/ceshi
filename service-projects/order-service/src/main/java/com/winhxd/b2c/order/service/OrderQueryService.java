@@ -3,6 +3,8 @@ package com.winhxd.b2c.order.service;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
@@ -29,7 +31,7 @@ public interface OrderQueryService {
      * @param condition 入参
      * @return
      */
-    PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition);
+    PagedList<OrderInfoDetailVO> findOrderListByCustomerId(CustomerUser customer,AllOrderQueryByCustomerCondition condition);
 
     /**
      * 根据用户ID查询所有订单
@@ -38,7 +40,7 @@ public interface OrderQueryService {
      * @param condition 入参
      * @return
      */
-    OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition);
+    OrderInfoDetailVO findOrderByCustomerId(CustomerUser customer,OrderQueryByCustomerCondition condition);
 
     /**
      * B端用户查订单详情
@@ -46,7 +48,7 @@ public interface OrderQueryService {
      * @param orderQueryByCustomerCondition
      * @return
      */
-    OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition orderQueryByCustomerCondition);
+    OrderInfoDetailVO findOrderForStore(StoreUser store, OrderQueryByStoreCondition orderQueryByCustomerCondition);
 
     /**
      * 根据门店ID获取门店提货码

@@ -2,6 +2,9 @@ package com.winhxd.b2c.order.api;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.context.CustomerUser;
+import org.apache.catalina.User;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -163,8 +166,12 @@ public class ApiOrderController {
     public ResponseResult<Void> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
         String logTitle = "=/api-order/order/4022/v1/handleOrderRefundByStore-B端退款订单处理接口=";
         LOGGER.info("{}--开始--{}", logTitle, condition);
+        if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
+            throw new BusinessException(BusinessCode.CODE_4022001, "参数异常");
+        }
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.handleOrderRefundByStore(condition);
+        StoreUser store = UserContext.getCurrentStoreUser();
+        this.orderService.handleOrderRefundByStore(store,condition);
         LOGGER.info("{}--结束", logTitle);
         return result;
     }
@@ -185,8 +192,12 @@ public class ApiOrderController {
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
         String logTitle = "=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderRefundCondition);
+        if (StringUtils.isBlank(orderRefundCondition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.orderRefundByCustomer(orderRefundCondition);
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        this.orderService.orderRefundByCustomer(customer,orderRefundCondition);
         LOGGER.info("{}--结束", logTitle);
         return result;
     }
@@ -204,8 +215,12 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4020/v1/cancelOrderByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByCustomer(@RequestBody OrderCancelCondition orderCancelCondition) {
+        if (StringUtils.isBlank(orderCancelCondition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.cancelOrderByCustomer(orderCancelCondition);
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        this.orderService.cancelOrderByCustomer(customer,orderCancelCondition);
         return result;
     }
 
@@ -225,9 +240,13 @@ public class ApiOrderController {
     public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
         String logTitle = "=/api-order/order/4026/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
+        if (StringUtils.isBlank(orderCancelCondition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
         ResponseResult<Void> result = new ResponseResult<>();
+        StoreUser store = UserContext.getCurrentStoreUser();
         try {
-            this.orderService.cancelOrderByStore(orderCancelCondition);
+            this.orderService.cancelOrderByStore(store,orderCancelCondition);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
             throw e;

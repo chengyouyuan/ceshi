@@ -153,7 +153,7 @@ public class OrderServiceTest {
     public void testfindOrderByCustomerId() {
         OrderQueryByCustomerCondition condition = new OrderQueryByCustomerCondition();
         condition.setOrderNo("C18082217932063648");
-        orderQueryService.findOrderByCustomerId(condition);
+        //orderQueryService.findOrderByCustomerId(condition);
     }
     
     @Test

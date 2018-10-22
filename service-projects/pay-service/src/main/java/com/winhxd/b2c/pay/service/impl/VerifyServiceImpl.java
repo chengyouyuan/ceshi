@@ -295,7 +295,7 @@ public class VerifyServiceImpl implements VerifyService {
                     storeSet.add(vo.getStoreId());
                 }
             }
-            Map<Long, String> storeMap = new HashMap<>();
+            Map<Long, String> storeMap = new HashMap<>(20);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
             if (responseResult != null && responseResult.getCode() == 0) {
                 if (responseResult.getData() != null) {
@@ -330,7 +330,7 @@ public class VerifyServiceImpl implements VerifyService {
                     storeSet.add(vo.getStoreId());
                 }
             }
-            Map<Long, String> storeMap = new HashMap<>();
+            Map<Long, String> storeMap = new HashMap<>(20);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
             if (responseResult != null && responseResult.getCode() == 0) {
                 if (responseResult.getData() != null) {
@@ -509,7 +509,7 @@ public class VerifyServiceImpl implements VerifyService {
                     storeSet.add(vo.getStoreId());
                 }
             }
-            Map<Long, String> storeMap = new HashMap<>();
+            Map<Long, String> storeMap = new HashMap<>(16);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
             if (responseResult != null && responseResult.getCode() == 0) {
                 if (responseResult.getData() != null) {

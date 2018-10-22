@@ -2,8 +2,6 @@ package com.winhxd.b2c.pay.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
@@ -50,11 +48,9 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
      *@Date   2018/8/14 20:30
      */
     @Override
-    public StoreBankrollVO getStoreBankrollByStoreId(PayStoreCashCondition condition) {
+    public StoreBankrollVO getStoreBankrollByStoreId(PayStoreCashCondition condition, Long storeId) {
         StoreBankrollVO vo = new StoreBankrollVO();
-        StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
-        LOGGER.info("当前门店id"+storeId);
+
         //获取今日的收入总和
         BigDecimal totalPayRecordToday = payStoreTransactionRecordMapper.getTotalPayRecordToday(storeId);
         vo.setTotalMoneyToday(totalPayRecordToday == null ? BigDecimal.valueOf(0.00) : totalPayRecordToday);
@@ -88,11 +84,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
      *@Date   2018/8/14 20:31
      */
     @Override
-    public PagedList<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
-        StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
-        LOGGER.info("当前门店id"+storeId);
-        //Long storeId= 84L;
+    public PagedList<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition, Long storeId) {
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<PayStoreTransactionRecordVO> voList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(storeId);
@@ -114,11 +106,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
      *@Date   2018/8/14 20:31
      */
     @Override
-    public PagedList<PayWithdrawalsVO> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
-        StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
-        //Long storeId = 64L;
-        LOGGER.info("当前门店id"+storeId);
+    public PagedList<PayWithdrawalsVO> getPayWithdrawalsByStoreId(PayStoreCashCondition condition, Long storeId) {
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<PayWithdrawalsVO> voList = payWithdrawalsMapper.getPayWithdrawalsByStoreId(storeId);

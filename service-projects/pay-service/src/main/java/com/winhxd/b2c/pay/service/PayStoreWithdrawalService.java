@@ -1,14 +1,13 @@
 package com.winhxd.b2c.pay.service;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * @Author zhanghuan
@@ -22,7 +21,7 @@ public interface PayStoreWithdrawalService {
 	/**保存用户提现信息*/
 	void saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition);
 	/**进入提现页面*/
-	PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition);
+	PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition, Long businessId);
 	
 	/**
 	 * @author liuhanning

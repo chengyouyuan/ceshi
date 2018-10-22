@@ -52,8 +52,8 @@ public class ApiPayStoreBindBankCardController {
 	
 	@Resource
 	private Cache redisClusterCache;
-	
-	private static final int MOBILEVERIFICATIONCODE = 5*60;// 验证码有效时间
+	// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 5 * 60;
 	
 	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),

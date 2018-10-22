@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
@@ -22,7 +21,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:30
      */
-    StoreBankrollVO getStoreBankrollByStoreId(PayStoreCashCondition condition);
+    StoreBankrollVO getStoreBankrollByStoreId(PayStoreCashCondition condition, Long storeId);
     /**
      *
      *@Deccription 门店交易记录收支明细
@@ -31,7 +30,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:31
      */
-    PagedList<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition);
+    PagedList<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition, Long storeId);
 
     /**
      *
@@ -41,7 +40,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:31
      */
-    PagedList<PayWithdrawalsVO> getPayWithdrawalsByStoreId(PayStoreCashCondition condition);
+    PagedList<PayWithdrawalsVO> getPayWithdrawalsByStoreId(PayStoreCashCondition condition, Long storeId);
     
     
     /**

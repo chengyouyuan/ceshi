@@ -1,6 +1,8 @@
 package com.winhxd.b2c.pay.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
@@ -16,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author wl
@@ -38,7 +43,10 @@ public class ApiPayStoreCashController {
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(@RequestBody PayStoreCashCondition condition){
        LOGGER.info("资金提现首页参数:"+condition);
        ResponseResult<StoreBankrollVO> result = new  ResponseResult<StoreBankrollVO>();
-       StoreBankrollVO vo = payStoreCashService.getStoreBankrollByStoreId(condition);
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id" + storeId);
+        StoreBankrollVO vo = payStoreCashService.getStoreBankrollByStoreId(condition, storeId);
        result.setData(vo);
        LOGGER.info("资金提现首页结果:"+result);
        return result;
@@ -52,14 +60,14 @@ public class ApiPayStoreCashController {
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(@RequestBody PayStoreCashCondition condition){
         LOGGER.info("门店交易记录收支明细:"+condition);
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
-        PagedList<PayStoreTransactionRecordVO> pagedList = payStoreCashService.getPayStoreTransRecordByStoreId(condition);
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id" + storeId);
+        PagedList<PayStoreTransactionRecordVO> pagedList = payStoreCashService.getPayStoreTransRecordByStoreId(condition, storeId);
         LOGGER.info("门店交易记录收支明细结果:"+pagedList);
         result.setData(pagedList);
         return result;
     }
-
-
-
 
 
     @ApiOperation(value = "门店提现记录", notes = "门店提现记录")
@@ -69,7 +77,10 @@ public class ApiPayStoreCashController {
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(@RequestBody PayStoreCashCondition condition){
         LOGGER.info("门店提现记录:"+condition);
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
-        PagedList<PayWithdrawalsVO> pagedList = payStoreCashService.getPayWithdrawalsByStoreId(condition);
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id" + storeId);
+        PagedList<PayWithdrawalsVO> pagedList = payStoreCashService.getPayWithdrawalsByStoreId(condition, storeId);
         result.setData(pagedList);
         LOGGER.info("门店提现记录结果:"+result);
         return result;

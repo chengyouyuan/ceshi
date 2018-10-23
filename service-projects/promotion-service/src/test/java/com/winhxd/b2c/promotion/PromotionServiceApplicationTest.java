@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion;
 
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.promotion.common.TestUtils;
@@ -31,7 +32,7 @@ public class PromotionServiceApplicationTest {
     @Test
     public void getSpecifiedPushCoupon() throws Exception {
         TestUtils.setCurrCustomer(25L);
-        List<CouponPushVO> result = couponPushService.getSpecifiedPushCoupon();
+        List<CouponPushVO> result = couponPushService.getSpecifiedPushCoupon(UserContext.getCurrentCustomerUser());
         System.err.println("================>" + JsonUtil.toJSONString(result));
     }
 }

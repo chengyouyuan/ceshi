@@ -83,8 +83,7 @@ public class CouponPushServiceImpl implements CouponPushService {
     private static final int DEFAULT_COUPON_SEND_NUM = 1;
 
     @Override
-    public List<CouponPushVO> getSpecifiedPushCoupon() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponPushVO> getSpecifiedPushCoupon(CustomerUser customerUser) {
 
         StoreUserInfoVO storeUserInfo = getStoreUserInfoVO(customerUser);
         List<CouponPushVO> couponPushResult = getCouponPush(customerUser, storeUserInfo);

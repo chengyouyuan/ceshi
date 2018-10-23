@@ -256,30 +256,30 @@ public class PayServiceImpl implements PayService{
 	@Override
 	public void updateStoreBankroll(UpdateStoreBankRollCondition condition){
 		String log=logLabel+"门店资金变化updateStoreBankroll";
-		if (condition==null) {
+		if (condition == null) {
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600001);
 		}
 		Long storeId=condition.getStoreId();
-		if (condition.getStoreId()==null) {
+		if (storeId == null) {
 			logger.info(log+"--门店id为空");
 			throw new BusinessException(BusinessCode.CODE_600002);
 		}
-		if (condition.getType()==null) {
+		if (condition.getType() == null) {
 			logger.info(log+"--操作类型为空");
 			throw new BusinessException(BusinessCode.CODE_600003);
 		}
-		if (condition.getMoney()==null) {
+		if (condition.getMoney() == null) {
 			logger.info(log+"--金额为空");
 			throw new BusinessException(BusinessCode.CODE_600009);
 		}
-		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<=0) {
+		if (condition.getMoney().compareTo(BigDecimal.valueOf(0)) <= 0) {
 			logger.info(log+"--金额有误");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}
 		logger.info(log+"--参数"+condition.toString());
 		boolean flag=false;
-		Map<String, Object> map=new HashMap<>();
+		Map<String, Object> map = new HashMap<>(5);
 		map.put("type", condition.getType());
 		map.put("storeId", storeId);
 		StoreBankrollChangeCondition changeCondition=new StoreBankrollChangeCondition();
@@ -479,7 +479,7 @@ public class PayServiceImpl implements PayService{
 			} else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
-					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+					totalMoney = totalMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : totalMoney;
 					totalMoney= payBankroll.getTotalMoeny().add(totalMoney);
 					payBankroll.setTotalMoeny(totalMoney);
 				}
@@ -487,9 +487,9 @@ public class PayServiceImpl implements PayService{
 				presentedMoney= payBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney= payBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
 				settlementSettledMoney= payBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
-				
-				
-				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
+
+
+				presentedFrozenMoney = presentedFrozenMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : presentedFrozenMoney;
 				presentedMoney = presentedMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : presentedMoney;
 				alreadyPresentedMoney = alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : alreadyPresentedMoney;
 				settlementSettledMoney = settlementSettledMoney.compareTo(BigDecimal.valueOf(0)) < 0 ? BigDecimal.valueOf(0) : settlementSettledMoney;
@@ -574,44 +574,7 @@ public class PayServiceImpl implements PayService{
 	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
 		//验证订单支付参数
 		String log=logLabel+"订单支付unifiedOrder";
-		logger.info(log+"--开始");
-		if (condition==null){
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600101);
-		}
-		String orderNo=condition.getOutOrderNo();
-		String spbillCreateIp=condition.getSpbillCreateIp();
-		String body=condition.getBody();
-		String openid=condition.getOpenid();
-		Short payType=condition.getPayType();
-		BigDecimal totalAmount=condition.getTotalAmount();
-		if (StringUtils.isBlank(orderNo)) {
-			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600102);
-		}
-		log+="订单号--"+orderNo;
-		if (StringUtils.isBlank(body)) {
-			logger.info(log+"--商品描述为空");
-			throw new BusinessException(BusinessCode.CODE_600103);
-		}
-	
-		if (StringUtils.isBlank(openid)) {
-			logger.info(log+"--用户openid为空");
-			throw new BusinessException(BusinessCode.CODE_600104);
-		}
-		if (StringUtils.isBlank(spbillCreateIp)) {
-			logger.info(log+"--设备ip为空");
-			throw new BusinessException(BusinessCode.CODE_600105);
-		}
-		if (payType==null) {
-			logger.info(log+"--支付方式为空");
-			throw new BusinessException(BusinessCode.CODE_600106);
-		}
-		if (totalAmount==null) {
-			logger.info(log+"--支付金额为空");
-			throw new BusinessException(BusinessCode.CODE_600106);
-		}
-		logger.info(log+"--参数"+condition.toString());
+		logger.info(log + "调用开始");
 		PayPreOrderVO payPreOrderVO=unifiedOrderService.unifiedOrder(condition);
 		OrderPayVO vo=new OrderPayVO();
 		if (payPreOrderVO!=null) {
@@ -627,12 +590,12 @@ public class PayServiceImpl implements PayService{
 			 PayOrderPayment payOrderPayment=payOrderPaymentMapper.selectByOrderPaymentNo(orderTransactionNo);
 			 if (payOrderPayment == null) {
 				 payOrderPayment=new PayOrderPayment();
-				 payOrderPayment.setOrderNo(orderNo);
+				 payOrderPayment.setOrderNo(condition.getOutOrderNo());
 				 payOrderPayment.setOrderTransactionNo(orderTransactionNo);
 				 payOrderPayment.setCreated(new Date());
-				 payOrderPayment.setBuyerId(openid);
-				 payOrderPayment.setPayType(payType);
-				 payOrderPayment.setRealPaymentMoney(totalAmount);
+				 payOrderPayment.setBuyerId(condition.getOpenid());
+				 payOrderPayment.setPayType(condition.getPayType());
+				 payOrderPayment.setRealPaymentMoney(condition.getTotalAmount());
 				 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
 				 payOrderPayment.setAppid(appid);
 				 payOrderPaymentMapper.insertSelective(payOrderPayment);
@@ -659,8 +622,8 @@ public class PayServiceImpl implements PayService{
      */
 	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
-		
-		//验证订单支付参数
+
+		//验证订单退款参数
 		String log=logLabel+"订单退款refundOrder--订单号"+orderNo;
 		logger.info(log+"--开始");
 		//查询订单
@@ -763,7 +726,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
 		if (StringUtils.isBlank(toWxBalanceCondition.getPartnerTradeNo())) {
-			logger.info(log+"--提现流水号号为空");
+			logger.info(log + "--提现流水号为空");
 			throw new BusinessException(BusinessCode.CODE_600005);
 		}
 

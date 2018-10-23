@@ -1,13 +1,13 @@
 package com.winhxd.b2c.pay.service;
 
-import java.util.List;
-
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
+
+import java.util.List;
 
 /**
  * @author liuhanning
@@ -94,7 +94,7 @@ public interface PayService {
      * @author liuhanning
      * @date  2018年8月16日 下午8:40:14
      * @Description 获取提现钱包
-     * @param storeId
+     * @param
      * @return
      */
     List<PayStoreWallet> selectPayStoreWalletByStoreId();

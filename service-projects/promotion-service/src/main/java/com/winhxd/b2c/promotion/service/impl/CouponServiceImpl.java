@@ -110,8 +110,7 @@ public class CouponServiceImpl implements CouponService {
     CouponPushCustomerMapper couponPushCustomerMapper;
 
     @Override
-    public List<CouponVO> getNewUserCouponList() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> getNewUserCouponList(CustomerUser customerUser) {
 
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
@@ -305,8 +304,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> unclaimedCouponList() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> unclaimedCouponList(CustomerUser customerUser) {
 
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -379,8 +377,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PagedList<CouponVO> myCouponList(CouponCondition couponCondition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public PagedList<CouponVO> myCouponList(CouponCondition couponCondition,CustomerUser customerUser) {
 
         //我的优惠券列表不分页，一页显示全部
         if (StringUtils.isBlank(couponCondition.getStatus())) {
@@ -401,12 +398,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean userReceiveCoupon(ReceiveCouponCondition condition) {
+    public Boolean userReceiveCoupon(ReceiveCouponCondition condition,CustomerUser customerUser) {
         String lockKey = CacheName.RECEIVE_COUPON + condition.getCouponActivityId() + condition.getTemplateId();
         Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
         try {
             lock.lock();
-            CustomerUser customerUser = UserContext.getCurrentCustomerUser();
 
             CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
             couponActivityTemplate.setCouponActivityId(condition.getCouponActivityId());
@@ -475,8 +471,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public Boolean orderUseCoupon(OrderUseCouponCondition condition,CustomerUser customerUser) {
 
         for (int i = 0; i < condition.getSendIds().size(); i++) {
             CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(condition.getSendIds().get(i));
@@ -700,8 +695,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> findStoreCouponList() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> findStoreCouponList(CustomerUser customerUser) {
 
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -781,8 +775,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser) {
 
         //获取购物车商品信息
         List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);
@@ -875,8 +868,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponKindsVo getStoreCouponKinds() {
-        List<CouponVO> couponVOList = findStoreCouponList();
+    public CouponKindsVo getStoreCouponKinds(CustomerUser customerUser) {
+        List<CouponVO> couponVOList = findStoreCouponList(customerUser);
         Integer count = 0;
         for (int i = 0; i < couponVOList.size(); i++) {
             //优惠券是否可领取 0 已领取  1 可领取
@@ -1045,13 +1038,12 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser) {
 
         BigDecimal maxDiscountAmount = new BigDecimal(0);
         CouponVO result = new CouponVO();
 
-        List<CouponVO> couponVOs = this.availableCouponListByOrderGroup(couponCondition);
+        List<CouponVO> couponVOs = this.availableCouponListByOrderGroup(couponCondition,customerUser);
         //获取购物车商品信息
         ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
@@ -1093,8 +1085,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition,CustomerUser customerUser) {
 
         //获取购物车商品信息
         ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
@@ -1307,8 +1298,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+    public List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser) {
 
         //获取购物车商品信息
         List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);

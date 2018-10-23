@@ -1,6 +1,8 @@
 package com.winhxd.b2c.pay.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
@@ -58,8 +60,8 @@ public class ApiPayStoreWithdrawalController {
 		ResponseResult<PagedList<PayWithdrawalsTypeVO>> result = new ResponseResult<PagedList<PayWithdrawalsTypeVO>>();
 		List<PayWithdrawalsType> data = payStoreWithdrawalService.getAllWithdrawalType();
 		if(data.size() > 0){
-			PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
-			List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>();
+            PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
+            List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>(5);
 			for(PayWithdrawalsType type:data){
 				PayWithdrawalsTypeVO typevo = new PayWithdrawalsTypeVO();
 				BeanUtils.copyProperties(type, typevo);
@@ -88,7 +90,13 @@ public class ApiPayStoreWithdrawalController {
             LOGGER.info("请传入提现类型参数");
             throw new BusinessException(BusinessCode.CODE_610022);
         }
-		PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long businessId = storeUser.getBusinessId();
+//        if (businessId == null) {
+//            LOGGER.info("未获取到门店数据");
+//            throw new BusinessException(BusinessCode.CODE_610801);
+//        }
+        PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition, businessId);
 		result.setData(detail);
 		return result;
 	}

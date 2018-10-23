@@ -89,15 +89,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
-	public PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition) {
+	public PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition, Long businessId) {
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser.getBusinessId() == null) {
-			LOGGER.info("未获取到门店数据");
-			throw new BusinessException(BusinessCode.CODE_610801);
-		}
-		Long businessId = storeUser.getBusinessId();
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		// 返回手机号参数
 		ResponseResult<StoreUserInfoVO> findStoreUserInfo = storeServiceClient.findStoreUserInfo(businessId);

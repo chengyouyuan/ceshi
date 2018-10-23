@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.service;
 
+import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
@@ -27,7 +28,7 @@ public interface StoreRegionService {
      * @param: id
      * @return:
      */
-    int removeStoreRegion(Long id);
+    int removeStoreRegion(AdminUser adminUser,Long id);
 
     /**
      * 保存测试门店区域
@@ -36,7 +37,7 @@ public interface StoreRegionService {
      * @param: conditions
      * @return:
      */
-    int saveStoreRegion(StoreRegionCondition condition);
+    int saveStoreRegion(AdminUser adminUser,StoreRegionCondition condition);
 
     /**
      * 根据区域编码和级别查询是否是有效的测试区域

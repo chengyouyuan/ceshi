@@ -4,10 +4,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.AdminUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreRegionEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
@@ -64,17 +62,17 @@ public class StoreRegionServiceImpl implements StoreRegionService{
     }
 
     @Override
-    public int removeStoreRegion(Long id) {
+    public int removeStoreRegion(AdminUser adminUser,Long id) {
         StoreRegion storeRegion = new StoreRegion();
         storeRegion.setId(id);
         storeRegion.setStatus(StoreRegionEnum.VALIDATE.getCode());
         storeRegion.setUpdated(new Date());
-        storeRegion.setUpdatedBy(UserContext.getCurrentAdminUser().getAccount());
+        storeRegion.setUpdatedBy(adminUser.getAccount());
         return storeRegionMapper.updateByPrimaryKeySelective(storeRegion);
     }
 
     @Override
-    public int saveStoreRegion(StoreRegionCondition condition) {
+    public int saveStoreRegion(AdminUser adminUser,StoreRegionCondition condition) {
         String areaCode = condition.getAreaCode();
         SysRegion sr = getSysRegion(areaCode);
         List<String> regionCodes = new ArrayList<>();
@@ -122,7 +120,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setAreaName(sb.toString());
         storeRegion.setAreaCode(condition.getAreaCode());
         Date current = new Date();
-        String account = UserContext.getCurrentAdminUser().getAccount();
+        String account = adminUser.getAccount();
         storeRegion.setCreated(current);
         storeRegion.setUpdated(current);
         storeRegion.setCreatedBy(account);

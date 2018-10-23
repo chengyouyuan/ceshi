@@ -68,10 +68,6 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long addBatchPush(MessageBatchPush messageBatchPush) {
-        if (StringUtils.isEmpty(messageBatchPush.getMsgContent())){
-            LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");
-            throw new BusinessException(BusinessCode.CODE_703504);
-        }
         LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给所有门店推送云信消息，开始...消息配置{}");
         //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();

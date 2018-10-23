@@ -29,9 +29,9 @@ public class ConnectionManagerTest {
     public void testConnection() throws ParseException {
         DbSource source = new DbSource();
         source.setId(1L);
-        source.setUserName("retail2C_user");
-        source.setPassword("tNB9gLJ42hwguHLM");
-        source.setUri("jdbc:mysql://192.168.60.115:8066/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull");
+        source.setUserName("root");
+        source.setPassword("root");
+        source.setUri("jdbc:mysql://localhost:3306/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull");
         Connection conn = ConnectionManager.getConnection(source);
         System.out.println(conn);
     }

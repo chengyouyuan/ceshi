@@ -2,6 +2,8 @@ package com.winhxd.b2c.store.controller;
 
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
@@ -235,7 +237,8 @@ public class StoreServiceController implements StoreServiceClient {
 		if (null == id) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		storeRegionService.removeStoreRegion(id);
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+		storeRegionService.removeStoreRegion(adminUser,id);
 		return new ResponseResult<>();
 	}
 
@@ -244,7 +247,8 @@ public class StoreServiceController implements StoreServiceClient {
 		if (null == condition || StringUtils.isBlank(condition.getAreaCode())) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-	 	storeRegionService.saveStoreRegion(condition);
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+	 	storeRegionService.saveStoreRegion(adminUser,condition);
 		return new ResponseResult<>();
 	}
 

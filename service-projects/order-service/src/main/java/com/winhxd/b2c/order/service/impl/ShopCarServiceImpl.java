@@ -198,7 +198,6 @@ public class ShopCarServiceImpl implements ShopCarService {
                 // 后台去获取购物车信息
                 List<ShopCar> shopCars = queryShopCars(customerId, condition.getStoreId());
                 if (CollectionUtils.isEmpty(shopCars)) {
-                    logger.error(SHOP_CAR + READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
                 logger.info(SHOP_CAR + READY_ORDER + "{}-> 校验购物车商品状态执行...");

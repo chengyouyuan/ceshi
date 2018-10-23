@@ -43,11 +43,9 @@ public class ShopCartController implements ShopCartServiceClient {
     @Override
     public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCartQueryCondition condition) {
         if (null == condition || null == condition.getStoreId()) {
-            logger.error("查询购物车异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
         if (null == condition.getCustomerId()) {
-            logger.error("查询购物车异常{}  用户无效");
             throw new BusinessException(BusinessCode.CODE_1004);
         }
         List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), condition.getCustomerId()).getShopCarts();

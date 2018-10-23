@@ -10,7 +10,6 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartQueryCondition;
@@ -778,7 +777,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser) {
 
         //获取购物车商品信息
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition.getStoreId(), customerUser);
 
         //查询当前用户下的所有优惠券
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(), null, null);
@@ -1045,28 +1044,9 @@ public class CouponServiceImpl implements CouponService {
 
         List<CouponVO> couponVOs = this.availableCouponListByOrderGroup(couponCondition,customerUser);
         //获取购物车商品信息
-        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
-        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
-        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
-        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
-        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
-            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
-            throw new BusinessException(responseResult.getCode());
-        }
-        CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
+        List<ShopCarProdInfoVO> shopCarProdInfoVOList = this.getShopCarProdInfoVOList(couponCondition.getStoreId(), customerUser);
 
-        // 添加list初始化size
-        List<CouponProductCondition> productConditions = new ArrayList<>(responseResult.getData().size());
-        for (ShopCarProdInfoVO shopCarProdInfoVO : responseResult.getData()) {
-            CouponProductCondition couponProductCondition = new CouponProductCondition();
-            couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
-            couponProductCondition.setBrandCode(shopCarProdInfoVO.getBrandCode());
-            couponProductCondition.setPrice(shopCarProdInfoVO.getPrice());
-            couponProductCondition.setSkuNum(shopCarProdInfoVO.getAmount());
-            couponProductCondition.setSkuCode(shopCarProdInfoVO.getSkuCode());
-            productConditions.add(couponProductCondition);
-        }
-        couponPreAmountCondition.setProducts(productConditions);
+        CouponPreAmountCondition couponPreAmountCondition = getCouponPreAmountCondition(shopCarProdInfoVOList);
         for (CouponVO couponVO : couponVOs) {
             if (CouponAvailableStatusEnum.AVAILABLE.getCode() == couponVO.getAvailableStatus()) {
                 List<Long> sendIds = new ArrayList<>();
@@ -1084,22 +1064,17 @@ public class CouponServiceImpl implements CouponService {
         return result;
     }
 
-    @Override
-    public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition,CustomerUser customerUser) {
-
-        //获取购物车商品信息
-        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
-        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
-        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
-        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
-        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
-            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
-            throw new BusinessException(responseResult.getCode());
-        }
-
-        // 指定list初始化size
-        List<CouponProductCondition> productConditions = new ArrayList<>(responseResult.getData().size());
-        for (ShopCarProdInfoVO shopCarProdInfoVO : responseResult.getData()) {
+    /**
+     * 获取计算优惠券最终优惠金额
+     *
+     * @param shopCarProdInfoVOList
+     * @return
+     */
+    private CouponPreAmountCondition getCouponPreAmountCondition(List<ShopCarProdInfoVO> shopCarProdInfoVOList) {
+        CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
+        // 添加list初始化size
+        List<CouponProductCondition> productConditions = new ArrayList<>(shopCarProdInfoVOList.size());
+        for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOList) {
             CouponProductCondition couponProductCondition = new CouponProductCondition();
             couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
             couponProductCondition.setBrandCode(shopCarProdInfoVO.getBrandCode());
@@ -1108,8 +1083,16 @@ public class CouponServiceImpl implements CouponService {
             couponProductCondition.setSkuCode(shopCarProdInfoVO.getSkuCode());
             productConditions.add(couponProductCondition);
         }
-        CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(productConditions);
+        return couponPreAmountCondition;
+    }
+
+    @Override
+    public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition, CustomerUser customerUser) {
+        //获取购物车商品信息
+        List<ShopCarProdInfoVO> shopCarProdInfoVOList = this.getShopCarProdInfoVOList(couponCondition.getStoreId(), customerUser);
+
+        CouponPreAmountCondition couponPreAmountCondition = getCouponPreAmountCondition(shopCarProdInfoVOList);
         couponPreAmountCondition.setSendIds(couponCondition.getSendIds());
         return this.couponDiscountAmount(couponPreAmountCondition);
     }
@@ -1301,7 +1284,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> availableCouponListByOrderGroup(OrderAvailableCouponCondition couponCondition,CustomerUser customerUser) {
 
         //获取购物车商品信息
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition, customerUser);
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = getShopCarProdInfoVOList(couponCondition.getStoreId(), customerUser);
 
         //查询当前用户下的所有优惠券
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponListGroup(customerUser.getCustomerId(), null, null);
@@ -1395,22 +1378,21 @@ public class CouponServiceImpl implements CouponService {
     /**
      * 获取购物车商品信息
      *
-     * @param couponCondition
+     * @param storeId
      * @param customerUser
      * @return
      */
-    private List<ShopCarProdInfoVO> getShopCarProdInfoVOList(OrderAvailableCouponCondition couponCondition, CustomerUser customerUser) {
+    private List<ShopCarProdInfoVO> getShopCarProdInfoVOList(Long storeId, CustomerUser customerUser) {
         ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
-        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        shopCarQueryCondition.setStoreId(storeId);
         shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
         if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK) {
-            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
+            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", storeId, responseResult == null ? null : responseResult.getCode());
             throw new BusinessException(responseResult.getCode());
         }
-        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
-        logger.info("availableCouponListByOrder-购物车信息{}", shopCarProdInfoVOS.toString());
+        logger.info("availableCouponListByOrder-购物车信息{}", responseResult.getData().toString());
 
-        return shopCarProdInfoVOS;
+        return responseResult.getData();
     }
 }

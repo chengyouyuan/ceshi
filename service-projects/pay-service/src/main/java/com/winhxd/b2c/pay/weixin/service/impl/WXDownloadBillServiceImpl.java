@@ -347,7 +347,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 * @Description 组装PayStatement数据
 	 * @author yuluyuan
 	 * @date 2018年8月16日 下午3:54:56
-	 * @param everyDataArray
+	 * @param
 	 * @return
 	 * @throws ParseException 
 	 */

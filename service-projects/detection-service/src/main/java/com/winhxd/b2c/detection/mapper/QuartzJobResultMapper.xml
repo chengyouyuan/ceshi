@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.winhxd.b2c.detection.mapper.QuartzJobResultMapper" >
+<mapper namespace="com.winhxd.b2c.detection.mapper.QuartzJobResultMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.detection.model.QuartzJobResult" >
     <!--
       WARNING - @mbg.generated

@@ -4,9 +4,9 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition;
 import com.winhxd.b2c.common.domain.detection.model.DbSource;
 import com.winhxd.b2c.common.domain.detection.model.DetectionUser;
-import com.winhxd.b2c.common.domain.detection.vo.QuartzJobVo;
 import com.winhxd.b2c.common.domain.detection.model.QuartzJob;
 import com.winhxd.b2c.common.domain.detection.model.QuartzJobResult;
+import com.winhxd.b2c.common.domain.detection.vo.QuartzJobVo;
 import com.winhxd.b2c.detection.service.base.IBaseService;
 
 /**

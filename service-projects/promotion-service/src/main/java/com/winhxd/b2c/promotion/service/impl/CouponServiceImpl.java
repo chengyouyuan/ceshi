@@ -35,7 +35,7 @@ import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
-import com.winhxd.b2c.common.util.DateDealUtils;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.apache.commons.lang3.StringUtils;
@@ -161,8 +161,8 @@ public class CouponServiceImpl implements CouponService {
                     couponTemplateSend.setStartTime(activityTemplate.getStartTime());
                     couponTemplateSend.setEndTime(activityTemplate.getEndTime());
                 } else {
-                    couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
-                    couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(), activityTemplate.getEffectiveDays()));
+                    couponTemplateSend.setStartTime(DateUtil.getStartDate(new Date()));
+                    couponTemplateSend.setEndTime(DateUtil.getEndDate(new Date(), activityTemplate.getEffectiveDays()));
                 }
 
                 couponTemplateSendMapper.insertSelective(couponTemplateSend);
@@ -445,8 +445,8 @@ public class CouponServiceImpl implements CouponService {
                 couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
                 couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
             } else {
-                couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
-                couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(), couponActivityTemplates.get(0).getEffectiveDays()));
+                couponTemplateSend.setStartTime(DateUtil.getStartDate(new Date()));
+                couponTemplateSend.setEndTime(DateUtil.getEndDate(new Date(), couponActivityTemplates.get(0).getEffectiveDays()));
             }
             couponTemplateSendMapper.insertSelective(couponTemplateSend);
 

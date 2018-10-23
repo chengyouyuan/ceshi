@@ -8,7 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
-import com.winhxd.b2c.common.util.DateDealUtils;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.PromotionServiceApplication;
 import org.junit.Assert;
 import org.junit.Before;
@@ -104,7 +104,7 @@ public class CouponServiceTest {
         condition.setActivityStatus((short)1);//活动状态1开启2停止
         condition.setCouponType(couponType);//优惠券类型 1新用户注册 2老用户活动
         condition.setActivityStart(new Date());
-        condition.setActivityEnd(DateDealUtils.getEndDate(new Date(),diffDays));
+        condition.setActivityEnd(DateUtil.getEndDate(new Date(),diffDays));
         condition.setCouponActivityCustomerList(couponActivityCustomerList);
         condition.setCouponActivityCustomerList(couponActivityCustomerList);
         condition.setCouponActivityTemplateList(couponActivityTemplateList);
@@ -135,7 +135,7 @@ public class CouponServiceTest {
                 cat.setEffectiveDays(effectDays);
             }else{
                 cat.setStartTime(new Date());
-                cat.setEndTime(DateDealUtils.getEndDate(new Date(),diffDays));
+                cat.setEndTime(DateUtil.getEndDate(new Date(),diffDays));
             }
             cat.setCouponNum(6);//每种优惠券总数
             cat.setSendNum(2);//没人领取数量

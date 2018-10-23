@@ -23,7 +23,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.util.DateDealUtils;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponPushService;
 import org.apache.commons.lang3.StringUtils;
@@ -207,7 +207,7 @@ public class CouponPushServiceImpl implements CouponPushService {
             // 优惠券设定有效期，没有设定开始时间和结束时间。
             if (couponPushVO.getEffectiveDays() != null) {
                 couponPushVO.setActivityStart(new Date());
-                couponPushVO.setActivityEnd((DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
+                couponPushVO.setActivityEnd((DateUtil.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
             }
         }
         return couponPushResult;
@@ -317,11 +317,11 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         // 优惠券设定有效期
         if (couponPushVO.getEffectiveDays() != null) {
-            couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
-            couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
+            couponTemplateSend.setStartTime(DateUtil.getStartDate(new Date()));
+            couponTemplateSend.setEndTime(DateUtil.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
         }else {
             couponTemplateSend.setStartTime(couponPushVO.getActivityStart());
-            couponTemplateSend.setEndTime(DateDealUtils.getEndDate(couponPushVO.getActivityEnd()));
+            couponTemplateSend.setEndTime(DateUtil.getEndDate(couponPushVO.getActivityEnd()));
         }
 
         couponTemplateSendMapper.insertSelective(couponTemplateSend);

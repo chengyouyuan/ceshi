@@ -13,7 +13,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.util.DateDealUtils;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
@@ -59,11 +59,11 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     public List<CouponActivityVO> findCouponActivity(CouponActivityCondition condition) {
         if(condition.getDateInterval() != null){
             if(condition.getDateInterval().getStart() != null){
-                condition.setCreatedStart(DateDealUtils.getStartDate(condition.getDateInterval().getStart()));
+                condition.setCreatedStart(DateUtil.getStartDate(condition.getDateInterval().getStart()));
             }
         }
         if (condition.getDateInterval().getEnd() != null) {
-            condition.setCreatedEnd(DateDealUtils.getEndDate(condition.getDateInterval().getEnd()));
+            condition.setCreatedEnd(DateUtil.getEndDate(condition.getDateInterval().getEnd()));
         }
 
         List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
@@ -130,8 +130,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setCode(condition.getCode());
         couponActivity.setExolian(condition.getExolian());
         couponActivity.setRemarks(condition.getRemarks());
-        couponActivity.setActivityStart(DateDealUtils.getStartDate(condition.getActivityStart()));
-        couponActivity.setActivityEnd(DateDealUtils.getEndDate(condition.getActivityEnd()));
+        couponActivity.setActivityStart(DateUtil.getStartDate(condition.getActivityStart()));
+        couponActivity.setActivityEnd(DateUtil.getEndDate(condition.getActivityEnd()));
         couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
         couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
         couponActivity.setCreated(new Date());
@@ -169,8 +169,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             cat.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                cat.setStartTime(DateDealUtils.getStartDate(cat.getStartTime()));
-                cat.setEndTime(DateDealUtils.getEndDate(cat.getEndTime()));
+                cat.setStartTime(DateUtil.getStartDate(cat.getStartTime()));
+                cat.setEndTime(DateUtil.getEndDate(cat.getEndTime()));
                 if(cat.getCustomerVoucherLimitType() != CouponActivityEnum.STORE_LIMITED.getCode()){
                     cat.setCustomerVoucherLimitNum(null);
                 }
@@ -183,8 +183,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
                 Integer effectiveDays = cat.getEffectiveDays();
                 if( effectiveDays == null || effectiveDays<=0){
-                    cat.setStartTime(DateDealUtils.getStartDate(cat.getStartTime()));
-                    cat.setEndTime(DateDealUtils.getEndDate(cat.getEndTime()));
+                    cat.setStartTime(DateUtil.getStartDate(cat.getStartTime()));
+                    cat.setEndTime(DateUtil.getEndDate(cat.getEndTime()));
                 }
                 cat.setCouponNumType((short)1);
             }
@@ -303,8 +303,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Transactional
     public void updateCouponActivity(CouponActivityAddCondition condition) {
      
-        Date activityStart = DateDealUtils.getStartDate(condition.getActivityStart());
-        Date activityEnd = DateDealUtils.getEndDate(condition.getActivityEnd());
+        Date activityStart = DateUtil.getStartDate(condition.getActivityStart());
+        Date activityEnd = DateUtil.getEndDate(condition.getActivityEnd());
 
         //更新CouponActivity
         CouponActivity couponActivity = new CouponActivity();
@@ -362,8 +362,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 
-                Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                Date couponEnd = DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                Date couponStart = DateUtil.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                Date couponEnd = DateUtil.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
                 
                 couponActivityTemplate.setStartTime(couponStart);
                 couponActivityTemplate.setEndTime(couponEnd);

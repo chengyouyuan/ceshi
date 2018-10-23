@@ -60,11 +60,11 @@ public class ApiOrderQueryController {
             PagedList<OrderListForCustomerVO> data = new PagedList<>();
             PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(customer,condition);
             List<OrderInfoDetailVO> orderInfoDetailVOS = list.getData();
-            List<OrderListForCustomerVO> orderListForCustomerVOList = new ArrayList<>();
+            List<OrderListForCustomerVO> orderListForCustomerVOList = new ArrayList<>(10);
             for (OrderInfoDetailVO orderInfoDetailVO : orderInfoDetailVOS) {
                 OrderListForCustomerVO orderListForCustomerVO = new OrderListForCustomerVO();
                 List<OrderItemVO> orderItemVoList = orderInfoDetailVO.getOrderItemVoList();
-                List<OrderListItemForCustomerVO> orderListItemForCustomerVOList = new ArrayList<>();
+                List<OrderListItemForCustomerVO> orderListItemForCustomerVOList = new ArrayList<>(20);
                 for (OrderItemVO orderItemVO : orderItemVoList) {
                     OrderListItemForCustomerVO orderListItemForCustomerVO = new OrderListItemForCustomerVO();
                     BeanUtils.copyProperties(orderItemVO, orderListItemForCustomerVO);

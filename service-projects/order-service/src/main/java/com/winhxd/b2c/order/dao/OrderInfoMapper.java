@@ -341,7 +341,7 @@ public interface OrderInfoMapper {
     /**
      * 更新订单状态为退款失败
      * @param orderNo
-     * @param refundErrorCode
+     * @param
      * @param customerFail 为true时更新订单状态，false时只更新退款失败原因
      * @return
      */

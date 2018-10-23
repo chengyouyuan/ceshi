@@ -1,9 +1,18 @@
 package com.winhxd.b2c.order.api;
 
-import javax.annotation.Resource;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
-import org.apache.catalina.User;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.service.OrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,22 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.order.service.OrderService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.annotation.Resource;
 
 /**
  * @author pangjianhua
@@ -56,7 +50,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4025/v1/orderPriceChange4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderPriceChange4Store(@RequestBody OrderConfirmCondition condition) {
         String logTitle = "/api-order/order/4025/v1/orderPriceChange4Store-B端线下计价订单价格修改";
-        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
@@ -88,7 +82,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4024/v1/orderPickup4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderPickup4Store(@RequestBody OrderPickupCondition condition) {
         String logTitle = "/api-order/order/4024/v1/orderPickup4Store-B端订单提货接口";
-        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
@@ -120,7 +114,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4023/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderConfirm4Store(@RequestBody OrderConfirmCondition condition) {
         String logTitle = "/api-order/order/4023/v1/orderConfirm4Store-B端确认订单接口";
-        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
@@ -156,7 +150,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4022/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
         String logTitle = "=/api-order/order/4022/v1/handleOrderRefundByStore-B端退款订单处理接口=";
-        LOGGER.info("{}--开始--{}", logTitle, condition);
+        LOGGER.info("{}--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
             throw new BusinessException(BusinessCode.CODE_4022001, "参数异常");
         }
@@ -182,7 +176,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4021/v1/orderRefundByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
         String logTitle = "=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=";
-        LOGGER.info("{}--开始--{}", logTitle, orderRefundCondition);
+        LOGGER.info("{}--开始--{}", logTitle, JsonUtil.toJSONString(orderRefundCondition));
         if (StringUtils.isBlank(orderRefundCondition.getOrderNo())) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
@@ -230,7 +224,7 @@ public class ApiOrderController {
     @RequestMapping(value = "/4026/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
         String logTitle = "=/api-order/order/4026/v1/cancelOrderByStore-B端订单拒单接口=";
-        LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
+        LOGGER.info("{}--开始--{}", logTitle, JsonUtil.toJSONString(orderCancelCondition));
         if (StringUtils.isBlank(orderCancelCondition.getOrderNo())) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }

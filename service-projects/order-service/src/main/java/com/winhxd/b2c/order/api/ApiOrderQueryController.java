@@ -1,10 +1,22 @@
 package com.winhxd.b2c.order.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.*;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.service.OrderQueryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,31 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.common.ApiCondition;
-import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPayInfoCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderListForCustomerVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderListItemForCustomerVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.order.service.OrderQueryService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author pangjianhua
@@ -63,7 +53,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4010/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderListForCustomerVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
         String logTitle = "=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=";
-        LOGGER.info(logTitle + "--开始--{}", condition);
+        LOGGER.info(logTitle + "--开始--{}", JsonUtil.toJSONString(condition));
         ResponseResult<PagedList<OrderListForCustomerVO>> result = new ResponseResult<>();
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         try {
@@ -106,7 +96,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4011/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
         String logTitle = "=/api-order/order/4011/v1/getOrderDetailByOrderNo-C端订单详情查询接口=";
-        LOGGER.info("{}--开始--condition={}", logTitle, orderQueryByCustomerCondition);
+        LOGGER.info("{}--开始--condition={}", logTitle, JsonUtil.toJSONString(orderQueryByCustomerCondition));
         if (StringUtils.isBlank(orderQueryByCustomerCondition.getOrderNo())) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
@@ -137,7 +127,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4014/v1/getOrderDetailForStoreByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailForStoreByOrderNo(@RequestBody OrderQueryByStoreCondition condition) {
         String logTitle = "=/api-order/order/4014/v1/getOrderDetailForStoreByOrderNo-B端订单详情查询接口=";
-        LOGGER.info("{}--开始--condition={}", logTitle, condition);
+        LOGGER.info("{}--开始--condition={}", logTitle, JsonUtil.toJSONString(condition));
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
@@ -167,7 +157,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4012/v1/listOrder4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderInfoDetailVO>> listOrder4Store(@RequestBody OrderQuery4StoreCondition condition) {
         String logTitle = "/api-order/order/4012/v1/listOrder4Store-B端订单列表查询接口";
-        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
@@ -235,7 +225,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4015/v1/getOrderPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderPayVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
         String logTitle = "/api-order/order/4015/v1/getOrderPayInfo-C端获取支付信息";
-        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<OrderPayVO> result = new ResponseResult<>();
         //获取当前登录门店Id
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();

@@ -172,10 +172,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public void saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser.getBusinessId() == null) {
-			LOGGER.info("未获取到门店数据");
-			throw new BusinessException(BusinessCode.CODE_610901);
-		}
 		Long businessId = storeUser.getBusinessId();
 		String openId = storeUser.getOpenId();
 		// 加入redis控制访问频率
@@ -229,14 +225,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setCreatedByName(condition.getStroeName());
 			payWithdrawal.setUpdatedByName(condition.getStroeName());
 		}else if(weixType == condition.getWithdrawType()){
-//			Map<String, Object> map=new HashMap<>();
-//			map.put("storeId", businessId);
-//			map.put("openid", condition.getBuyerId());
-//			List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreIdAndOpenid(map);
-//			if(CollectionUtils.isEmpty(payStoreWallet)){
-//				result.setMessage("参数错误：门店和微信钱包不匹配");
-//				throw new BusinessException(BusinessCode.CODE_610026);
-//			}
 			if(!StringUtils.equals(condition.getBuyerId(),openId)){
 				result.setMessage("参数错误：门店和微信钱包不匹配");
 				throw new BusinessException(BusinessCode.CODE_610026);

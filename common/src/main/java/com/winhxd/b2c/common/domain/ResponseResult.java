@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.i18n.MessageHelper;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -53,5 +55,13 @@ public class ResponseResult<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    @JsonIgnore
+    public T getDataWithException() {
+        if(code != 0 && code != 200){
+            throw new BusinessException(code);
+        }
+        return data;
     }
 }

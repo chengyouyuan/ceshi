@@ -239,17 +239,11 @@ public final class BusinessCode {
     @ApiModelProperty("订单状态异常不能退款")
     public static final int ORDER_REFUND_STATUS_ERROR = 400018;
     @ApiModelProperty("订单退款失败")
-    public static final int ORDER_REFUND_FAIL = 400019;
-    @ApiModelProperty("订单退款已完成")
-    public static final int ORDER_REFUND_FINISHED = 400020;
-    @ApiModelProperty("订单退款失败")
     public static final int ORDER_REFUND_CLOSED = 400021;
     @ApiModelProperty("订单获取支付信息失败")
     public static final int ORDER_GET_PAY_INFO_ERROR = 400022;
     @ApiModelProperty("订单号和用户不匹配")
     public static final int ORDER_INFO_NOT_MATCH_ERROR = 400023;
-    @ApiModelProperty("订单支付信息查询失败，无法修改价格")
-    public static final int ORDER_PAY_INFO_ERROR = 400024;
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
     @ApiModelProperty("订单创建支付类型为空或错误")
@@ -306,8 +300,6 @@ public final class BusinessCode {
     public static final int CODE_4022001 = 4022001;
     @ApiModelProperty("参数错误")
     public static final int CODE_4061001 = 4061001;
-    @ApiModelProperty("请至少选择一条记录")
-    public static final int CODE_4062001 = 4062001;
     @ApiModelProperty("选择的订单号不是退款失败的订单")
     public static final int CODE_4062002 = 4062002;
     @ApiModelProperty("订单状态不允许退款")
@@ -404,22 +396,8 @@ public final class BusinessCode {
     public static final int CODE_600105 = 600105;
     @ApiModelProperty("订单支付  支付方式为空")
     public static final int CODE_600106 = 600106;
-    @ApiModelProperty("订单支付  支付金额为空")
-    public static final int CODE_600107 = 600107;
     @ApiModelProperty("退款  参数为空")
     public static final int CODE_600201 = 600201;
-    @ApiModelProperty("退款  订单号为空")
-    public static final int CODE_600202 = 600202;
-    @ApiModelProperty("退款  appid为空")
-    public static final int CODE_600203 = 600203;
-    @ApiModelProperty("退款  订单金额为空")
-    public static final int CODE_600204 = 600204;
-    @ApiModelProperty("退款  退款金额为空")
-    public static final int CODE_600205 = 600205;
-    @ApiModelProperty("退款  创建人为空")
-    public static final int CODE_600206 = 600206;
-    @ApiModelProperty("退款  创建人姓名为空")
-    public static final int CODE_600207 = 600207;
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;
     @ApiModelProperty("门店提现  未获取到提现信息")
@@ -430,8 +408,6 @@ public final class BusinessCode {
     public static final int CODE_600601 = 600601;
     @ApiModelProperty("判断订单是否支付  订单号为空")
     public static final int CODE_601601 = 601601;
-    @ApiModelProperty("当前用户没有银行卡信息")
-    public static final int CODE_610001 = 610001;
     @ApiModelProperty("银行名称为空")
     public static final int CODE_610011 = 610011;
     @ApiModelProperty("银行卡卡号为空")
@@ -466,8 +442,6 @@ public final class BusinessCode {
     public static final int CODE_610026 = 610026;
     @ApiModelProperty("门店当前没有可提现的记录")
     public static final int CODE_610027 = 610027;
-    @ApiModelProperty("请输入身份证号")
-    public static final int CODE_610028 = 610028;
     @ApiModelProperty("请输入银行swiftcode")
     public static final int CODE_610029 = 610029;
     @ApiModelProperty("参数为空")
@@ -530,36 +504,14 @@ public final class BusinessCode {
     public static final int CODE_701401 = 701401;
     @ApiModelProperty("消息服务 给B端用户发云信消息 接口参数getEaseMsg为空")
     public static final int CODE_701402 = 701402;
-    @ApiModelProperty("消息服务 给B端用户发云信消息 云信用户不存在")
-    public static final int CODE_701403 = 701403;
-    @ApiModelProperty("消息服务 给B端用户发云信消息 发送消息失败（需查询官方错误码）")
-    public static final int CODE_701404 = 701404;
     @ApiModelProperty("消息服务 根据code获取openid信息出错（需查询官方错误码）")
     public static final int CODE_702101 = 702101;
     @ApiModelProperty("消息服务 根据code获取openid信息 code为空")
     public static final int CODE_702102 = 702102;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 toUser为空")
-    public static final int CODE_702201 = 702201;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 消息为空")
-    public static final int CODE_702202 = 702202;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 模板信息不存在")
-    public static final int CODE_702203 = 702203;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 用户没有可用的formid")
-    public static final int CODE_702204 = 702204;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息后没有返回值")
-    public static final int CODE_702205 = 702205;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息后返回的错误码为空")
-    public static final int CODE_702206 = 702206;
-    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息错误（需查询官方错误码）")
-    public static final int CODE_702207 = 702207;
     @ApiModelProperty("消息服务 保存formid formid为空")
     public static final int CODE_702401 = 702401;
-    @ApiModelProperty("后台消息管理 手动给门店推送消息 推送配置不存在")
-    public static final int CODE_703501 = 703501;
     @ApiModelProperty("后台消息管理 手动给门店推送消息 云信门店记录不存在")
     public static final int CODE_703502 = 703502;
-    @ApiModelProperty("后台消息管理 手动给门店推送消息 消息推送出错（需查询官方错误码）")
-    public static final int CODE_703503 = 703503;
     @ApiModelProperty("后台消息管理 手动给门店推送消息 消息内容为空")
     public static final int CODE_703504 = 703504;
 

@@ -5,9 +5,7 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.promotion.util.BaseExcelDomain;
-import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -160,6 +157,8 @@ public class ExcelUtils {
     public static <T> ImportResult<T> importExcelVerify(InputStream inputStream, Class<?> pojoClass) throws Exception {
         ImportParams params = new ImportParams();
         params.setNeedVerfiy(true);
+        // 读取表格标题行数默认为0
+        params.setTitleRows(1);
         ExcelImportResult<T> result = ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
 
         ImportResult<T> res = new ImportResult<>();

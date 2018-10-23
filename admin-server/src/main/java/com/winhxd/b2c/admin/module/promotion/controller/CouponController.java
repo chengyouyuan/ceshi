@@ -191,7 +191,7 @@ public class CouponController {
 		if (invalidList.isEmpty()) {
 			list = importResult.getList();
 		}
-		if(CollectionUtils.isEmpty(list) || null == list.get(0).getPhone()){
+        if (CollectionUtils.isEmpty(list)) {
 			result.setCode(BusinessCode.CODE_1007);
 			result.setMessage("导入数据为空");
 			return result;

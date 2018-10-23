@@ -51,9 +51,14 @@ public class CustomerUserController {
 
     @Autowired
     private CouponServiceClient couponServiceClient;
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_LIST)
     @ApiOperation(value = "根据条件查询用户的分页数据信息", notes = "根据条件查询用户的分页数据信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @ApiResponses({
+                    @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"),
+                    @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")
+    })
+
     @PostMapping(value = "/1059/v1/findCustomerPageInfo")
     public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
@@ -68,6 +73,7 @@ public class CustomerUserController {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.findAvabileCustomerPageInfo(condition);
         return responseResult;
     }
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_EXPORT)
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/1060/v1/customerExport")
@@ -80,6 +86,7 @@ public class CustomerUserController {
         }
         return ExcelUtils.exp(list, "用户信息");
     }
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_BLACK)
     @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
@@ -139,6 +146,7 @@ public class CustomerUserController {
             result.setOrderCount(pagedList.getTotalRows());
         }
     }
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_ORDER_DETAIL)
     @ApiOperation(value = "查询订单详情信息", notes = "根据订单查询订单详情已经订单状态信息")
     @GetMapping(value = "/1064/v1/queryOderInfoDetail/{orderNum}")

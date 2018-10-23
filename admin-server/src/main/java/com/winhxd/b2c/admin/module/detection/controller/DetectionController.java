@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "监控服务管理", tags = "监控服务管理")
 @RestController
 @RequestMapping("detection/service")
-@CheckPermission(PermissionEnum.SYSTEM_MANAGEMENT)
+@CheckPermission(PermissionEnum.DETECTION_MANAGEMENT)
 public class DetectionController {
 
     @Autowired
@@ -40,7 +40,6 @@ public class DetectionController {
 
     @PostMapping(value = "/addQuartzJob")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @ApiOperation(value = "添加定时任务", notes = "添加定时任务")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,添加定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult<Integer> addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
@@ -49,7 +48,6 @@ public class DetectionController {
 
     @GetMapping(value = "/deleteQuartzJob")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @ApiOperation(value = "删除定时任务", notes = "删除定时任务")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,删除定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult<Void> deleteQuartzJob(@RequestParam Long id) {
@@ -58,16 +56,30 @@ public class DetectionController {
 
     @GetMapping(value = "/findQuartzJobVoById")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @ApiOperation(value = "根据ID查询定时任务详细信息", notes = "根据ID查询定时任务详细信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询定时任务详情数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult findQuartzJobVoById(@RequestParam Long id) {
         return detectionServiceClient.findQuartzJobVoById(id);
     }
 
+    @GetMapping(value = "/resumeQuartzJob")
+    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
+    @ApiOperation(value = "重新启动定时任务", notes = "重新启动定时任务")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,重新启动定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseResult resumeQuartzJob(@RequestParam Long id) {
+        return detectionServiceClient.resumeQuartzJob(id);
+    }
+
+    @GetMapping(value = "/pauseQuartzJob")
+    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
+    @ApiOperation(value = "暂停定时任务", notes = "暂停定时任务")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,暂停定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseResult pauseQuartzJob(@RequestParam Long id) {
+        return detectionServiceClient.pauseQuartzJob(id);
+    }
+
     @PostMapping(value = "/findQuartzJobResultPageList")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
     @ApiOperation(value = "查询定时任务执行结果的分页数据信息", notes = "查询定时任务执行结果的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询定时任务执行结果列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult<PagedList<QuartzJobResult>> findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
@@ -83,6 +95,14 @@ public class DetectionController {
         return detectionServiceClient.findUserPageList();
     }
 
+    @PostMapping(value = "/addUser")
+    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_USER)
+    @ApiOperation(value = "添加用户数据信息", notes = "添加用户数据信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,添加用户数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseResult addUser(@RequestBody DetectionUser user) {
+        return detectionServiceClient.addUser(user);
+    }
+
     @PostMapping(value = "/findDbSourcePageList")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_DBSOURCE)
     @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_DBSOURCE)
@@ -92,40 +112,12 @@ public class DetectionController {
         return detectionServiceClient.findDbSourcePageList();
     }
 
-    @PostMapping(value = "/addUser")
-    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_USER)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_USER)
-    @ApiOperation(value = "添加用户数据信息", notes = "添加用户数据信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,添加用户数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult addUser(@RequestBody DetectionUser user) {
-        return detectionServiceClient.addUser(user);
-    }
-
     @PostMapping(value = "/addDbSource")
     @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_DBSOURCE)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_DBSOURCE)
     @ApiOperation(value = "添加数据源信息", notes = "添加数据源信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,添加数据源信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult addUser(@RequestBody DbSource dbSource) {
         return detectionServiceClient.addDbSource(dbSource);
-    }
-
-    @GetMapping(value = "/resumeQuartzJob")
-    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @ApiOperation(value = "重新启动定时任务", notes = "重新启动定时任务")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,重新启动定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult resumeQuartzJob(@RequestParam Long id) {
-        return detectionServiceClient.resumeQuartzJob(id);
-    }
-
-    @GetMapping(value = "/pauseQuartzJob")
-    @CheckPermission(PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @MenuAssign(MenuEnum.DETECTION_MANAGEMENT_QUARTZ_JOB)
-    @ApiOperation(value = "暂停定时任务", notes = "暂停定时任务")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,暂停定时任务失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseResult pauseQuartzJob(@RequestParam Long id) {
-        return detectionServiceClient.pauseQuartzJob(id);
     }
 
     @GetMapping(value = "/findErrorApiPageList")

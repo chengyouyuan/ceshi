@@ -89,7 +89,7 @@ public enum MenuEnum {
     /**
      * 监测监控管理
      */
-    DETECTION_MANAGEMENT("监控管理", PermissionEnum.SYSTEM_MANAGEMENT),
+    DETECTION_MANAGEMENT("监控管理", PermissionEnum.DETECTION_MANAGEMENT),
     DETECTION_MANAGEMENT_QUARTZ_JOB("任务管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_quartz_job_list.json", PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB),
     DETECTION_MANAGEMENT_USER("用户管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_user_list.json", PermissionEnum.DETECTION_MANAGEMENT_USER),
     DETECTION_MANAGEMENT_DBSOURCE("数据源管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_dbsource_list.json", PermissionEnum.DETECTION_MANAGEMENT_DBSOURCE);

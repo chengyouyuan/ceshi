@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,7 +142,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         addOrUpdateVerifyParam(condition);
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
         //判断活动时间是否冲突(推券&新人注册)
-        if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()
+        if (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
                 && condition.getCouponType() == CouponActivityEnum.NEW_USER.getCode()){
             Boolean flag = couponActivityService.getActivityDateClash(condition);
             if(flag){

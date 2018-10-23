@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.BrandCondition;
@@ -82,49 +81,6 @@ public class CouponPushServiceImpl implements CouponPushService {
 
     private static final int DEFAULT_COUPON_SEND_NUM = 1;
 
-    @Override
-    public List<CouponPushVO> getSpecifiedPushCoupon(CustomerUser customerUser) {
-
-        StoreUserInfoVO storeUserInfo = getStoreUserInfoVO(customerUser);
-        List<CouponPushVO> couponPushResult = getCouponPush(customerUser, storeUserInfo);
-
-        // 初始化list的size
-        List<CouponPushVO> resultList = new ArrayList<>(couponPushResult.size());
-
-        List<Long> activityIds = new ArrayList<>();
-        List<Long> unActivityIds = new ArrayList<>();
-        // 通过活动ID和模板ID查询优惠券已使用数量
-        Long receiveCouponCount = 0L;
-        boolean flag = false;
-        for (CouponPushVO couponPushVO:couponPushResult) {
-
-            String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId() + couponPushVO.getTemplateId();
-            Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
-            try {
-                lock.lock();
-
-                flag = checkCouponCollar(couponPushVO, activityIds, unActivityIds,
-                        receiveCouponCount, customerUser);
-
-                // 是否领取只有推券给用户才会有值 1 可领取
-                if (CouponReceiveStatusEnum.CAN_RECEIVED.getCode().equals(couponPushVO.getReceiveStatus())
-                        && couponPushVO.getReceive() == null) {
-                    flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(), storeUserInfo.getId(), couponPushVO.getActivityId());
-                }
-
-                if (flag) {
-                    for (int x = 0; x < couponPushVO.getSendNum(); x++) {
-                        sendCoupon(customerUser, couponPushVO);
-                    }
-                    resultList.add(couponPushVO);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-        return this.getCouponPushDetail(resultList);
-    }
-
     /**
      * 校验优惠券是否可领取
      * @param couponPushVO
@@ -161,6 +117,49 @@ public class CouponPushServiceImpl implements CouponPushService {
         car.setCouponActivityId(couponPushVO.getActivityId());
         car.setCustomerId(customerUser.getCustomerId());
         return couponActivityRecordMapper.checkCustomerJoinActive(car);
+    }
+
+    @Override
+    public List<CouponPushVO> getSpecifiedPushCoupon(CustomerUser customerUser) {
+
+        StoreUserInfoVO storeUserInfo = getStoreUserInfoVO(customerUser);
+        List<CouponPushVO> couponPushResult = getCouponPush(customerUser, storeUserInfo);
+
+        // 初始化list的size
+        List<CouponPushVO> resultList = new ArrayList<>(couponPushResult.size());
+
+        List<Long> activityIds = new ArrayList<>();
+        List<Long> unActivityIds = new ArrayList<>();
+        // 通过活动ID和模板ID查询优惠券已使用数量
+        Long receiveCouponCount = 0L;
+        boolean flag = false;
+        for (CouponPushVO couponPushVO : couponPushResult) {
+
+            String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId() + couponPushVO.getTemplateId();
+            Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
+            try {
+                lock.lock();
+
+                flag = checkCouponCollar(couponPushVO, activityIds, unActivityIds,
+                        receiveCouponCount, customerUser);
+
+                // 是否领取只有推券给用户才会有值 1 可领取
+                if (CouponReceiveStatusEnum.CAN_RECEIVED.getCode().equals(couponPushVO.getReceiveStatus())
+                        && couponPushVO.getReceive() == null) {
+                    flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(), storeUserInfo.getId(), couponPushVO.getActivityId());
+                }
+
+                if (flag) {
+                    for (int x = 0; x < couponPushVO.getSendNum(); x++) {
+                        sendCoupon(customerUser, couponPushVO);
+                    }
+                    resultList.add(couponPushVO);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+        return this.getCouponPushDetail(resultList);
     }
 
 

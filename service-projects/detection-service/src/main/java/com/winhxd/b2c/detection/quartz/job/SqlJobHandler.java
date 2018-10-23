@@ -2,9 +2,9 @@ package com.winhxd.b2c.detection.quartz.job;
 
 import com.winhxd.b2c.common.domain.detection.model.DbSource;
 import com.winhxd.b2c.common.domain.detection.model.DetectionUser;
-import com.winhxd.b2c.detection.datasource.ConnectionManager;
 import com.winhxd.b2c.common.domain.detection.model.QuartzJob;
 import com.winhxd.b2c.common.domain.detection.model.QuartzJobResult;
+import com.winhxd.b2c.detection.datasource.ConnectionManager;
 import com.winhxd.b2c.detection.quartz.SpringBeanFactory;
 import com.winhxd.b2c.detection.quartz.job.email.EmailSendUtil;
 import com.winhxd.b2c.detection.service.IQuartzJobService;

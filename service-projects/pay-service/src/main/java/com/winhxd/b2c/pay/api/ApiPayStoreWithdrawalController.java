@@ -92,10 +92,6 @@ public class ApiPayStoreWithdrawalController {
         }
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long businessId = storeUser.getBusinessId();
-//        if (businessId == null) {
-//            LOGGER.info("未获取到门店数据");
-//            throw new BusinessException(BusinessCode.CODE_610801);
-//        }
         PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition, businessId);
 		result.setData(detail);
 		return result;

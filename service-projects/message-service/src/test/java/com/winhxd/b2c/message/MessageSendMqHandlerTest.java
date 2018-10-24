@@ -1,5 +1,6 @@
 package com.winhxd.b2c.message;
 
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.message.sms.SmsServerSendUtils;
 import com.winhxd.b2c.message.sms.model.SmsSend;
 import org.junit.Before;
@@ -40,9 +41,9 @@ public class MessageSendMqHandlerTest {
 
 	@Test
 	public void sendSms() {
-		SmsSend smsSend = new SmsSend();
-		smsSend.setTelePhoneNo("18701243491");
+		SMSCondition smsSend = new SMSCondition();
+		smsSend.setTelePhoneNo("18513108620");
 		smsSend.setContent("测试发送短信验证码");
-		smsServer.sendSms(smsSend);
+		smsServer.sendSmsByHxd(smsSend);
 	}
 }

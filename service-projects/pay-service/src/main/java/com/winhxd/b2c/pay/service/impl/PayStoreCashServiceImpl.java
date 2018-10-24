@@ -70,7 +70,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
             vo.setPresentedMoney(BigDecimal.valueOf(0.00));
             vo.setAlreadyPresentedMoney(BigDecimal.valueOf(0.00));
         }
-        LOGGER.info("门店金额提现首页信息"+vo.toString());
+        LOGGER.info("门店金额提现首页信息[{}]", vo.toString());
         return vo;
     }
 
@@ -93,7 +93,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        LOGGER.info("提现明细列表结果"+pagedList);
+        LOGGER.info("提现明细列表结果[{}]", pagedList);
         return pagedList;
     }
 
@@ -115,7 +115,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        LOGGER.info("提现明细列表结果"+pagedList);
+        LOGGER.info("提现明细列表结果[{}]", pagedList);
         return pagedList;
     }
 

@@ -24,6 +24,7 @@ import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
 import com.winhxd.b2c.pay.dao.*;
@@ -146,7 +147,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			presentedMoney=presentedMoney==null?BigDecimal.valueOf(0):presentedMoney;
 		}
 		 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-		 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
+		LOGGER.info("最大提现额度:[{}]", payWithDrawalConfig.getMaxMoney());
 		 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 		 withdrawalPage.setPresented_money(presentedMoney);
 		 withdrawalPage.setMinMoeny(payWithDrawalConfig.getMinMoney());
@@ -160,7 +161,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//等于0不限制提现次数
 		if (maxcount != 0) {
 			if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
-				LOGGER.info("您本日提现已达"+maxcount+"次");
+				LOGGER.info("您本日提现已达[{}]次", maxcount);
 				throw new BusinessException(BusinessCode.CODE_610902);
 			}
 		}
@@ -214,9 +215,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			BigDecimal rate = payWithDrawalConfig.getRate();
 			BigDecimal cmms = countCmms(rate,totalFee);
 			payWithdrawal.setCmmsAmt(cmms);
-			LOGGER.info("当前计算所得的手续费为："+cmms);
+			LOGGER.info("当前计算所得的手续费为：[{}]", cmms);
 			BigDecimal realFee = totalFee.subtract(cmms);
-			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
+			LOGGER.info("当前计算所得实际提现金额：[{}],当前的银行费率：[{}]", realFee, rate);
 			payWithdrawal.setRealFee(realFee);
 			payWithdrawal.setRate(rate);
 			payWithdrawal.setPaymentAccount(condition.getPaymentAccount());
@@ -256,7 +257,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		rollCondtion.setStoreId(businessId);
 		rollCondtion.setWithdrawalsNo(payWithdrawal.getWithdrawalsNo());
 		rollCondtion.setMoney(payWithdrawal.getTotalFee());
-		LOGGER.info("当前更新账户金额入参：--"+rollCondtion);
+		LOGGER.info("当前更新账户金额入参：--{}", JsonUtil.toJSONString(rollCondtion));
 		payServiceImpl.updateStoreBankroll(rollCondtion);
 		
 		// 提下完成之后发送云信消息
@@ -332,7 +333,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
         String withdrawalsNoDateTimeFormatter = "yyMMddHH";
         String val = redisClusterCache.hget(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo);
         if (StringUtils.isNotBlank(val)) {
-            LOGGER.info("订单号生成出现重复：orderNo={}", withdrawalsNo);
+			LOGGER.info("订单号生成出现重复：orderNo=[{}]", withdrawalsNo);
             return false;
         } else {
         	redisClusterCache.hset(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo, withdrawalsNo);
@@ -347,7 +348,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public List<PayWithdrawalsType> getAllWithdrawalType() {
 		List<PayWithdrawalsType> types = payWithdrawalsTypeMapper.selectAll();
 		if(types.isEmpty()){
-			LOGGER.info("types------"+types);
+			LOGGER.info("types------[{}]", types);
 			throw new BusinessException(BusinessCode.CODE_610023);
 		} 
 		return types;

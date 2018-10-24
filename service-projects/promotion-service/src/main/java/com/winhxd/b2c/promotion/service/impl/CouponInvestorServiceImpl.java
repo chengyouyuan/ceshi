@@ -104,10 +104,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         }
 
         if (!CollectionUtils.isEmpty(list)) {
-            Map<Long, Object> reultMap = getCouponInvestorMap(list);
+            Map<Long, Object> resultMap = getCouponInvestorMap(list);
             for (CouponInvestorVO couponInvestorVO : tempList) {
-                if (reultMap.containsKey(couponInvestorVO.getId())) {
-                    Long relTempleteCount = (Long) reultMap.get(couponInvestorVO.getId());
+                if (resultMap.containsKey(couponInvestorVO.getId())) {
+                    Long relTempleteCount = (Long) resultMap.get(couponInvestorVO.getId());
                     String templeteCount = relTempleteCount == null ? "0" : String.valueOf(relTempleteCount);
                     couponInvestorVO.setRelTempleteCount(templeteCount);
                 }

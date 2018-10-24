@@ -243,6 +243,17 @@
     a.id = #{id}
   </select>
 
+  <select id="getRelationCouponGradeCountMap" parameterType="java.util.List" resultType="java.util.Map">
+    SELECT count(c.id) as relTempleteCount,a.id
+    FROM coupon_grade a
+    LEFT JOIN coupon_template c ON a.id = c.grade_id
+    WHERE a.id IN
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item}
+    </foreach>
+    GROUP BY a.id
+  </select>
+
 
   <insert id="insertCouponGrade" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGrade">
      insert into coupon_grade (id, code, name,

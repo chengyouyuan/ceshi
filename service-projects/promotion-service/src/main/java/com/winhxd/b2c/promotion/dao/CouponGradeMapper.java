@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CouponGradeMapper {
     int deleteByPrimaryKey(Long id);
@@ -33,5 +34,7 @@ public interface CouponGradeMapper {
     List<GradeTempleteCountVO> getGradeTempleteCountPage(@Param("gradeId") Long gradeId);
 
     TempleteRelationCountVO getRelationCouponGradeCount(@Param("id") Long id);
+
+    List<Map<Long, Object>> getRelationCouponGradeCountMap(List<Long> ids);
 
 }

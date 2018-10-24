@@ -12,7 +12,6 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponGradeDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponGradeMapper;
@@ -22,9 +21,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author wl
@@ -103,25 +106,46 @@ public class CouponGradeServiceImpl implements CouponGradeService {
         PagedList<CouponGradeVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponGradeVO> couponGradeList = couponGradeMapper.getCouponGradePage(condition);
-        //拼接模板关联数量
-        if(couponGradeList!=null && couponGradeList.size()>0){
-            for(int i=0;i<couponGradeList.size();i++){
-                CouponGradeVO vo = couponGradeList.get(i);
-                TempleteRelationCountVO templeteRelationCountVO = couponGradeMapper.getRelationCouponGradeCount(vo.getId());
-                if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
-                }else{
-                    vo.setRelTempleteCount(String.valueOf(0));
-                }
 
+        List<Map<Long, Object>> list = null;
+        if (!CollectionUtils.isEmpty(couponGradeList)) {
+            List<Long> ids = couponGradeList.stream().map(CouponGradeVO::getId).collect(Collectors.toList());
+            list = couponGradeMapper.getRelationCouponGradeCountMap(ids);
+        }
+
+        if (!CollectionUtils.isEmpty(list)) {
+            Map<Long, Object> resultMap = getCouponGradeMap(list);
+            for (CouponGradeVO couponGradeVO : couponGradeList) {
+                if (resultMap.containsKey(couponGradeVO.getId())) {
+                    Long relTempleteCount = (Long) resultMap.get(couponGradeVO.getId());
+                    String templeteCount = relTempleteCount == null ? "0" : String.valueOf(relTempleteCount);
+                    couponGradeVO.setRelTempleteCount(templeteCount);
+                }
             }
         }
+
         PageInfo<CouponGradeVO> pageInfo = new PageInfo<>(couponGradeList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         return pagedList;
+    }
+
+    /**
+     * 封装返回的数据，组装成所要的数据
+     *
+     * @param list
+     * @return
+     */
+    public Map<Long, Object> getCouponGradeMap(List<Map<Long, Object>> list) {
+        Map<Long, Object> resultMap = new HashMap<>(list.size());
+        for (Map<Long, Object> map : list) {
+            Long id = (Long) map.get("id");
+            Long relTempleteCount = (Long) map.get("relTempleteCount");
+            resultMap.put(id, relTempleteCount);
+        }
+        return resultMap;
     }
 
     @Override

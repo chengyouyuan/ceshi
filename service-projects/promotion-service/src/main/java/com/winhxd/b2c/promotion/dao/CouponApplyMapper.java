@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CouponApplyMapper {
     int deleteByPrimaryKey(Long id);
@@ -33,6 +34,8 @@ public interface CouponApplyMapper {
     List<ApplyTempleteCountVO> findApplyTempleteCountPage(@Param("applyId") long applyId);
 
     TempleteRelationCountVO getRelationCouponApplyCount(@Param("id") Long id);
+
+    List<Map<Long, Object>> getRelationCouponApplyCountMap(List<Long> ids);
 
     CouponApplyVO viewCouponApplyBrandDetail(@Param("id")long id);
 

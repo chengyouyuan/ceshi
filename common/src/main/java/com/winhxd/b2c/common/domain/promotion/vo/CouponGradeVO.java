@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2018/8/8 18:35
  * @Description
  **/
-public class CouponGradeVO {
+public class CouponGradeVO<T> {
     @ApiModelProperty(value = "主键")
     private Long id;
     @ApiModelProperty(value = "规则编码")

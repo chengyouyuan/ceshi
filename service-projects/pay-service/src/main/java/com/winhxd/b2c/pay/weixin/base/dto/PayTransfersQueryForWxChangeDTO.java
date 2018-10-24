@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * PayTransfersQueryForWxChangeDTO
@@ -10,8 +9,7 @@ import lombok.Setter;
  * @Date 2018/8/18 11:45
  * @Description: 查询微信转账至零钱详情条件
  */
-@Setter
-@Getter
+@Data
 public class PayTransfersQueryForWxChangeDTO {
 
     /**
@@ -39,14 +37,4 @@ public class PayTransfersQueryForWxChangeDTO {
      */
     private String appid;
 
-    @Override
-    public String toString() {
-        return "PayTransfersQueryForWxChangeDTO{" +
-                "nonceStr='" + nonceStr + '\'' +
-                ", sign='" + sign + '\'' +
-                ", partnerTradeNo='" + partnerTradeNo + '\'' +
-                ", mchId='" + mchId + '\'' +
-                ", appid='" + appid + '\'' +
-                '}';
-    }
 }

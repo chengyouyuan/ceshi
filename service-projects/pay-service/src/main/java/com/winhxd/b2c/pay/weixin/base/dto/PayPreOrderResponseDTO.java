@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +11,7 @@ import java.io.Serializable;
  * @Description 
  * @version
  */
+@Data
 public class PayPreOrderResponseDTO extends ResponseBase implements Serializable {
 	private static final long serialVersionUID = -6751906874587493059L;
 	
@@ -42,63 +45,4 @@ public class PayPreOrderResponseDTO extends ResponseBase implements Serializable
 	 */
 	private String code_url;
 
-	public String getResultCode() {
-		return resultCode;
-	}
-
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
-	}
-
-	public String getErrCode() {
-		return errCode;
-	}
-
-	public void setErrCode(String errCode) {
-		this.errCode = errCode;
-	}
-
-	public String getErrCodeDes() {
-		return errCodeDes;
-	}
-
-	public void setErrCodeDes(String errCodeDes) {
-		this.errCodeDes = errCodeDes;
-	}
-
-	public String getTradeType() {
-		return tradeType;
-	}
-
-	public void setTradeType(String tradeType) {
-		this.tradeType = tradeType;
-	}
-
-	public String getPrepayId() {
-		return prepayId;
-	}
-
-	public void setPrepayId(String prepayId) {
-		this.prepayId = prepayId;
-	}
-
-	public String getCode_url() {
-		return code_url;
-	}
-
-	public void setCode_url(String code_url) {
-		this.code_url = code_url;
-	}
-
-	@Override
-	public String toString() {
-		return "PayPreOrderResponseDTO{" +
-				"resultCode='" + resultCode + '\'' +
-				", errCode='" + errCode + '\'' +
-				", errCodeDes='" + errCodeDes + '\'' +
-				", tradeType='" + tradeType + '\'' +
-				", prepayId='" + prepayId + '\'' +
-				", code_url='" + code_url + '\'' +
-				'}';
-	}
 }

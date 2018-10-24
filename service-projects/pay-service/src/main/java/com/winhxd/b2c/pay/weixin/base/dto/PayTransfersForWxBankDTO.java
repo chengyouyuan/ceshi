@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * PayTransfersForWxBankDTO
@@ -10,8 +9,7 @@ import lombok.Setter;
  * @Date 2018/8/15 10:47
  * @Description: 微信转账至银行卡接口入参
  */
-@Setter
-@Getter
+@Data
 public class PayTransfersForWxBankDTO {
 
     /**
@@ -59,22 +57,4 @@ public class PayTransfersForWxBankDTO {
      */
     private String desc;
 
-    /*    PayTransfersForWxBankDTO(){
-        super();
-    }*/
-
-    @Override
-    public String toString() {
-        return "PayTransfersForWxBankDTO{" +
-                "mchId='" + mchId + '\'' +
-                ", partnerTradeNo='" + partnerTradeNo + '\'' +
-                ", nonceStr='" + nonceStr + '\'' +
-                ", sign='" + sign + '\'' +
-                ", encBankNo='" + encBankNo + '\'' +
-                ", encTrueName='" + encTrueName + '\'' +
-                ", bankCode='" + bankCode + '\'' +
-                ", amount=" + amount +
-                ", desc='" + desc + '\'' +
-                '}';
-    }
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 /**
  * 响应数据成功时，默认返回请求时的公共参数
  * @author mahongliang
@@ -7,6 +9,7 @@ package com.winhxd.b2c.pay.weixin.base.dto;
  * @Description 
  * @version
  */
+@Data
 public class ResponseBase extends RequestBase {
 	public static final String SUCCESS = "SUCCESS";
 	public static final String FAIL = "FAIL";
@@ -19,21 +22,5 @@ public class ResponseBase extends RequestBase {
      * 错误描述
      */
     private String returnMsg;
-    
-	public String getReturnCode() {
-		return returnCode;
-	}
-	
-	public void setReturnCode(String returnCode) {
-		this.returnCode = returnCode;
-	}
-	
-	public String getReturnMsg() {
-		return returnMsg;
-	}
-	
-	public void setReturnMsg(String returnMsg) {
-		this.returnMsg = returnMsg;
-	}
 
 }

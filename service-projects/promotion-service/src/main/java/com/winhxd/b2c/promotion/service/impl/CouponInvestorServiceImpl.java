@@ -10,7 +10,6 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
@@ -22,9 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author wl
@@ -99,14 +97,19 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         //将数据中的出资方详情和占比 拼接为一个字段返回给前端
         List<CouponInvestorVO> tempList = this.buildFinalList(couponInvestorList);
 
-        if(tempList!=null && tempList.size()>0){
-            for(int i=0;i<tempList.size();i++){
-                CouponInvestorVO vo = tempList.get(i);
-                TempleteRelationCountVO templeteRelationCountVO = couponInvestorMapper.getRelationCouponInvCount(vo.getId());
-                if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
-                }else{
-                    vo.setRelTempleteCount(String.valueOf(0));
+        List<Map<Long, Object>> list = null;
+        if (!CollectionUtils.isEmpty(couponInvestorList)) {
+            List<Long> ids = couponInvestorList.stream().map(CouponInvestorVO::getId).collect(Collectors.toList());
+            list = couponInvestorMapper.getRelationCouponInvCountMap(ids);
+        }
+
+        if (!CollectionUtils.isEmpty(list)) {
+            Map<Long, Object> reultMap = getCouponInvestorMap(list);
+            for (CouponInvestorVO couponInvestorVO : tempList) {
+                if (reultMap.containsKey(couponInvestorVO.getId())) {
+                    Long relTempleteCount = (Long) reultMap.get(couponInvestorVO.getId());
+                    String templeteCount = relTempleteCount == null ? "0" : String.valueOf(relTempleteCount);
+                    couponInvestorVO.setRelTempleteCount(templeteCount);
                 }
             }
         }
@@ -117,6 +120,22 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         return pagedList;
+    }
+
+    /**
+     * 封装返回的数据，组装成所要的数据
+     *
+     * @param list
+     * @return
+     */
+    public Map<Long, Object> getCouponInvestorMap(List<Map<Long, Object>> list) {
+        Map<Long, Object> resultMap = new HashMap<>(list.size());
+        for (Map<Long, Object> map : list) {
+            Long id = (Long) map.get("id");
+            Long relTempleteCount = (Long) map.get("relTempleteCount");
+            resultMap.put(id, relTempleteCount);
+        }
+        return resultMap;
     }
 
     @Override
@@ -163,6 +182,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                             investorNames.deleteCharAt(investorNames.lastIndexOf("/")).toString());
                     couponInvestorVO.setInvestorPercents(
                             investorPercents.deleteCharAt(investorPercents.lastIndexOf("/")).toString());
+
+                    // 清空之前数据
+                    investorNames.delete(0, investorNames.length());
+                    investorPercents.delete(0, investorPercents.length());
                 }
             }
         }

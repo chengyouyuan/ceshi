@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * PayTransfersForWxBankDTO
@@ -10,8 +9,7 @@ import lombok.Setter;
  * @Date 2018/8/15 10:47
  * @Description: 微信转账至零钱接口入参
  */
-@Setter
-@Getter
+@Data
 public class PayTransfersForWxChangeDTO {
 
     /**
@@ -74,25 +72,4 @@ public class PayTransfersForWxChangeDTO {
      */
     private String spbillCreateIp;
 
-    /*    PayTransfersForWxChangeDTO(){
-        super();
-    }*/
-
-    @Override
-    public String toString() {
-        return "PayTransfersForWxChangeDTO{" +
-                "mchAppid='" + mchAppid + '\'' +
-                ", mchid='" + mchid + '\'' +
-                ", deviceInfo='" + deviceInfo + '\'' +
-                ", nonceStr='" + nonceStr + '\'' +
-                ", sign='" + sign + '\'' +
-                ", partnerTradeNo='" + partnerTradeNo + '\'' +
-                ", openid='" + openid + '\'' +
-                ", checkName='" + checkName + '\'' +
-                ", reUserName='" + reUserName + '\'' +
-                ", amount=" + amount +
-                ", desc='" + desc + '\'' +
-                ", spbillCreateIp='" + spbillCreateIp + '\'' +
-                '}';
-    }
 }

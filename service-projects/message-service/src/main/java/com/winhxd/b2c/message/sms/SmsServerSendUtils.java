@@ -1,6 +1,9 @@
 package com.winhxd.b2c.message.sms;
 
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
+import com.winhxd.b2c.common.feign.message.SmsHxdServiceClient;
 import com.winhxd.b2c.message.dao.MessageSmsHistoryMapper;
 import com.winhxd.b2c.message.sms.enums.SmsReturnStatusEnum;
 import com.winhxd.b2c.message.sms.enums.SmsSendStatusEnum;
@@ -34,6 +37,42 @@ public class SmsServerSendUtils {
 	@Autowired
 	private YxtSmsProcess yxtSmsProcess;
 
+	//統一改成惠下单短信服务
+	@Autowired
+	private SmsHxdServiceClient smsHxdServiceClient;
+
+	/**
+	 * 调用惠下单服务发送短信
+	 *
+	 * @param smsCondition 包含手机号、短信内容、类型、用户名、平台等信息
+	 */
+	public void sendSmsByHxd(SMSCondition smsCondition) {
+		String type = "1";
+		smsCondition.setType(type);
+		if (StringUtils.isBlank(smsCondition.getTelePhoneNo())) {
+			smsCondition.setTelePhoneNo(smsCondition.getMobile());
+		}
+		List<MessageSmsHistory> list = new ArrayList<>();
+		MessageSmsHistory tSmsSendHistory = new MessageSmsHistory();
+		tSmsSendHistory.setSendType(Short.parseShort(type));
+		tSmsSendHistory.setSupplyId(type);
+		tSmsSendHistory.setContent(smsCondition.getContent());
+		tSmsSendHistory.setSendTime(new Date());
+		tSmsSendHistory.setTelephone(smsCondition.getTelePhoneNo());
+		ResponseResult result = smsHxdServiceClient.sendSmsAsyncByCondition(smsCondition);
+		if (result.getCode() == SmsReturnStatusEnum.SUCCESS.getStatusCode() || result.getCode() == 200) {
+			tSmsSendHistory.setSendStatus((short) SmsSendStatusEnum.SUCCESS.getCode());
+			tSmsSendHistory.setErrorCode((short) SmsSendStatusEnum.SUCCESS.getCode());
+		} else {
+			tSmsSendHistory.setSendStatus((short) SmsSendStatusEnum.FAIL.getCode());
+			tSmsSendHistory.setErrorCode((short)result.getCode());
+		}
+		list.add(tSmsSendHistory);
+		/**
+		 * 保存到数据库中
+		 */
+		messageSmsHistoryMapper.insertBatch(list);
+	}
 	/**
 	 * 发送短信
 	 *

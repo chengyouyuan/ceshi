@@ -213,17 +213,28 @@ public class MessageSendMqHandler {
     public void sendSms(String smsConditionJson) {
         LOGGER.info("消息服务->发送短信，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
         SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
+        /**
+         * 2018-10-24 改为统一调用惠下单短信服务
+         */
+        try {
+            smsServer.sendSmsByHxd(smsCondition);
+        } catch (Exception e) {
+            LOGGER.error("消息服务->发送短信失败，SmsServiceImpl.sendSmsByHxd(),smsConditionJson={}",smsConditionJson);
+            LOGGER.error("发送短信失败", e);
+        }
+        /**
         String mobile = smsCondition.getMobile();
         String content = smsCondition.getContent();
+        SmsSend smsSend = new SmsSend();
+        smsSend.setTelePhoneNo(mobile);
+        smsSend.setContent(content);
         try {
-            SmsSend smsSend = new SmsSend();
-            smsSend.setTelePhoneNo(mobile);
-            smsSend.setContent(content);
             smsServer.sendSms(smsSend);
         } catch (Exception e) {
             LOGGER.error("消息服务->发送短信失败，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
             LOGGER.error("发送短信失败", e);
         }
+         */
     }
 
     /**

@@ -41,7 +41,7 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
             }
             currentSpan.error(businessException);
             currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(businessException.getErrorCode()));
-            log.warn(getBusinessExceptionInfo(currentSpan.context().traceIdString(), businessException));
+            log.error(getBusinessExceptionInfo(currentSpan.context().traceIdString(), message, businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             currentSpan.error(ex);
@@ -66,12 +66,14 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         return findBusinessException(ex.getCause());
     }
 
-    private String getBusinessExceptionInfo(String traceId, BusinessException e) {
+    private String getBusinessExceptionInfo(String traceId, String message, BusinessException e) {
         StringBuilder str = new StringBuilder(200);
         str.append("Controller业务异常,traceId=")
                 .append(traceId)
                 .append(":")
                 .append(e.getErrorCode())
+                .append(":")
+                .append(message)
                 .append(StringUtils.SPACE).append(e.getMessage());
         if (ArrayUtils.isNotEmpty(e.getStackTrace())) {
             StackTraceElement trace = e.getStackTrace()[0];

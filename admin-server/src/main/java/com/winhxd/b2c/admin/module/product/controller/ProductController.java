@@ -36,7 +36,7 @@ public class ProductController {
     @Autowired
     private ProductServiceClient productServiceClient;
     
-    @RequestMapping(value = "/v1/getProductMsg", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductMsg", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "获取分类、 品牌、 商品spu信息.分页", notes = "获取分类、 品牌、 商品spu信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -44,7 +44,7 @@ public class ProductController {
 		return productServiceClient.getProductMsg(condition);
     }
 	
-    @RequestMapping(value = "v1/getProductSkuMsg", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductSkuMsg", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "获取一级分类、二级分类、商品sku信息.分页", notes = "获取一级分类、二级分类、商品sku信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -52,7 +52,7 @@ public class ProductController {
     	return productServiceClient.getProductSkuMsg(condition);
     }
     
-    @RequestMapping(value = "/v1/getProductsByPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductsByPage", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "获取商品spu信息.分页", notes = "获取商品spu信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -60,7 +60,7 @@ public class ProductController {
     	return productServiceClient.getProductsByPage(condition);
     }
     
-    @RequestMapping(value = "/v1/getProductSkusByPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductSkusByPage", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "获取商品sku信息.分页", notes = "获取商品sku信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -68,7 +68,7 @@ public class ProductController {
     	return productServiceClient.getProductSkusByPage(condition);
     }
     
-    @RequestMapping(value = "/v1/getProductSkus", method = RequestMethod.POST)
+    @RequestMapping(value = "/getProductSkus", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "获取商品sku信息", notes = "获取商品sku信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -76,7 +76,7 @@ public class ProductController {
     	return productServiceClient.getProductSkus(condition);
     }
     
-    @RequestMapping(value = "/v1/getBrandInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/getBrandInfo", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "根据brandCode获取品牌信息", notes = "根据brandCode获取品牌信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -84,7 +84,7 @@ public class ProductController {
     	return productServiceClient.getBrandInfo(brandCodes);
     }
     
-    @RequestMapping(value = "/v1/getBrandInfoByPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/getBrandInfoByPage", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "根据条件获取品牌信息.分页", notes = "根据条件获取品牌信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询商品信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})

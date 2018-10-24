@@ -54,13 +54,11 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		System.out.print("验证码是否存在-----------"+exists);
     		if(!exists){
     			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
-    			res = BusinessCode.CODE_610020;
     			throw new BusinessException(BusinessCode.CODE_610020);
     		}
     		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
 		if (!condition.getVerificationCode().equals(code)) {
 				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
-				res = BusinessCode.CODE_610019;
 				throw new BusinessException(BusinessCode.CODE_610019);
 			}
     		

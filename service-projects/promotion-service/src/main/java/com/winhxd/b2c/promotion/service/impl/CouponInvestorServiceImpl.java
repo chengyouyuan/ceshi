@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -147,23 +148,23 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
     public List<CouponInvestorVO>  buildFinalList(List<CouponInvestorVO> list){
-     if(list!=null && list.size()>0){
-         for(int i=0;i<list.size();i++){
-             CouponInvestorVO vo = list.get(i);
-             List<CouponInvestorDetail> detailList  = vo.getDetailList();
-             if(detailList!=null && detailList.size()>0){
-               String investorNames="";
-               String investorPercents="";
-                 for(int j=0;j<detailList.size();j++){
-                     investorNames += detailList.get(j).getNames()+"/";
-                     investorPercents += detailList.get(j).getPercent()+"/";
-                 }
-                 vo.setInvestorNames(investorNames.substring(0,investorNames.length()-1));
-                 vo.setInvestorPercents(investorPercents.substring(0,investorPercents.length()-1));
-             }
-         }
-     }
-     return list;
+        StringBuilder investorNames = new StringBuilder();
+        StringBuilder investorPercents = new StringBuilder();
+        if (!CollectionUtils.isEmpty(list)) {
+            for (CouponInvestorVO couponInvestorVO : list) {
+                List<CouponInvestorDetail> detailList = couponInvestorVO.getDetailList();
+                if (!CollectionUtils.isEmpty(detailList)) {
+                    for (CouponInvestorDetail investorDetail : detailList) {
+                        investorNames.append(investorDetail.getNames()).append("/");
+                        investorPercents.append(investorDetail.getPercent()).append("/");
+                    }
+                    couponInvestorVO.setInvestorNames(
+                            investorNames.deleteCharAt(investorNames.lastIndexOf("/")).toString());
+                    couponInvestorVO.setInvestorPercents(
+                            investorPercents.deleteCharAt(investorPercents.lastIndexOf("/")).toString());
+                }
+            }
+        }
+        return list;
     }
-
 }

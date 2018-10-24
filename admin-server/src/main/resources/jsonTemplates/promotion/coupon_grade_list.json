@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/promotion/5017/v1/getCouponGradePage",
+    "path": "/promotion/getCouponGradePage",
     "type": "report",
     "id": "coupon_grade_list",
     "code": "coupon_grade_list",
@@ -21,7 +21,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/promotion/5017/v1/getCouponGradePage"
+          "path": "/promotion/getCouponGradePage"
         }
       },
       {

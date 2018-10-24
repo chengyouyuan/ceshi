@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/promotion/5036/v1/queryCouponByActivityPull",
+    "path": "/promotion/queryCouponByActivityPull",
     "type": "report",
     "id": "coupon_cite_view",
     "code": "coupon_cite_view",

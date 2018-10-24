@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/promotion/5049/v1/queryCouponActivityPush",
+    "path": "/promotion/queryCouponActivityPush",
     "type": "report",
     "id": "coupon_activity_push_list",
     "code": "coupon_activity_push_list",
@@ -24,7 +24,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/promotion/5049/v1/queryCouponActivityPush"
+          "path": "/promotion/queryCouponActivityPush"
         }
       },
       {
@@ -87,7 +87,7 @@
                 "id",
                 "activityStatus"
               ],
-              "path": "/promotion/5055/v1/updateCouponActivityStatusPush"
+              "path": "/promotion/updateCouponActivityStatusPush"
             }
           },
           {
@@ -99,7 +99,7 @@
               "params": [
                 "id"
               ],
-              "path": "/promotion/5054/v1/revocationActivityCouponPush"
+              "path": "/promotion/revocationActivityCouponPush"
             }
           }
         ]

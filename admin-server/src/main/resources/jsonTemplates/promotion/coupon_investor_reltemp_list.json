@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/promotion/5025/v1/findInvertorTempleteCountPage",
+    "path": "/promotion/findInvertorTempleteCountPage",
     "type": "report",
     "id": "coupon_investor_reltemp_list",
     "code": "coupon_investor_reltemp_list",

@@ -21,6 +21,7 @@ import com.winhxd.b2c.common.domain.pay.model.*;
 import com.winhxd.b2c.common.domain.pay.vo.*;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.dao.*;
 import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
@@ -277,7 +278,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--金额有误");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}
-		logger.info(log+"--参数"+condition.toString());
+		logger.info(log + "--参数[{}]", JsonUtil.toJSONString(condition));
 		boolean flag=false;
 		Map<String, Object> map = new HashMap<>(5);
 		map.put("type", condition.getType());
@@ -300,7 +301,7 @@ public class PayServiceImpl implements PayService{
 			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
 			if (CollectionUtils.isNotEmpty(list)) {
 				//说明在订单闭环的时候  已经给用户添加过资金
-				logger.info(log+"--订单闭环计算用户资金重复--订单号"+orderNo);
+				logger.info(log + "--订单闭环计算用户资金重复--订单号[{}]", orderNo);
 				return;
 			}
 			 changeCondition.setOrderNo(orderNo);
@@ -333,7 +334,7 @@ public class PayServiceImpl implements PayService{
 			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
 			if (CollectionUtils.isNotEmpty(list)) {
 				//说明在订单闭环的时候  已经给用户添加过资金
-				logger.info(log+"--结算审核计算用户资金重复--订单号"+orderNo+"费用类型"+moneyType);
+				logger.info(log + "--结算审核计算用户资金重复--订单号[{}],费用类型--[{}]", orderNo, moneyType);
 				throw new BusinessException(BusinessCode.CODE_600006);
 			}
 			 changeCondition.setOrderNo(orderNo);
@@ -442,14 +443,14 @@ public class PayServiceImpl implements PayService{
 		List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
 		if (CollectionUtils.isNotEmpty(list)) {
 			//请勿重复给用户变化资金
-			logger.info(log+"--计算用户资金重复--提现单号"+withdrawalsNo);
+			logger.info(log + "--计算用户资金重复--提现单号[{}]", withdrawalsNo);
 			throw new BusinessException(BusinessCode.CODE_600006);
 		}
 	}
 	
 	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
 		String lockKey = CacheName.BACKROLL_STORE + condition.getStoreId();
-		logger.info(logLabel+"门店资金变化参数--"+condition.toString());
+		logger.info(logLabel + "门店资金变化参数[{}]", JsonUtil.toJSONString(condition));
 		Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
 		try{
 			lock.lock();
@@ -657,7 +658,7 @@ public class PayServiceImpl implements PayService{
             logger.error(log + "--创建人姓名为空");
 			return;
 		}
-		logger.info(log+"--参数"+order.toString());
+		logger.info(log + "--参数[{}]", JsonUtil.toJSONString(order));
 		PayRefundCondition payRefund = new PayRefundCondition();
 		payRefund.setOutTradeNo(order.getPaymentSerialNum());
 		payRefund.setOrderNo(orderNo);

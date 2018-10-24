@@ -45,7 +45,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 		payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
 		PayStoreWallet payStoreWallet = new PayStoreWallet();
 		BeanUtils.copyProperties(condition, payStoreWallet);
-		LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
+		LOGGER.info("绑定微信支付钱包入参：---[{}]", payStoreWallet);
 		//插入当前要绑定的微信钱包信息
 		payStoreWallet.setStatus(StatusEnums.EFFECTIVE.getCode());
 		payStoreWallet.setCreated(new Date());
@@ -67,12 +67,12 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	public void valiWeixinCondition(PayStoreWalletCondition condition){
 		String mobile = condition.getMobile();
 		if(StringUtils.isEmpty(mobile)){
-			LOGGER.info("业务异常："+BusinessCode.CODE_610015);
+			LOGGER.info("业务异常：手机号为空");
 			throw new BusinessException(BusinessCode.CODE_610015);
 		}
 		String verificationCode = condition.getVerificationCode();
     	if(StringUtils.isEmpty(verificationCode)){
-    		LOGGER.info("业务异常："+BusinessCode.CODE_610016);
+			LOGGER.info("业务异常：验证码为空");
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
@@ -83,20 +83,20 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
-		LOGGER.info("微信验证码是否存在-----------" + exists);
+		LOGGER.info("微信验证码是否存在--[{}]", exists);
 		if(!exists){
-			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
+			LOGGER.info("业务异常：验证码已失效");
 			throw new BusinessException(BusinessCode.CODE_610020);
 		}
 		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		if(!verificationCode.equals(code)){
-			LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+			LOGGER.info("业务异常：验证码输入不正确");
 			throw new BusinessException(BusinessCode.CODE_610019);
 		}
 		
 		String openId = condition.getOpenid();
 		if(StringUtils.isEmpty(openId)){
-			LOGGER.info("业务异常："+BusinessCode.CODE_610031);
+			LOGGER.info("业务异常：请输入微信账号");
 			throw new BusinessException(BusinessCode.CODE_610031);
 		}
     }

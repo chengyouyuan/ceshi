@@ -163,6 +163,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                             investorNames.deleteCharAt(investorNames.lastIndexOf("/")).toString());
                     couponInvestorVO.setInvestorPercents(
                             investorPercents.deleteCharAt(investorPercents.lastIndexOf("/")).toString());
+
+                    // 清空之前数据
+                    investorNames.delete(0, investorNames.length());
+                    investorPercents.delete(0, investorPercents.length());
                 }
             }
         }

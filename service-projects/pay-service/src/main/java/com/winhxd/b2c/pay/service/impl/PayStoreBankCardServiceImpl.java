@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.api.ApiPayStoreBindBankCardController;
 import com.winhxd.b2c.pay.dao.PayBankCardMapper;
 import com.winhxd.b2c.pay.service.PayStoreBankCardService;
@@ -51,19 +52,18 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 //    	currentStoreUser.setBusinessId(84l);
    ////////////////////////////////////////////////////
     		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
-    		System.out.print("验证码是否存在-----------"+exists);
     		if(!exists){
-    			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
+                LOGGER.info("业务异常：验证码已失效");
     			throw new BusinessException(BusinessCode.CODE_610020);
     		}
     		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
 		if (!condition.getVerificationCode().equals(code)) {
-				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+            LOGGER.info("业务异常：验证码输入不正确");
 				throw new BusinessException(BusinessCode.CODE_610019);
 			}
     		
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
-    		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);
+        LOGGER.info("当前门店即将要绑定的银行卡信息----[{}]", JsonUtil.toJSONString(condition));
     		//绑定新的银行卡
     		PayBankCard payBankCard = new PayBankCard();
         	BeanUtils.copyProperties(condition, payBankCard);

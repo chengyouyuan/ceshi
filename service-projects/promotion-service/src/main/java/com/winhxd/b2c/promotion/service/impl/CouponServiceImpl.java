@@ -503,7 +503,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
-        logger.info("根据订单退优惠券,订单号" + condition.getOrderNo());
+        logger.info("根据订单退优惠券,订单号:{}",condition.getOrderNo());
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for (CouponTemplateUse couponTemplateUse : couponTemplateUses) {
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
@@ -520,7 +520,7 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateSend.setStatus(couponStatus);
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
-        logger.info("订单退优惠券结束,订单号" + condition.getOrderNo());
+        logger.info("订单退优惠券结束,订单号:{}",condition.getOrderNo());
         return true;
     }
 
@@ -1012,8 +1012,6 @@ public class CouponServiceImpl implements CouponService {
         int pushCount = 0;
         if (!CollectionUtils.isEmpty(customerIdData.getData())) {
             pushCount = customerIdData.getData().size();
-//            int couponPushCustomerCount = couponPushCustomerMapper.selectCouponStoreUser(customerIdData.getData());
-//            pushCount = storeBindingUserCount + couponPushCustomerCount;
         }
         return pushCount;
     }

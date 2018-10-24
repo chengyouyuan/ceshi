@@ -388,7 +388,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("queryCouponByActivity--Id:" + condition.getId());
+        logger.info("queryCouponByActivity--Id:{}",condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -418,7 +418,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("queryStoreByActivity--Id:" + condition.getId());
+        logger.info("queryStoreByActivity--Id:{}",condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -440,7 +440,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("queryCustomerByActivity--Id:" + condition.getId());
+        logger.info("queryCustomerByActivity--Id:{}",condition.getId());
         ResponseResult<List<CustomerUserInfoExportVO>> result = new ResponseResult<List<CustomerUserInfoExportVO>>();
         List<CustomerUserInfoExportVO> list = new ArrayList<>();
 

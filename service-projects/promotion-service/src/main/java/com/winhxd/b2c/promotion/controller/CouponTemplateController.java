@@ -67,7 +67,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @Override
     public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition) {
-        logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:" + JsonUtil.toJSONString(couponTemplateCondition));
+        logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:{}",JsonUtil.toJSONString(couponTemplateCondition));
         ResponseResult<PagedList<CouponTemplateVO>> responseResult = new ResponseResult<PagedList<CouponTemplateVO>>();
         PagedList<CouponTemplateVO> pagedList =  couponTemplateService.findCouponTemplatePageByCondition(couponTemplateCondition);
         responseResult.setData(pagedList);

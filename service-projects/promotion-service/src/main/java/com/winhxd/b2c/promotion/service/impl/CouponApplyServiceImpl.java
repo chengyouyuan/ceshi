@@ -60,7 +60,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
     @Override
     public CouponApplyVO viewCouponApplyDetail(String id,Short type) {
-        LOGGER.info("适用对象详情查看参数id:"+id+" type:"+type);
+        LOGGER.info("适用对象详情查看参数id:{},type:{}",id,type);
 
         CouponApplyVO vo = null;
         if(type.equals(CouponApplyEnum.COMMON_COUPON.getCode())){
@@ -145,7 +145,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
     @Override
     public int updateCouponApplyToValid(Long id, Long userId, String userName) {
-        LOGGER.info("适用对象规则设置无效参数id:"+id+" userId:"+userId+" userName"+userName);
+        LOGGER.info("适用对象规则设置无效参数id:{},userId:{},userName{}",id,userId,userName);
 
         int count = couponApplyMapper.updateCouponGradeValid(id,userId,userName);
         return count;

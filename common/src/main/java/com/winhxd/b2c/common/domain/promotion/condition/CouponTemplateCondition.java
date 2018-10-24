@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.domain.promotion.condition;
 import com.winhxd.b2c.common.domain.common.PagedCondition;
 import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @Date 2018/8/6 09:56
  * @Description
  **/
+@Data
 public class CouponTemplateCondition extends PagedCondition implements Serializable {
     @ApiModelProperty(value = "主键")
     private String id;
@@ -53,164 +55,4 @@ public class CouponTemplateCondition extends PagedCondition implements Serializa
     private String corner;
     @ApiModelProperty(value = "日期")
     private DateInterval dateInterval;
-
-    public DateInterval getDateInterval() {
-        return dateInterval;
-    }
-
-    public void setDateInterval(DateInterval dateInterval) {
-        this.dateInterval = dateInterval;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getExolian() {
-        return exolian;
-    }
-
-    public void setExolian(String exolian) {
-        this.exolian = exolian;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public Long getInvestorId() {
-        return investorId;
-    }
-
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
-    }
-
-    public Long getGradeId() {
-        return gradeId;
-    }
-
-    public void setGradeId(Long gradeId) {
-        this.gradeId = gradeId;
-    }
-
-    public Long getApplyRuleId() {
-        return applyRuleId;
-    }
-
-    public void setApplyRuleId(Long applyRuleId) {
-        this.applyRuleId = applyRuleId;
-    }
-
-    public String getCouponLabel() {
-        return couponLabel;
-    }
-
-    public void setCouponLabel(String couponLabel) {
-        this.couponLabel = couponLabel;
-    }
-
-    public Short getCalType() {
-        return calType;
-    }
-
-    public void setCalType(Short calType) {
-        this.calType = calType;
-    }
-
-    public Short getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Short payType) {
-        this.payType = payType;
-    }
-
-    public Short getApplyRuleType() {
-        return applyRuleType;
-    }
-
-    public void setApplyRuleType(Short applyRuleType) {
-        this.applyRuleType = applyRuleType;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getInvestorName() {
-        return investorName;
-    }
-
-    public void setInvestorName(String investorName) {
-        this.investorName = investorName;
-    }
-
-    public String getGradeName() {
-        return gradeName;
-    }
-
-    public void setGradeName(String gradeName) {
-        this.gradeName = gradeName;
-    }
-
-    public String getApplyRuleName() {
-        return applyRuleName;
-    }
-
-    public void setApplyRuleName(String applyRuleName) {
-        this.applyRuleName = applyRuleName;
-    }
-
-    public String getCreatedByName() {
-        return createdByName;
-    }
-
-    public void setCreatedByName(String createdByName) {
-        this.createdByName = createdByName;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getCorner() {
-        return corner;
-    }
-
-    public void setCorner(String corner) {
-        this.corner = corner;
-    }
 }

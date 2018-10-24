@@ -84,7 +84,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      */
     @Override
     public ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition) {
-        LOGGER.info("出资方设置无效参数id:={},userId:={},userName:={}" + condition.getId(), condition.getUserId(), condition.getUserName());
+        LOGGER.info("出资方设置无效参数id:={},userId:={},userName:={}",condition.getId(), condition.getUserId(), condition.getUserName());
         if (null == condition.getId() || null == condition.getUserId()
                 || StringUtils.isBlank(condition.getUserName())) {
             throw new BusinessException(BusinessCode.CODE_500010, "必传参数错误");

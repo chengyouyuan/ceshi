@@ -42,7 +42,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     @Override
     @Transactional
     public int saveCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
-        logger.info("添加优惠券模板参数:"+couponTemplateCondition.toString());
+        logger.info("添加优惠券模板参数:{}",couponTemplateCondition);
         int flag = 0;
         CouponTemplate couponTemplate = new CouponTemplate();
         couponTemplate.setTitle(couponTemplateCondition.getTitle());
@@ -138,13 +138,11 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
             vo.setCode(couponTemplate.getCode());
             vo.setRemarks(couponTemplate.getRemarks());
         }
-
         return vo;
     }
 
 
     /**
-     *
      *@Deccription  设为无效
      *@Params  ids  多个页面勾选的ID 用逗号","隔开
      *@Return  ResponseResult 删除是否成功
@@ -155,14 +153,4 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     public int updateCouponTemplateToValid(Long id, Long updatedBy, Date updated, String updatedByName) {
        return couponTemplateMapper.updateCouponTemplateToValid(id,updatedBy,updated,updatedByName);
     }
-
-
-    /**
-     * 自动生成32位的UUid，对应数据库的主键id进行插入用。
-     * @return
-     */
-    public String getUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
 }

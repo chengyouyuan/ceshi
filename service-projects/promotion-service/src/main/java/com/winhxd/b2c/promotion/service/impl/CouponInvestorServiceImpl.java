@@ -41,9 +41,9 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
     @Override
     @Transactional
-    public int saveCouponInvestor( CouponInvestorCondition condition) {
+    public int saveCouponInvestor(CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
-        LOGGER.info("添加出资方参数" + condition.toString());
+        LOGGER.info("添加出资方参数:{}",condition);
         List<LinkedHashMap<String, Object>> deatils = condition.getDetails();
         int flag = 0;
         CouponInvestor couponInvestor = new CouponInvestor();

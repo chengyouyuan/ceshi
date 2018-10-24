@@ -57,7 +57,7 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     @Override
     @Transactional
     public int addCouponGrade(CouponGradeCondition condition) {
-        LOGGER.info("添加坎级规则参数" + condition.toString());
+        LOGGER.info("添加坎级规则参数:{}",condition);
         int flag = 0;
         CouponGrade couponGrade = new CouponGrade();
         couponGrade.setCode(condition.getCode());

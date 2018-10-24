@@ -31,7 +31,7 @@ public class CompanyController {
     @Autowired
     private CompanyServiceClient companyServiceClient;
     
-    @RequestMapping(value = "/7001/v1/getCompanyInfoByPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/getCompanyInfoByPage", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "根据条件查询品牌商信息.分页", notes = "根据条件查询品牌商信息.分页")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询品牌商信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -39,7 +39,7 @@ public class CompanyController {
 		return companyServiceClient.getCompanyInfoByPage(condition);
     }
     
-    @RequestMapping(value = "/7002/v1/getCompanyInfoByCodes", method = RequestMethod.POST)
+    @RequestMapping(value = "/getCompanyInfoByCodes", method = RequestMethod.POST)
     @CheckPermission(PermissionEnum.PROD_MANAGEMENT)
     @ApiOperation(value = "根据品牌商编码查询品牌商信息", notes = "根据品牌商编码查询品牌商信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询品牌商信息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})

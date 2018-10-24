@@ -208,7 +208,7 @@ public class CouponController {
     }
 
     @ApiOperation("优惠券活动导出指定用户信息")
-    @GetMapping(value = "/5064/v1/couponActivityExportCustomerExcel")
+    @GetMapping(value = "/couponActivityExportCustomerExcel")
     public ResponseEntity<byte[]> couponActivityExportCustomerExcel(CouponActivityCondition condition){
         ResponseResult<List<CustomerUserInfoExportVO>> listResponseResult = couponActivityServiceClient.queryCustomerByActivity(condition);
         List<CustomerUserInfoExportVO> list = listResponseResult.getData();
@@ -353,7 +353,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("撤回活动优惠券")
-	@PostMapping(value = "/5054/v1/revocationActivityCouponPush")
+	@PostMapping(value = "/revocationActivityCouponPush")
 	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_REVOCATION)
 	public ResponseResult<Integer> revocationActivityCouponPush(@RequestBody CouponActivityCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
@@ -391,7 +391,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("停用/开启活动")
-	@PostMapping(value = "/5055/v1/updateCouponActivityStatusPush")
+	@PostMapping(value = "/updateCouponActivityStatusPush")
 	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_UPDATE_STATUS)
 	public ResponseResult<Integer> updateCouponActivityStatusPush(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();

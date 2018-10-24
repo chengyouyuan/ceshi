@@ -157,8 +157,6 @@ public class ExcelUtils {
     public static <T> ImportResult<T> importExcelVerify(InputStream inputStream, Class<?> pojoClass) throws Exception {
         ImportParams params = new ImportParams();
         params.setNeedVerfiy(true);
-        // 读取表格标题行数默认为0
-        params.setTitleRows(1);
         ExcelImportResult<T> result = ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
 
         ImportResult<T> res = new ImportResult<>();

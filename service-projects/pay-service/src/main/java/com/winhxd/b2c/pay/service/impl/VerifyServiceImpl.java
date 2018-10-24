@@ -20,6 +20,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.service.PayService;
@@ -32,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -126,7 +126,7 @@ public class VerifyServiceImpl implements VerifyService {
                         count++;
                     }
                 }
-                log.info(String.format("保存订单[%s]费用明细，共[%d]笔费用", orderNo, count));
+                log.info("保存订单{}费用明细，共{}笔费用", orderNo, count);
             } else {
                 throw new BusinessException(-1, "订单明细为NULL");
             }
@@ -159,8 +159,8 @@ public class VerifyServiceImpl implements VerifyService {
                 }
                 count = accountingDetailMapper.updateAccountingDetailCompletedByComplete(
                         orderNo, orderInfoDetailVO.getFinishDateTime());
-                log.info(String.format("订单[%s]费用明细入账，入账时间[%s]，共[%d]笔费用",
-                        orderNo, new SimpleDateFormat(timeFormat).format(orderInfoDetailVO.getFinishDateTime()), count));
+                log.info("订单[{}]费用明细入账，入账时间[{}]，共[{}]笔费用",
+                        orderNo, DateUtil.format(orderInfoDetailVO.getFinishDateTime(), timeFormat), count);
             } else {
                 throw new BusinessException(-1, "订单明细为NULL");
             }
@@ -436,7 +436,7 @@ public class VerifyServiceImpl implements VerifyService {
             }
             updatedCount++;
         }
-        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔订单", verifyCode, updatedCount);
+        log.info("门店资金结算-核销批次[{}]，共结算[{}]笔订单", verifyCode, updatedCount);
         return updatedCount;
     }
 

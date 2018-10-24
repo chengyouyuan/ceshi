@@ -62,8 +62,6 @@ public final class BusinessCode {
     public static final int  CODE_100821 = 100821;
     @ApiModelProperty("您还不是惠下单用户快去注册吧")
     public static final int  CODE_100822 = 100822;
-    @ApiModelProperty("该微信号已绑定过账号")
-    public static final int  CODE_100910 = 100910;
     @ApiModelProperty("验证码请求时长没有超过一分钟")
     public static final int  CODE_100912 = 100912;
     @ApiModelProperty("您还不是惠下单用户快去注册吧")
@@ -108,8 +106,6 @@ public final class BusinessCode {
     public static final int CODE_102702 = 102702;
     @ApiModelProperty("1028接口参数无效")
     public static final int CODE_102801 = 102801;
-    @ApiModelProperty("1029接口门店ID参数为空")
-    public static final int CODE_102901 = 102901;
     @ApiModelProperty("1029接口门店ID参数无效")
     public static final int CODE_102902 = 102902;
     @ApiModelProperty("1031接口参数无效")
@@ -144,8 +140,6 @@ public final class BusinessCode {
     public static final int CODE_200009 = 200009;
     @ApiModelProperty("用户信息不存在")
     public static final int CODE_200010 = 200010;
-    @ApiModelProperty("当前用户和门店已经存在绑定关系")
-    public static final int CODE_200011 = 200011;
     @ApiModelProperty("门店小程序码url参数为空")
     public static final int CODE_200017 = 200017;
     @ApiModelProperty("门店小程序码图片生成失败")
@@ -175,29 +169,29 @@ public final class BusinessCode {
     @ApiModelProperty("字典编码已被使用")
     public static final int CODE_303001 = 303001;
     @ApiModelProperty("app版本号为空")
-    public static final int CODE_3040001 = 3040001;
+    public static final int CODE_304001 = 304001;
     @ApiModelProperty("支付中，请勿重复支付")
-    public static final int CODE_3400900 = 3400900;
+    public static final int CODE_340000 = 340000;
     @ApiModelProperty("生产签名失败")
-    public static final int CODE_3400901 = 3400901;
+    public static final int CODE_340001 = 340001;
     @ApiModelProperty("微信请求参数转换异常")
-    public static final int CODE_3400902 = 3400902;
+    public static final int CODE_340002 = 340002;
     @ApiModelProperty("微信响应参数解析异常")
-    public static final int CODE_3400903 = 3400903;
+    public static final int CODE_340003 = 340003;
     @ApiModelProperty("微信响应值错误")
-    public static final int CODE_3400904 = 3400904;
+    public static final int CODE_340004 = 340004;
     @ApiModelProperty("微信响应验签失败")
-    public static final int CODE_3400905 = 3400905;
+    public static final int CODE_340005 = 340005;
     @ApiModelProperty("Bean转换失败")
-    public static final int CODE_3400906 = 3400906;
+    public static final int CODE_340006 = 340006;
     @ApiModelProperty("下载对账单时，响应参数解析失败")
-    public static final int CODE_3400907 = 3400907;
+    public static final int CODE_340007 = 340007;
     @ApiModelProperty("支付完成，请勿重复支付")
-    public static final int CODE_3400908 = 3400908;
+    public static final int CODE_340008 = 340008;
     @ApiModelProperty("微信无证书请求失败")
-    public static final int CODE_3400910 = 3400910;
+    public static final int CODE_340010 = 340010;
     @ApiModelProperty("微信有证书请求失败")
-    public static final int CODE_3400911 = 3400911;
+    public static final int CODE_340011 = 340011;
 
 
     @ApiModelProperty("订单号错误")
@@ -292,18 +286,16 @@ public final class BusinessCode {
     public static final int CODE_402020 = 402020;
     @ApiModelProperty("购物车:订单异常，请联系门店！")
     public static final int CODE_402021 = 402021;
-    @ApiModelProperty("用户不存在")
-    public static final int CODE_4010001 = 4010001;
     @ApiModelProperty("订单状态不允许退款")
-    public static final int CODE_4021002 = 4021002;
+    public static final int CODE_402102 = 402102;
     @ApiModelProperty("参数异常")
-    public static final int CODE_4022001 = 4022001;
+    public static final int CODE_402201 = 402201;
     @ApiModelProperty("参数错误")
-    public static final int CODE_4061001 = 4061001;
+    public static final int CODE_406101 = 406101;
     @ApiModelProperty("选择的订单号不是退款失败的订单")
-    public static final int CODE_4062002 = 4062002;
+    public static final int CODE_406202 = 406202;
     @ApiModelProperty("订单状态不允许退款")
-    public static final int CODE_4062003 = 4062003;
+    public static final int CODE_406203 = 406203;
 
 
     @ApiModelProperty("不存在符合的优惠券活动")
@@ -468,8 +460,6 @@ public final class BusinessCode {
     public static final int CODE_610801 = 610801;
     @ApiModelProperty("门店提现到微信钱包失败")
     public static final int CODE_610802 = 610802;
-    @ApiModelProperty("未获取到门店信息")
-    public static final int CODE_610901 = 610901;
     @ApiModelProperty("您本日提现已达3次")
     public static final int CODE_610902 = 610902;
     @ApiModelProperty("提现计算手续费 参数为空")

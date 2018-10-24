@@ -110,7 +110,7 @@ public class StoreServiceController implements StoreServiceClient {
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
 			 result= new ResponseResult<>(BusinessCode.CODE_103101);
 		}
-		logger.info("StoreServiceClient-->findShopCarProd 入参：skuCodes="+skuCodes+",storeId="+storeId);
+		logger.info("StoreServiceClient-->findShopCarProd 入参：skuCodes={},storeId={}"+skuCodes,storeId);
 		String []skuCodeArray=new String[skuCodes.size()];
 		skuCodeArray=skuCodes.toArray(skuCodeArray);
 		//查询门店下商品信息集合--判断数据权限
@@ -161,7 +161,7 @@ public class StoreServiceController implements StoreServiceClient {
 			}
 			result.setData(shopCarProdList);
 		}
-		logger.info("StoreServiceClient-->findShopCarProd 返参：result="+result);
+		logger.info("StoreServiceClient-->findShopCarProd 返参：result={}",result);
 		return result;
 	}
 
@@ -207,7 +207,7 @@ public class StoreServiceController implements StoreServiceClient {
 	@Override
 	public ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions) {
 		ResponseResult<Void> result = new ResponseResult<>();
-		logger.info("StoreServiceClient-->findShopCarProd 入参：conditions="+conditions);
+		logger.info("StoreServiceClient-->findShopCarProd 入参：conditions={}",conditions);
 		if(conditions == null || conditions.size() <= 0){
 		    result = new ResponseResult<>(BusinessCode.CODE_102401);
 		    return result;

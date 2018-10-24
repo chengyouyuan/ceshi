@@ -84,7 +84,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					//产品的信息
 					ProductSkuVO prodSku = prodSkuInfo.get(skuCode);
 					if (prodSku == null) {
-						logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询不到skuCode:" + skuCode + "的商品信息");
+						logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询不到skuCode:{}的商品信息",skuCode);
 						throw new BusinessException(BusinessCode.CODE_1001);
 					}
 					//不存在，需要重新插入
@@ -129,8 +129,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			}
 
 		} else {
-			logger.error("StoreProductManageService ->batchPutawayStoreProductManage参数异常,storeId:" + storeId + ",putawayInfo:"
-					+ putawayInfo + ",prodSkuInfo:" + prodSkuInfo);
+			logger.error("StoreProductManageService ->batchPutawayStoreProductManage参数异常,storeId:{},putawayInfo:{},prodSkuInfo:{}",storeId,putawayInfo,prodSkuInfo);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 
@@ -149,7 +148,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			for(String skuCode:skuCodes){
 				StoreProductManage  spManage=storeProductManageMapper.selectBySkuCodeAndStoreId(storeId, skuCode);
 				if(spManage==null){
-					logger.error("StoreProductManageService ->removeStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
+					logger.error("StoreProductManageService ->removeStoreProductManage异常,查询不到storeId:{},skuCode:{}的门店商品管理信息！",storeId,skuCode);
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
 				spManage.setProdStatus(StoreProductStatusEnum.DELETED.getStatusCode());
@@ -161,7 +160,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 				storeProductManageMapper.updateByPrimaryKeySelective(spManage);
 			}
 		}else{
-			logger.error("StoreProductManageService ->removeStoreProductManage参数异常,storeId:"+storeId+",skuCodes:"+skuCodes);
+			logger.error("StoreProductManageService ->removeStoreProductManage参数异常,storeId:{},skuCodes:{}",storeId,skuCodes);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		
@@ -179,7 +178,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			for(String skuCode:skuCodes){
 				StoreProductManage  spManage=storeProductManageMapper.selectBySkuCodeAndStoreId(storeId, skuCode);
 				if(spManage==null){
-					logger.error("StoreProductManageService ->unPutawayStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
+					logger.error("StoreProductManageService ->unPutawayStoreProductManage异常,查询不到storeId:{},skuCode:{}的门店商品管理信息！",storeId,skuCode);
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
 				spManage.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
@@ -191,7 +190,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 				storeProductManageMapper.updateByPrimaryKeySelective(spManage);
 			}
 		}else{
-			logger.error("StoreProductManageService ->unPutawayStoreProductManage参数异常,storeId:"+storeId+",skuCodes:"+skuCodes);
+			logger.error("StoreProductManageService ->unPutawayStoreProductManage参数异常,storeId:{},skuCodes:{}",storeId,skuCodes);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		
@@ -208,7 +207,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			}
 			StoreProductManage  spManage=storeProductManageMapper.selectBySkuCodeAndStoreId(storeId, prodOperateInfo.getSkuCode());
 			if(spManage==null){
-				logger.error("StoreProductManageService ->modifyStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+prodOperateInfo.getSkuCode()+"的门店商品管理信息！");
+				logger.error("StoreProductManageService ->modifyStoreProductManage异常,查询不到storeId:{},skuCode:{}的门店商品管理信息！",storeId,prodOperateInfo.getSkuCode());
 				throw new BusinessException(BusinessCode.CODE_1001);
 			}
 			spManage.setUpdated(new Date());
@@ -220,7 +219,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			//更新
 			storeProductManageMapper.updateByPrimaryKeySelective(spManage);
 		}else{
-			logger.error("StoreProductManageService ->modifyStoreProductManage参数异常,storeId:"+storeId+",ProdOperateInfoCondition:"+prodOperateInfo);
+			logger.error("StoreProductManageService ->modifyStoreProductManage参数异常,storeId:{},ProdOperateInfoCondition:{}",storeId,prodOperateInfo);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		
@@ -238,7 +237,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			list.setTotalRows(page.getTotal());
 			return list;
 		}else{
-			logger.error("StoreProductManageService ->findSimpelVOByCondition参数异常,condition:"+condition);
+			logger.error("StoreProductManageService ->findSimpelVOByCondition参数异常,condition:{}",condition);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		
@@ -271,7 +270,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			list.setTotalRows(page.getTotal());
 			return list;
 		}else{
-			logger.error("StoreProductManageService ->findStoreProdManageList参数异常,condition:"+condition);
+			logger.error("StoreProductManageService ->findStoreProdManageList参数异常,condition:{}",condition);
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 	}
@@ -288,7 +287,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		//查询门店商品信息
 		StoreProductManage spm=this.storeProductManageMapper.selectByPrimaryKey(id);
 		if(spm==null){
-			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为："+id+"的门店商品信息");
+			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为：{}的门店商品信息",id);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		//传过来如果状态是下架状态表示：下架--》上架（是个上架操作）与之相反

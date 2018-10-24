@@ -124,7 +124,6 @@ public class ApiStoreProductManageController {
         Byte prodType = condition.getProdType();
         // 门店编码
         Long storeId = storeUser.getBusinessId();
-        // Long storeId = condition.getStoreId();
         // 已上架的商品sku
         List<String> putawayProdSkus = null;
 
@@ -354,7 +353,7 @@ public class ApiStoreProductManageController {
                     if(StringUtils.isNotBlank(sspVO.getSkuCode())){
                         skuCodes.add(sspVO.getSkuCode());
                     }else{
-                        logger.info("查询不到"+sspVO);
+                        logger.info("查询不到:{}",sspVO);
                     }
                 }
             }
@@ -491,7 +490,7 @@ public class ApiStoreProductManageController {
                     // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除
                     if (StringUtils.isBlank(simpleVOList.get(i).getSkuName())) {
                         invalidSkuCode.add(simpleVOList.get(i));
-                        logger.info("查询不到skuCode:" + simpleVOList.get(i).getSkuCode() + "的信息。");
+                        logger.info("查询不到skuCode:{}的信息。",simpleVOList.get(i).getSkuCode());
                     }
 
                 }
@@ -541,7 +540,7 @@ public class ApiStoreProductManageController {
         // 上架商品
         spmcondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
         List<String> skuCodes = storeProductManageService.countSkusByConditon(spmcondition);
-        logger.info("门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+skuCodes+",个数："+skuCodes.size());
+        logger.info("门店商品表：storeId:{},上架商品未设置价格的skucode:{},个数:{}",storeId,skuCodes,skuCodes.size());
         int count = 0;
         List<String> validSkuCode=new ArrayList<>();
         //调用商品接口查询商品是否skuCode存在
@@ -562,7 +561,7 @@ public class ApiStoreProductManageController {
                 }
             }
         }
-        logger.info("最终有效门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+validSkuCode+",个数："+validSkuCode.size());
+        logger.info("最终有效门店商品表：storeId:{},上架商品未设置价格的skucode：{},个数:{}"+storeId,validSkuCode,validSkuCode.size());
         // 设置是否有未设置价格的商品
         if (count > 0) {
             vo.setCheckResult(true);

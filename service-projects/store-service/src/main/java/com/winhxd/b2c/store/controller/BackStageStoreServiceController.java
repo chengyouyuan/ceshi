@@ -302,7 +302,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
             ssp.setProdStatus(status);
             
             storeSubmitProductService.modifyStoreSubmitProductByAdmin(adminUser, ssp);
-            //this.storeSubmitProductService.modifyStoreSubmitProductByAdmin(adminUser, storeSubmitProduct);
         }
         return responseResult;
     }

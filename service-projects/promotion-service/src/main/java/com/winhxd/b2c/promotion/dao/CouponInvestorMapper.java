@@ -1,6 +1,5 @@
 package com.winhxd.b2c.promotion.dao;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
@@ -9,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CouponInvestorMapper {
     int deleteByPrimaryKey(Long id);
@@ -36,4 +36,6 @@ public interface CouponInvestorMapper {
     List<InvertorTempleteCountVO> getInvertorTempleteCountPage(@Param("investorId") long investorId);
 
     TempleteRelationCountVO getRelationCouponInvCount(@Param("id") Long id);
+
+    List<Map<Long, Object>> getRelationCouponInvCountMap(List<Long> ids);
 }

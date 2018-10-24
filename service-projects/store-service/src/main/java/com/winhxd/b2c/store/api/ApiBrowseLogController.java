@@ -42,7 +42,6 @@ public class ApiBrowseLogController {
     @PostMapping(value = "/1016/v1/saveBrowseLogLogin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogin(@RequestBody StoreBrowseLogCondition condition) {
         if (condition.getStoreId() == null) {
-            logger.error("C端用户浏览门店进入日志 saveBrowseLogLogout, 参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         Long customerId = UserContext.getCurrentCustomerUser().getCustomerId();
@@ -58,7 +57,6 @@ public class ApiBrowseLogController {
     @PostMapping(value = "/1017/v1/saveBrowseLogLogout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogout(@RequestBody StoreBrowseLogCondition condition) {
         if (condition.getStoreId() == null) {
-            logger.error("C端用户浏览门店退出日志 saveBrowseLogLogout,storeCustomerId 参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         Long customerId = UserContext.getCurrentCustomerUser().getCustomerId();

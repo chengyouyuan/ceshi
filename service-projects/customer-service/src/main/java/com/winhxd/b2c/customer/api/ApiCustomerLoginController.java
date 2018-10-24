@@ -78,22 +78,18 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_202109, message = "您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。") })
 
 	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
-	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
-			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(customerUserInfoCondition));
-		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
-		ResponseResult<MiniOpenId> object = null;
-		MiniOpenId mini = null;
-		CustomerUserInfoSimpleVO vo;
 		if (null == customerUserInfoCondition) {
-			logger.info("{} - , 参数无效");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		if (StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())) {
-			logger.info("{} - , 参数无效");
-			result = new ResponseResult<>(BusinessCode.CODE_1007);
-			return result;
+			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
+		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
+		ResponseResult<MiniOpenId> object = null;
+		MiniOpenId mini = null;
+		CustomerUserInfoSimpleVO vo = null;
 		/**
 		 * 根据手机号去取缓存verificationCode对比是否一致
 		 */
@@ -179,13 +175,12 @@ public class ApiCustomerLoginController {
 	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
-		ResponseResult<String> result = new ResponseResult<>();
-		String content = "";
+		logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",JsonUtil.toJSONString(customerUserInfoCondition));
 		if (null == customerUserInfoCondition) {
-			logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
-					JsonUtil.toJSONString(customerUserInfoCondition));
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
+		ResponseResult<String> result = new ResponseResult<>();
+		String content = "";
 		if (cache.exists(
 				CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
 			logger.info("{} -发送验证码未超过一分钟");
@@ -236,20 +231,17 @@ public class ApiCustomerLoginController {
 			@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		logger.info("{} - 用户换绑手机号, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(customerChangeMobileCondition));
+		if (null == customerChangeMobileCondition) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
 		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
 		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 		CustomerUserInfoSimpleVO vo = new CustomerUserInfoSimpleVO();
-		if (null == customerChangeMobileCondition) {
-			logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
-					JsonUtil.toJSONString(customerChangeMobileCondition));
-			throw new BusinessException(BusinessCode.CODE_1007);
-		}
 		CustomerUserInfo info = new CustomerUserInfo();
 		CustomerUser user = UserContext.getCurrentCustomerUser();
 		customerUserInfo.setOpenid(user.getOpenid());
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {
-			logger.info("{} - ");
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
 		if (!customerChangeMobileCondition.getVerificationCode().equals(cache.get(

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
 import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +54,7 @@ public class ApiPayController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
 	ResponseResult<String> downloadStatement(@RequestBody DownloadStatementCondition condition) {
-		logger.info("/security/6161/v1/downloadStatements 接口调用开始，对账单下载日期为--{}", condition.getBillDate().toString());
+		logger.info("/security/6161/v1/downloadStatements 接口调用开始，对账单下载日期为--{}", JsonUtil.toJSONString(condition));
 		ResponseResult<String> responseResult = new ResponseResult<>();
 		condition.setAccountType(DownloadStatementCondition.SourceType.BASIC.getText());
 		condition.setStatementType(DownloadStatementCondition.StatementType.ALL.getText());

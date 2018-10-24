@@ -231,7 +231,7 @@ public class OrderServiceController implements OrderServiceClient {
      */
     @Override
     public ResponseResult<Boolean> updateOrderRefundFail(@RequestBody OrderRefundFailCondition condition) {
-        String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
+        String logTitle = "/order/4061/v1/orderPaySuccessNotify/";
         logger.info("{} 退款失败状态更新开始:condition={}", logTitle, condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         boolean updateResult = orderService.updateOrderRefundFailStatus(condition);
@@ -248,7 +248,7 @@ public class OrderServiceController implements OrderServiceClient {
      */
     @Override
     public ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition) {
-        String logTitle = "/order/4061/v1/orderPaySuccessNotify/";
+        String logTitle = "/order/4062/v1/orderPaySuccessNotify/";
         logger.info("{} 手工退款开始:orderNo={}", logTitle, condition);
         ResponseResult<Integer> result = new ResponseResult<>();
         AdminUser adminUser = UserContext.getCurrentAdminUser();

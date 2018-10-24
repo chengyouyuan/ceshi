@@ -99,7 +99,6 @@ public class ApiShopCarController {
     @RequestMapping(value = "/api-order/order/4031/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ShopCarVO> findShopCar(@RequestBody ShopCarQueryCondition condition){
         if (null == condition || null == condition.getStoreId()) {
-            logger.error("查询购物车异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
         ShopCarVO shopCar = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
@@ -119,7 +118,6 @@ public class ApiShopCarController {
     @RequestMapping(value = "/api-order/order/4035/v1/findReadyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ReadyOrderVO> findReadyOrder(@RequestBody ShopCarQueryCondition condition){
         if (null == condition || null == condition.getStoreId()) {
-            logger.error("ApiShopCarController{} -> findReadyOrder接口异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
         ReadyOrderVO readyOrder = shopCarService.findReadyOrder(condition.getStoreId(), getCurrentCustomerId());
@@ -141,7 +139,6 @@ public class ApiShopCarController {
     @RequestMapping(value = "/api-order/order/4034/v1/getOrderMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderMoneyVO> getOrderMoney(@RequestBody OrderMoneyCondition condition){
         if (null == condition || null == condition.getStoreId()) {
-            logger.error("ApiShopCarController{} -> getOrderMoney接口异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
         OrderMoneyVO orderMoney = shopCarService.getOrderMoney(condition.getStoreId(), getCurrentCustomerId(), condition.getSendId());

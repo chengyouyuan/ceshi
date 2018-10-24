@@ -50,7 +50,6 @@ public class ApiNeteaseController {
 	public ResponseResult<PagedList<NeteaseMsgVO>> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition condition) {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (condition == null || condition.getTimeType() == null) {
-			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		Long storeId = storeUser.getBusinessId();

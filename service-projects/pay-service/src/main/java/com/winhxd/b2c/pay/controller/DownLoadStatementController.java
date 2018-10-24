@@ -1,13 +1,16 @@
 package com.winhxd.b2c.pay.controller;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
+import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
+import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
+import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
-import com.winhxd.b2c.common.domain.pay.model.PayStatement;
-import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
-import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
-import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @Api(tags = "ApiPay")
@@ -77,7 +75,7 @@ public class DownLoadStatementController implements DownLoadStatementClient {
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
 	public ResponseResult<PayStatement> getPayStatementByOutOrderNo(@RequestParam("outOrderNo") String outOrderNo) {
-		logger.info("/6158/v1/getPayStatementByOutOrderNo 根据订单号查询成功支付的对账单");
+		logger.info("/6158/v1/getPayStatementByOutOrderNo 根据订单号查询成功支付的对账单开始");
 		ResponseResult<PayStatement> result = new ResponseResult<>();
 		PayStatement payStatement = wXDownloadBillService.getPayStatementByOutOrderNo(outOrderNo);
 		result.setData(payStatement);

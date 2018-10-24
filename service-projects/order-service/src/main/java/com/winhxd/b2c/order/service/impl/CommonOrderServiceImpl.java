@@ -556,7 +556,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         || status.equals(OrderStatusEnum.FINISHED.getStatusCode())
                         || status.equals(OrderStatusEnum.CANCELED.getStatusCode())
                         || status.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
-                    throw new BusinessException(BusinessCode.CODE_4021002, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
+                    throw new BusinessException(BusinessCode.CODE_402102, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
                 }
                 //申请退款时商家没确认就直接退款、退优惠券 修改订单状态为退款中
                 if (order.getPayStatus().equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
@@ -761,7 +761,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition) {
         if (condition.getCustomerFail() == null || StringUtils.isBlank(condition.getRefundErrorCode())
                 || StringUtils.isBlank(condition.getRefundErrorDesc()) || StringUtils.isBlank(condition.getOrderNo())) {
-            throw new BusinessException(BusinessCode.CODE_4061001, MessageFormat.format("参数错误condition={0}", condition));
+            throw new BusinessException(BusinessCode.CODE_406101, MessageFormat.format("参数错误condition={0}", condition));
         }
         boolean result = true;
         String orderNo = condition.getOrderNo();
@@ -813,7 +813,7 @@ public class CommonOrderServiceImpl implements OrderService {
             orderNoSet.add(orderList.getOrderNo());
         }
         if (this.orderInfoMapper.getCheckOrderRefundFail(orderNoSet)) {
-            throw new BusinessException(BusinessCode.CODE_4062002, MessageFormat.format("选择的订单号不是退款失败的订单orderNoList={0}", orderNoSet));
+            throw new BusinessException(BusinessCode.CODE_406202, MessageFormat.format("选择的订单号不是退款失败的订单orderNoList={0}", orderNoSet));
         }
 
         for (OrderArtificialRefundCondition.OrderList orderList : orderNoList) {
@@ -823,10 +823,10 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             OrderInfo order = this.getOrderInfo(orderNo);
             if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || order.getOrderStatus() != OrderStatusEnum.REFUNDING.getStatusCode()) {
-                throw new BusinessException(BusinessCode.CODE_4062003, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
+                throw new BusinessException(BusinessCode.CODE_406203, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
             }
             if (StringUtils.isBlank(order.getRefundFailReason())) {
-                throw new BusinessException(BusinessCode.CODE_4062003, MessageFormat.format("不是退款失败的订单orderNo={0}", orderNo));
+                throw new BusinessException(BusinessCode.CODE_406203, MessageFormat.format("不是退款失败的订单orderNo={0}", orderNo));
             }
             PayRefundCondition refundCondition = new PayRefundCondition();
             refundCondition.setCancelReason("后台人工退款");

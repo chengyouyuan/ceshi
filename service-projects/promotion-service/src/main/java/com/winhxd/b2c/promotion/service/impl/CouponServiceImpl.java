@@ -267,10 +267,14 @@ public class CouponServiceImpl implements CouponService {
             condition.setCompanyCode(couponApplyBrandLists.get(0).getCompanyCode());
 
             ResponseResult<PagedList<BrandVO>> brandInfo = productServiceClient.getBrandInfoByPage(condition);
-            if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getData().getData())) {
-                logoUrl = brandInfo.getData().getData().stream()
-                        .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo())).map(brand -> brand.getCompanyLogo()).findAny();
+            if (brandInfo == null || brandInfo.getCode() != BusinessCode.CODE_OK || brandInfo.getData() == null) {
+                logger.error("优惠券：{}根据brandCode和companyCode获取商品信息接口调用失败:code={}，获取优惠券品牌详细信息异常！~", condition, brandInfo == null ? null : brandInfo.getCode());
+                throw new BusinessException(brandInfo.getCode());
             }
+
+            logoUrl = brandInfo.getData().getData().stream()
+                    .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo()))
+                    .map(brand -> brand.getCompanyLogo()).findAny();
         }
 
         if (logoUrl.isPresent()) {
@@ -1175,11 +1179,14 @@ public class CouponServiceImpl implements CouponService {
             condition.setCompanyCode(couponApplyBrandLists.get(0).getCompanyCode());
 
             ResponseResult<PagedList<BrandVO>> brandInfo = productServiceClient.getBrandInfoByPage(condition);
-            if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getData().getData())) {
-                logoUrl = brandInfo.getData().getData().stream()
-                        .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo()))
-                        .map(brand -> brand.getCompanyLogo()).findAny();
+            if (brandInfo == null || brandInfo.getCode() != BusinessCode.CODE_OK || brandInfo.getData() == null) {
+                logger.error("优惠券：{}根据brandCode和companyCode获取商品信息接口调用失败:code={}，获取优惠券品牌详细信息异常！~", condition, brandInfo == null ? null : brandInfo.getCode());
+                throw new BusinessException(brandInfo.getCode());
             }
+
+            logoUrl = brandInfo.getData().getData().stream()
+                    .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo()))
+                    .map(brand -> brand.getCompanyLogo()).findAny();
         }
 
         if (logoUrl.isPresent()) {

@@ -48,7 +48,6 @@ public class ApiCouponController{
     @Autowired
     private CouponPushService couponPushService;
 
-    private String logTitle=""; 
     @ApiOperation(value = "C端新人专享优惠列表", notes = "C端新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -123,12 +122,11 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5008/v1/getStoreCouponKinds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<CouponKindsVo> getStoreCouponKinds(ApiCondition condition){
-        logTitle="=/api-promotion/coupon/5008/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
-        LOGGER.info(logTitle+"开始--{}--");
+        LOGGER.info("=/api-promotion/coupon/5008/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--开始--{}--");
         ResponseResult<CouponKindsVo> result = new ResponseResult<>();
         CouponKindsVo couponKindsVo = couponService.getStoreCouponKinds(UserContext.getCurrentCustomerUser());
         result.setData(couponKindsVo);
-        LOGGER.info(logTitle + "结束 result:{}", result);
+        LOGGER.info("=/api-promotion/coupon/5008/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--结束 result:{}", result);
         return result;
     }
 
@@ -143,12 +141,11 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5009/v1/getStoreCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> getStoreCouponList(ApiCondition condition){
-        logTitle="=/api-promotion/coupon/5009/v1/getStoreCouponList-用户查询门店优惠券列表=--";
-        LOGGER.info(logTitle+"开始--{}");
+        LOGGER.info("=/api-promotion/coupon/5009/v1/getStoreCouponList-用户查询门店优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.findStoreCouponList(UserContext.getCurrentCustomerUser());
         result.setData(pages);
-        LOGGER.info(logTitle + "结束 result:{}", result);
+        LOGGER.info("=/api-promotion/coupon/5009/v1/getStoreCouponList-用户查询门店优惠券列表=--结束 result:{}", result);
         return result;
     }
 
@@ -235,7 +232,7 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/security/5059/v1/verifyNewUserActivity", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> verifyNewUserActivity(@RequestBody ApiCondition condition){
-        LOGGER.info("=/api-promotion/coupon/security/5059/v1/verifyNewUserActivity");
+        LOGGER.info("=/api-promotion/coupon/security/5059/v1/verifyNewUserActivity=--开始--{}");
 
         ResponseResult<Boolean> result = new ResponseResult<>();
         result.setData(couponService.verifyNewUserActivity());
@@ -250,7 +247,7 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5063/v1/getSpecifiedPushCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponPushVO>> getSpecifiedPushCoupon(@RequestBody ApiCondition condition) {
-        LOGGER.info("=/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon");
+        LOGGER.info("=/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon=--开始--{}");
 
         ResponseResult<List<CouponPushVO>> result = new ResponseResult<>();
         result.setData(couponPushService.getSpecifiedPushCoupon(UserContext.getCurrentCustomerUser()));

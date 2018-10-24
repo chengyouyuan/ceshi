@@ -148,9 +148,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
     public List<CouponInvestorVO>  buildFinalList(List<CouponInvestorVO> list){
-        StringBuilder investorNames = new StringBuilder();
-        StringBuilder investorPercents = new StringBuilder();
         if (!CollectionUtils.isEmpty(list)) {
+            StringBuilder investorNames = new StringBuilder();
+            StringBuilder investorPercents = new StringBuilder();
+
             for (CouponInvestorVO couponInvestorVO : list) {
                 List<CouponInvestorDetail> detailList = couponInvestorVO.getDetailList();
                 if (!CollectionUtils.isEmpty(detailList)) {

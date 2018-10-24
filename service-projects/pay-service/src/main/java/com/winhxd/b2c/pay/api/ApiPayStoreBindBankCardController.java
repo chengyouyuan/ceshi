@@ -76,7 +76,7 @@ public class ApiPayStoreBindBankCardController {
         String logTitle = "/api-pay/pay/6105/v1/bindStoreBankCard-B端绑定银行卡";
 		LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<Integer> result = new ResponseResult<>();
-    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+condition);
+		LOGGER.info("B端绑定银行卡参数storeBankCard---[{}]", JsonUtil.toJSONString(condition));
 		// 校验用户填入的信息是否完善
 		String bankName = condition.getBankName();
 		if (StringUtils.isEmpty(bankName)) {
@@ -116,7 +116,7 @@ public class ApiPayStoreBindBankCardController {
 
     	Integer res = storeBankCardService.saveStoreBankCard(condition);
     	result.setCode(res);
-    	LOGGER.info("绑定银行卡返回值：-------"+res);
+		LOGGER.info("绑定银行卡返回值：-------[{}]", res);
     	if(res > 0){
     		LOGGER.info("B端绑定银行卡失败；");
     		throw new BusinessException(BusinessCode.CODE_610017);

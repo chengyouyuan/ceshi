@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/store/1020/v1/findStoreList",
+    "path": "/store/findStoreList",
     "type": "report",
     "id": "store_user_list",
     "code": "store_user_list",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/store/1020/v1/findStoreList"
+          "path": "/store/findStoreList"
         }
       },
       {

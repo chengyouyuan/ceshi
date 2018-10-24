@@ -1,6 +1,6 @@
 {
   "meta": {
-    "path": "/store/1021/v1/getStoreInfoById/{id}",
+    "path": "/store/getStoreInfoById/{id}",
     "type": "base-form",
     "id": "store_user_list_view",
     "code": "store_user_list_view",

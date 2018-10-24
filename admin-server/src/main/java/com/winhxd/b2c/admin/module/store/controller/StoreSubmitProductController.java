@@ -41,7 +41,7 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1052/v1/findStoreSubmitProdList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/store/findStoreSubmitProdList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
 	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
 			@RequestBody BackStageStoreSubmitProdCondition condition) {
@@ -55,7 +55,7 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1053/v1/findStoreSubmitProd/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/store/findStoreSubmitProd/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
 	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@PathVariable("id") Long id) {
 		BackStageStoreSubmitProdCondition condition=new BackStageStoreSubmitProdCondition();
@@ -70,7 +70,7 @@ public class StoreSubmitProductController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-    @PostMapping(value = "/store/1066/v1/auditStoreSubmitProd",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/store/auditStoreSubmitProd",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
     public ResponseResult<Void> auditStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> result=new ResponseResult<>();
@@ -83,7 +83,7 @@ public class StoreSubmitProductController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-    @PostMapping(value = "/store/1067/v1/addProdStoreSubmitProd", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/store/addProdStoreSubmitProd", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission({ PermissionEnum.PROD_MANAGEMENT_SUBMIT })
     public ResponseResult<Void> addProdStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> result = new ResponseResult<>();

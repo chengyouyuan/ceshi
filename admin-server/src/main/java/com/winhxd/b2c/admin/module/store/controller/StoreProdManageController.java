@@ -40,7 +40,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1042/v1/findStoreProdManageList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/store/findStoreProdManageList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE})
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
@@ -55,7 +55,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1043/v1/findStoreProdManage/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/store/findStoreProdManage/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE})
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@PathVariable("id") Long id) {
 		BackStageStoreProdCondition condition=new BackStageStoreProdCondition();
@@ -71,7 +71,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1044/v1/operateStoreProdManage",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/store/operateStoreProdManage",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE_PUTAWAY})
 	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<Void> result=new ResponseResult<>();

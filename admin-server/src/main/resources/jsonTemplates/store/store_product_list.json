@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/store/1042/v1/findStoreProdManageList",
+    "path": "/store/findStoreProdManageList",
     "type": "report",
     "id": "store_product_list",
     "code": "store_product_list",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/store/1042/v1/findStoreProdManageList"
+          "path": "/store/findStoreProdManageList"
         }
       },
       {
@@ -101,7 +101,7 @@
               "params": [
                 "id","prodStatus"
               ],
-              "path": "/store/1044/v1/operateStoreProdManage"
+              "path": "/store/operateStoreProdManage"
             }
           }
         ]

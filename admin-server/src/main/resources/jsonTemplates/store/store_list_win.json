@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/store/1058/v1/findStorePageInfo",
+    "path": "/store/findStorePageInfo",
     "type": "report",
     "id": "store_list_win",
     "code": "store_list_win",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/store/1058/v1/findStorePageInfo"
+          "path": "/store/findStorePageInfo"
         }
       },
       {

@@ -59,7 +59,7 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @PostMapping(value = "/1020/v1/findStoreList")
+    @PostMapping(value = "/findStoreList")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
@@ -72,7 +72,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @ApiParam()
-    @GetMapping(value = "/1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
         logger.info("查询门店账户详细信息接口入参为：{}", id);
@@ -86,7 +86,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_102201, message = "参数无效！")})
-    @PostMapping(value = "/1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE_EDIT)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(condition.toString()));
@@ -119,7 +119,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "获取地域列表", notes = "获取地域列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "/1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult = new ResponseResult<>();
@@ -138,7 +138,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "更改门店区域信息", notes = "更改门店区域信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "/1024/v1/updateRegionCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/updateRegionCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<Integer> updateRegionCode(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("{} - 更改门店区域信息, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
@@ -150,7 +150,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "根据区域集合查询门店", notes = "根据区域集合查询门店")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "/1051/v1/findStoreIdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/findStoreIdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<List<String>> findStoreIdList(@RequestBody BackStageStoreInfoCondition condition) {
         logger.info("{} - 根据区域集合查询门店, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
@@ -166,7 +166,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "根据区域集合查询门店数以及用户数", notes = "根据区域集合查询门店数以及用户数")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "/1080/v1/findStoreAndUserCountList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/findStoreAndUserCountList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<BackStoreCustomerCountVO> findStoreAndUserCountList(@RequestBody BackStageStoreInfoCondition condition) {
         logger.info("{} - 根据区域集合查询门店下用户数, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
@@ -193,7 +193,7 @@ public class BackStageStoreController {
 
     @ApiOperation(value = "根据条件查询门店的分页数据信息", notes = "根据条件查询门店的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @PostMapping(value = "/1058/v1/findStorePageInfo")
+    @PostMapping(value = "/findStorePageInfo")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<PagedList<StoreUserInfoVO>> findStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
         ResponseResult<PagedList<StoreUserInfoVO>> responseResult = storeServiceClient.queryStorePageInfo(condition);

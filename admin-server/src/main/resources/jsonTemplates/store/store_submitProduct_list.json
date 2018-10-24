@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/store/1052/v1/findStoreSubmitProdList",
+    "path": "/store/findStoreSubmitProdList",
     "type": "report",
     "id": "store_submitProduct_list",
     "code": "store_submitProduct_list",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/store/1052/v1/findStoreSubmitProdList"
+          "path": "/store/findStoreSubmitProdList"
         }
       },
       {

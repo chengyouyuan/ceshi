@@ -10,7 +10,7 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "path": "/store/1039/v1/saveStoreRegion",
+          "path": "/store/saveStoreRegion",
           "callback": {
             "refresh": true
           }

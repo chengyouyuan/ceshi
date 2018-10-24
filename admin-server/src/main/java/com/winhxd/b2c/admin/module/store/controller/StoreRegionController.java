@@ -38,7 +38,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
-    @PostMapping(value = "/store/1037/v1/findStoreRegions")
+    @PostMapping(value = "/store/findStoreRegions")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_LIST)
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
@@ -51,7 +51,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
-    @GetMapping(value = "/store/1038/v1/removeStoreRegion/{id}")
+    @GetMapping(value = "/store/removeStoreRegion/{id}")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_DEL)
     public ResponseResult<Void> removeStoreRegion(@PathVariable("id") Long id){
         storeServiceClient.removeStoreRegion(id);
@@ -64,7 +64,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
-    @PostMapping(value = "/store/1039/v1/saveStoreRegion")
+    @PostMapping(value = "/store/saveStoreRegion")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_ADD)
     public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition condition){
         storeServiceClient.saveStoreRegion(condition);

@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "get",
-    "path": "/store/1037/v1/findStoreRegions",
+    "path": "/store/findStoreRegions",
     "type": "report",
     "id": "store_region_list",
     "code": "store_region_list",
@@ -24,7 +24,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "get",
-          "path": "/store/1037/v1/findStoreRegions"
+          "path": "/store/findStoreRegions"
         }
       },
       {
@@ -71,7 +71,7 @@
                 "title": "确认提示",
                 "message":"确定删除吗?"
               },
-              "path": "/store/1038/v1/removeStoreRegion/{id}"
+              "path": "/store/removeStoreRegion/{id}"
             }
           }
         ]

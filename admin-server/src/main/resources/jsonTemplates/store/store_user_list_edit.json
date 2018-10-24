@@ -1,6 +1,6 @@
 {
   "meta": {
-    "path": "/store/1021/v1/getStoreInfoById/{id}",
+    "path": "/store/getStoreInfoById/{id}",
     "type": "base-form",
     "id": "store_user_list_edit",
     "code": "store_user_list_edit",
@@ -11,7 +11,7 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "path": "/store/1022/v1/modifyStoreInfo",
+          "path": "/store/modifyStoreInfo",
           "callback": {
             "refresh": false
           }

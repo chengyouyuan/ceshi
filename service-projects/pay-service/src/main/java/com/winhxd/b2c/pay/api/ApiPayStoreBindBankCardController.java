@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
 import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
@@ -73,7 +74,7 @@ public class ApiPayStoreBindBankCardController {
     @RequestMapping(value = "/6105/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
         String logTitle = "/api-pay/pay/6105/v1/bindStoreBankCard-B端绑定银行卡";
-        LOGGER.info("{}=--开始--{}", logTitle,condition);
+		LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<Integer> result = new ResponseResult<>();
     	LOGGER.info("B端绑定银行卡参数storeBankCard----"+condition);
 		// 校验用户填入的信息是否完善
@@ -163,7 +164,7 @@ public class ApiPayStoreBindBankCardController {
     @RequestMapping(value = "/6106/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody VerifiCodeCondtion condition) {
 		String logTitle = "/api-pay/pay/6106/v1/verificationCode-获取短信验证码";
-		LOGGER.info("{}=--开始--{}", logTitle,condition);
+		LOGGER.info("{}=--开始--{}", logTitle, JsonUtil.toJSONString(condition));
 		ResponseResult<String> result = new ResponseResult<String>();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确

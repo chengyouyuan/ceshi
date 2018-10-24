@@ -225,7 +225,6 @@ public class ApiOpenStoreController {
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息保存接口 门店用户编码:{}", storeCustomerId);
-        logger.info("惠小店开店基础信息保存接口 入参:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);
@@ -335,7 +334,6 @@ public class ApiOpenStoreController {
                 throw new BusinessException(BusinessCode.CODE_102505, "店铺简称称不能有特殊字符且长度不能超过15");
             }
         }
-
         boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(storeBusinessInfoCondition.getShopkeeper()).matches();
         if (!shopkeeperMatcher) {
             throw new BusinessException(BusinessCode.CODE_102502, "联系人不能有特殊字符且长度不能超过10");
@@ -348,13 +346,9 @@ public class ApiOpenStoreController {
         if (!storeAddressMatcher) {
             throw new BusinessException(BusinessCode.CODE_102504, "提货地址不能有特殊字符且长度不能超过50");
         }
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店店铺信息保存接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
+
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店店铺信息保存接口 门店用户编码:{}", storeCustomerId);
-        logger.info("惠小店开店店铺信息保存接口 入参:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);
@@ -385,12 +379,12 @@ public class ApiOpenStoreController {
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
         //增加门店别名，首页展示用取姓名第一个字
         String storeBoss = "";
-        if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
+        if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())) {
             storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
         }
-        if(StringUtils.isBlank(storeUserInfo.getStoreShortName())){
+        if(StringUtils.isBlank(storeUserInfo.getStoreShortName())) {
             storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreName());
-        }else{
+        } else {
             storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreShortName());
         }
         storeManageInfoVO.setStoreBoss(storeBoss);

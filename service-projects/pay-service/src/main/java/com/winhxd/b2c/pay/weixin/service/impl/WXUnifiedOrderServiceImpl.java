@@ -139,7 +139,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		if(PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getReturnCode()) ||
 				PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getResultCode())) {
 			logger.error(payPreOrderResponseDTO.getReturnMsg());
-			throw new BusinessException(BusinessCode.CODE_3400910, payPreOrderResponseDTO.getReturnMsg());
+			throw new BusinessException(BusinessCode.CODE_340010, payPreOrderResponseDTO.getReturnMsg());
 		}
 		// 保存支付流水记录
 		this.savePayBill(condition, payPreOrderDTO, payPreOrderResponseDTO);
@@ -169,7 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 */
 	private void paid(PayPreOrderCondition condition) {
 		logger.warn("订单{}支付完成，请勿重复支付", condition.getOutOrderNo());
-		throw new BusinessException(BusinessCode.CODE_3400908, "支付中，请勿重复支付");
+		throw new BusinessException(BusinessCode.CODE_340008, "支付中，请勿重复支付");
 	}
 	
 	/**
@@ -193,7 +193,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 				PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
 			String returnMsg = payPreOrderCallbackDTO == null ? "" : payPreOrderCallbackDTO.getReturnMsg();
 			logger.error("主动查询{}返回错误：{}", outTradeNo, returnMsg);
-			throw new BusinessException(BusinessCode.CODE_3400910, returnMsg);
+			throw new BusinessException(BusinessCode.CODE_340010, returnMsg);
 		}
 		//查询支付失败
 		if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getResultCode())) {
@@ -208,12 +208,12 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		if(TradeStateEnum.SUCCESS.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
 			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
-			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
+			throw new BusinessException(BusinessCode.CODE_340008, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.REFUND.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
 			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
-			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
+			throw new BusinessException(BusinessCode.CODE_340008, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.NOTPAY.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
 			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
@@ -247,7 +247,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			
 		} else if(TradeStateEnum.USERPAYING.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
 			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
-			throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
+			throw new BusinessException(BusinessCode.CODE_340000, "支付中，请勿重复支付");
 			
 			//TODO 处理 USERPAYING--用户支付中，支付时间大于10分钟，调起关闭订单，成功后再次支付
 		} else if(TradeStateEnum.PAYERROR.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {

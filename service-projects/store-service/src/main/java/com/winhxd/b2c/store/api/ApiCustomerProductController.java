@@ -70,7 +70,6 @@ public class ApiCustomerProductController {
         CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
         logger.info("{} - [已登录]搜索接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
-            logger.error("{} - ApiProductController -> searchStoreProductList获取的参数storeId为空", MODULE_NAME);
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         ResponseResult<PagedList<ProductSkuVO>> responseResult = productService.searchProductList(condition, currentCustomerUser);
@@ -87,7 +86,6 @@ public class ApiCustomerProductController {
     public ResponseResult<ProductSkuMsgVO> filtrateProductList(@RequestBody CustomerSearchProductCondition condition) {
         logger.info("{} - [未登录]筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
-            logger.error("ApiProductController -> filtrateProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, null);
@@ -104,7 +102,6 @@ public class ApiCustomerProductController {
         CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
         logger.info("{} - [已登录]筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
-            logger.error("ApiProductController -> filtrateStoreProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         storeBrowseLogService.saveBrowseLogLogin(condition.getStoreId(), currentCustomerUser.getCustomerId());
@@ -121,7 +118,6 @@ public class ApiCustomerProductController {
     public ResponseResult<PagedList<ProductSkuVO>> hotProductList(@RequestBody CustomerSearchProductCondition condition) {
         logger.info("{} - 店铺热销商品接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
-            logger.error("ApiProductController -> hotProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         ResponseResult<PagedList<ProductSkuVO>> responseResult = productService.hotProductList(condition);

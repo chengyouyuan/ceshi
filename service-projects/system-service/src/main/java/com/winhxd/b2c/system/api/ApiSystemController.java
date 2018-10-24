@@ -35,11 +35,11 @@ public class ApiSystemController {
     @RequestMapping(value = "/security/3040/v1/appSubmitCheckedVersion", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> appSubmitCheckedVersion(@RequestBody AppVersionCondition appVersionCondition) {
         LOGGER.info("/api-system/3040/v1/appSubmitCheckedVersion接口开始--{}", appVersionCondition);
-        ResponseResult<Integer> result = new ResponseResult<Integer>();
         if (appVersionCondition == null || StringUtils.isEmpty(appVersionCondition.getAppVersion())) {
             LOGGER.info("app提交的版本号为空");
-            throw new BusinessException(BusinessCode.CODE_3040001);
+            throw new BusinessException(BusinessCode.CODE_304001);
         }
+        ResponseResult<Integer> result = new ResponseResult<Integer>();
         Integer res = sysDictItemService.checkDictItem(appVersionCondition);
         result.setData(res);
         return result;

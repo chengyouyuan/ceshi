@@ -73,7 +73,7 @@ public interface OrderServiceClient {
 
     /**
      * 手工退款
-     * @param orderNo
+     * @param condition
      * @return
      */
     @RequestMapping(value = "/order/4062/v1/artificialRefund/", method = RequestMethod.POST)

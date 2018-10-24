@@ -137,7 +137,7 @@ public class ApiOrderController {
     @ApiOperation(value = "B端退款订单处理接口", notes = "B端退款订单处理接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_4022001, message = "参数异常"),
+            @ApiResponse(code = BusinessCode.CODE_402201, message = "参数异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
             @ApiResponse(code = BusinessCode.WRONG_STORE_ID, message = "门店不存在"),
@@ -152,7 +152,7 @@ public class ApiOrderController {
         String logTitle = "=/api-order/order/4022/v1/handleOrderRefundByStore-B端退款订单处理接口=";
         LOGGER.info("{}--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
-            throw new BusinessException(BusinessCode.CODE_4022001, "参数异常");
+            throw new BusinessException(BusinessCode.CODE_402201, "参数异常");
         }
         ResponseResult<Void> result = new ResponseResult<>();
         StoreUser store = UserContext.getCurrentStoreUser();
@@ -171,7 +171,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_ALREADY_PAID, message = "已完成的订单不允许退款"),
             @ApiResponse(code = BusinessCode.ORDER_STATUS_CHANGE_FAILURE, message = "订单状态修改失败"),
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中"),
-            @ApiResponse(code = BusinessCode.CODE_4021002, message = "订单状态不允许退款")
+            @ApiResponse(code = BusinessCode.CODE_402102, message = "订单状态不允许退款")
     })
     @RequestMapping(value = "/4021/v1/orderRefundByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {

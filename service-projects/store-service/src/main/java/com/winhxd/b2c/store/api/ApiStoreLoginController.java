@@ -114,7 +114,6 @@ public class ApiStoreLoginController {
 		logger.info("{} - B端登录验证, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(storeUserInfoCondition));
 		ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
 		if (null == storeUserInfoCondition) {
-			logger.info("{} - , 参数无效");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		StoreUserInfo db = null;
@@ -129,17 +128,14 @@ public class ApiStoreLoginController {
 				&& LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 			if (!storeUserInfoCondition.getVerificationCode().equals(
 					cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeUserInfoCondition.getStoreMobile()))) {
-				logger.info("{} - , 验证码错误");
 				throw new BusinessException(BusinessCode.CODE_100808);
 			}
 			if (StringUtils.isBlank(storeUserInfoCondition.getOpenid())) {
-				logger.info("{} - ,openid为空");
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			open.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(open);
 			if (db != null) {
-				logger.info("{} - , 该微信号已绑定过其它账号 ");
 				result = new ResponseResult<>(BusinessCode.CODE_100810);
 				return result;
 			}
@@ -147,7 +143,6 @@ public class ApiStoreLoginController {
 			open.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			db = storeLoginService.getStoreUserInfo(open);
 			if(db != null){
-				logger.info("{} - , 此手机号已被其他微信绑定，不能再次绑定 ");
 				result = new ResponseResult<>(BusinessCode.CODE_100811);
 				return result;
 			}
@@ -157,7 +152,6 @@ public class ApiStoreLoginController {
 					.getStoreUserInfo(storeUserInfoCondition.getStoreMobile(), "");
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
 				throw new BusinessException(BusinessCode.CODE_100822);
 			}
 
@@ -431,7 +425,7 @@ public class ApiStoreLoginController {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		/**
-		 * 掉惠下单服务查询门店用户信息
+		 * 调惠下单服务查询门店用户信息
 		 */
 		ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 				.getStoreUserInfo(storeSendVerificationCodeCondition.getStoreMobile(), "");

@@ -132,7 +132,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
     private SysRegion getSysRegion(String areaCode){
         ResponseResult<SysRegion> result = regionServiceClient.getRegionByCode(areaCode);
         if (null == result || result.getCode() != BusinessCode.CODE_OK || null == result.getData()) {
-            logger.error("保存测试门店区域异常{} -> 查询SysRegion失败 regionCode:"+areaCode);
+            logger.error("保存测试门店区域异常{} -> 查询SysRegion失败 regionCode:{}", result == null ? null : result.getCode(), areaCode);
             throw new BusinessException(BusinessCode.CODE_103902);
         }
         return result.getData();

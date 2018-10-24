@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 /**
  * 下载对账单入参
  * 
@@ -7,6 +9,7 @@ package com.winhxd.b2c.pay.weixin.base.dto;
  *
  *         2018年8月19日
  */
+@Data
 public class PayFinancialBillDTO extends RequestBase {
 
 	/**
@@ -24,36 +27,4 @@ public class PayFinancialBillDTO extends RequestBase {
 	 */
 	private String tarType;
 
-	public String getBillDate() {
-		return billDate;
-	}
-
-	public void setBillDate(String billDate) {
-		this.billDate = billDate;
-	}
-
-	public String getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
-	}
-
-	public String getTarType() {
-		return tarType;
-	}
-
-	public void setTarType(String tarType) {
-		this.tarType = tarType;
-	}
-
-	@Override
-	public String toString() {
-		return "PayFinancialBillDTO{" +
-				"billDate='" + billDate + '\'' +
-				", accountType='" + accountType + '\'' +
-				", tarType='" + tarType + '\'' +
-				'}';
-	}
 }

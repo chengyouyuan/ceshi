@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * PayTransfersQueryForWxChangeResponseDTO
@@ -10,8 +9,7 @@ import lombok.Setter;
  * @Date 2018/8/18 13:09
  * @Description: 查询微信转账至银行卡详情返参
  */
-@Setter
-@Getter
+@Data
 public class PayTransfersQueryForWxBankResponseDTO {
 
     /**
@@ -100,25 +98,4 @@ public class PayTransfersQueryForWxBankResponseDTO {
      */
     private String reason;
 
-    @Override
-    public String toString() {
-        return "PayTransfersQueryForWxBankResponseDTO{" +
-                "returnCode='" + returnCode + '\'' +
-                ", returnMsg='" + returnMsg + '\'' +
-                ", resultCode='" + resultCode + '\'' +
-                ", errCode='" + errCode + '\'' +
-                ", errCodeDes='" + errCodeDes + '\'' +
-                ", mchId='" + mchId + '\'' +
-                ", partnerTradeNo='" + partnerTradeNo + '\'' +
-                ", paymentNo='" + paymentNo + '\'' +
-                ", bankNoMd5='" + bankNoMd5 + '\'' +
-                ", trueNameMd5='" + trueNameMd5 + '\'' +
-                ", amount=" + amount +
-                ", status='" + status + '\'' +
-                ", cmmsAmt=" + cmmsAmt +
-                ", createTime='" + createTime + '\'' +
-                ", paySuccTime='" + paySuccTime + '\'' +
-                ", reason='" + reason + '\'' +
-                '}';
-    }
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 /**
  * 请求公共参数
  * @author mahongliang
@@ -7,6 +9,7 @@ package com.winhxd.b2c.pay.weixin.base.dto;
  * @Description 
  * @version
  */
+@Data
 public class RequestBase {
 	
 	/**
@@ -33,45 +36,5 @@ public class RequestBase {
 	 * 签名类型，默认为MD5，支持HMAC-SHA256和MD5
 	 */
 	private String signType;
-
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-
-	public String getMchId() {
-		return mchId;
-	}
-
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
-	}
-
-	public String getNonceStr() {
-		return nonceStr;
-	}
-
-	public void setNonceStr(String nonceStr) {
-		this.nonceStr = nonceStr;
-	}
-
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
-	public String getSignType() {
-		return signType;
-	}
-
-	public void setSignType(String signType) {
-		this.signType = signType;
-	}
 	
 }

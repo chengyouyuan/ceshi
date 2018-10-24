@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * PayTransfersToWxChangeResponseDTO
@@ -10,8 +9,7 @@ import lombok.Setter;
  * @Date 2018/8/16 21:06
  * @Description: wx转账至零钱返参
  */
-@Setter
-@Getter
+@Data
 public class PayTransfersToWxChangeResponseDTO {
 
     /**
@@ -74,21 +72,4 @@ public class PayTransfersToWxChangeResponseDTO {
      */
     private String paymentTime;
 
-    @Override
-    public String toString() {
-        return "PayTransfersToWxChangeResponseDTO{" +
-                "returnCode='" + returnCode + '\'' +
-                ", returnMsg='" + returnMsg + '\'' +
-                ", mchAppid='" + mchAppid + '\'' +
-                ", mchid='" + mchid + '\'' +
-                ", deviceInfo='" + deviceInfo + '\'' +
-                ", nonceStr='" + nonceStr + '\'' +
-                ", resultCode='" + resultCode + '\'' +
-                ", errCode='" + errCode + '\'' +
-                ", errCodeDes='" + errCodeDes + '\'' +
-                ", partnerTradeNo='" + partnerTradeNo + '\'' +
-                ", paymentNo='" + paymentNo + '\'' +
-                ", paymentTime='" + paymentTime + '\'' +
-                '}';
-    }
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -9,6 +11,7 @@ import java.util.Date;
  * @Description 
  * @version
  */
+@Data
 public class PayPreOrderDTO extends RequestBase{
 	
     /**
@@ -78,126 +81,4 @@ public class PayPreOrderDTO extends RequestBase{
 	 */
 	private String notifyUrl;
 
-	public String getOutTradeNo() {
-		return outTradeNo;
-	}
-
-	public void setOutTradeNo(String outTradeNo) {
-		this.outTradeNo = outTradeNo;
-	}
-
-	public int getTotalFee() {
-		return totalFee;
-	}
-
-	public void setTotalFee(int totalFee) {
-		this.totalFee = totalFee;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
-	}
-
-	public String getTradeType() {
-		return tradeType;
-	}
-
-	public void setTradeType(String tradeType) {
-		this.tradeType = tradeType;
-	}
-
-	public Date getTimeStart() {
-		return timeStart;
-	}
-
-	public void setTimeStart(Date timeStart) {
-		this.timeStart = timeStart;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
-	public String getSpbillCreateIp() {
-		return spbillCreateIp;
-	}
-
-	public void setSpbillCreateIp(String spbillCreateIp) {
-		this.spbillCreateIp = spbillCreateIp;
-	}
-
-	public String getDeviceInfo() {
-		return deviceInfo;
-	}
-
-	public void setDeviceInfo(String deviceInfo) {
-		this.deviceInfo = deviceInfo;
-	}
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public String getAttach() {
-		return attach;
-	}
-
-	public void setAttach(String attach) {
-		this.attach = attach;
-	}
-
-	public String getLimitPay() {
-		return limitPay;
-	}
-
-	public void setLimitPay(String limitPay) {
-		this.limitPay = limitPay;
-	}
-
-	public String getFeeType() {
-		return feeType;
-	}
-
-	public void setFeeType(String feeType) {
-		this.feeType = feeType;
-	}
-
-	public String getNotifyUrl() {
-		return notifyUrl;
-	}
-
-	public void setNotifyUrl(String notifyUrl) {
-		this.notifyUrl = notifyUrl;
-	}
-
-	@Override
-	public String toString() {
-		return "PayPreOrderDTO{" +
-				"outTradeNo='" + outTradeNo + '\'' +
-				", totalFee=" + totalFee +
-				", openid='" + openid + '\'' +
-				", tradeType='" + tradeType + '\'' +
-				", timeStart=" + timeStart +
-				", body='" + body + '\'' +
-				", spbillCreateIp='" + spbillCreateIp + '\'' +
-				", deviceInfo='" + deviceInfo + '\'' +
-				", productId='" + productId + '\'' +
-				", attach='" + attach + '\'' +
-				", limitPay='" + limitPay + '\'' +
-				", feeType='" + feeType + '\'' +
-				", notifyUrl='" + notifyUrl + '\'' +
-				'}';
-	}
 }

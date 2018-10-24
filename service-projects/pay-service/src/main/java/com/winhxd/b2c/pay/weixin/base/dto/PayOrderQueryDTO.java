@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import lombok.Data;
+
 /**
  * 主动查询支付结果参数
  * @author mahongliang
@@ -7,24 +9,11 @@ package com.winhxd.b2c.pay.weixin.base.dto;
  * @Description 
  * @version
  */
+@Data
 public class PayOrderQueryDTO extends RequestBase {
 	/**
 	 * 支付流水号
 	 */
 	private String outTradeNo;
 
-	public String getOutTradeNo() {
-		return outTradeNo;
-	}
-
-	public void setOutTradeNo(String outTradeNo) {
-		this.outTradeNo = outTradeNo;
-	}
-
-	@Override
-	public String toString() {
-		return "PayOrderQueryDTO{" +
-				"outTradeNo='" + outTradeNo + '\'' +
-				'}';
-	}
 }

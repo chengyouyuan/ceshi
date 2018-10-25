@@ -451,7 +451,7 @@ public class ApiStoreLoginController {
 		String content = "";
 		String verificationCode = "";
 		if (cache.exists(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile)) {
-			logger.info("{} - , 请求验证码时长为超过一分钟");
+			logger.info("{} - , 请求验证码时长没有超过一分钟");
 			throw new BusinessException(BusinessCode.CODE_100912);
 		}
 		verificationCode = GeneratePwd.generatePwd6Mobile();

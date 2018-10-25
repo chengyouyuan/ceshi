@@ -2,7 +2,6 @@ package com.winhxd.b2c.message.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds;
@@ -70,7 +69,7 @@ public class MiniProgramImpl implements MiniProgramService {
             throw new BusinessException(BusinessCode.CODE_702401);
         }
         //批量保存C端用户formid
-        List<MessageCustomerFormIds> list = new ArrayList<>();
+        List<MessageCustomerFormIds> list = new ArrayList<>(miniFormIdCondition.getFormIds().size());
         for (String formid:miniFormIdCondition.getFormIds()) {
             MessageCustomerFormIds customerFormIds = new MessageCustomerFormIds();
             if(!IGNORE_FORMID.equals(formid)){

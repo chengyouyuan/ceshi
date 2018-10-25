@@ -154,13 +154,13 @@ public class WechatShareServiceImpl implements WechatShareService {
         CloseableHttpClient client = httpClientUtil.getHttpClient();
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json");
-        Map params = new HashMap<>();
+        Map params = new HashMap<>(7);
         params.put("scene", "storeUserId=" + storeUserId);
         params.put("page", pageUrl);
         params.put("width", width);
         params.put("auto_color", autoColor);
         params.put("is_hyaline",isHyaline);
-        Map<String,Object> lineColor = new HashMap<>();
+        Map<String, Object> lineColor = new HashMap<>(5);
         lineColor.put("r", 0);
         lineColor.put("g", 0);
         lineColor.put("b", 0);

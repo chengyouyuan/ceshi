@@ -216,7 +216,6 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
 				throw new BusinessException(BusinessCode.CODE_100809);
 			}
-
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
 			StoreUserSimpleInfo map = object.getData();
@@ -295,7 +294,6 @@ public class ApiStoreLoginController {
 		 */
 		else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-
 			if (StringUtils.isBlank(storeUserInfoCondition.getStorePassword())
 					|| StringUtils.isBlank(storeUserInfoCondition.getStoreMobile())) {
 				logger.info("{} - , 您的账号或者密码错误");
@@ -358,7 +356,6 @@ public class ApiStoreLoginController {
 					result.setData(vo);
 				}
 			}
-
 		} else {
 			logger.info("{} - , 参数无效");
 			throw new BusinessException(BusinessCode.CODE_1007);
@@ -419,17 +416,16 @@ public class ApiStoreLoginController {
 			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
 		logger.info("{} -账号发送验证码, 参数：storeUserInfoCondition={}", "",
 				JsonUtil.toJSONString(storeSendVerificationCodeCondition));
-		ResponseResult<String> result = new ResponseResult<>();
 		if (null == storeSendVerificationCodeCondition) {
-			logger.info("{} - , 参数无效");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
+		ResponseResult<String> result = new ResponseResult<>();
 		/**
 		 * 调惠下单服务查询门店用户信息
 		 */
 		ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 				.getStoreUserInfo(storeSendVerificationCodeCondition.getStoreMobile(), "");
-		StoreUserSimpleInfo map = object.getData();
+		StoreUserSimpleInfo map = object.getDataWithException();
 		if (map == null) {
 			logger.info("{} - , 您还不是惠下单用户快去注册吧");
 			throw new BusinessException(BusinessCode.CODE_100922);
@@ -447,14 +443,11 @@ public class ApiStoreLoginController {
 	 * @return
 	 */
 	private ResponseResult<String> sendVerificationCode(String storeMobile) {
-		ResponseResult<String> result = new ResponseResult<>();
-		String content = "";
-		String verificationCode = "";
 		if (cache.exists(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile)) {
 			logger.info("{} - , 请求验证码时长没有超过一分钟");
 			throw new BusinessException(BusinessCode.CODE_100912);
 		}
-		verificationCode = GeneratePwd.generatePwd6Mobile();
+		String verificationCode = GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
 		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, AppConstant.SEND_SMS_EXPIRE_SECOND);
 		/**
@@ -463,10 +456,11 @@ public class ApiStoreLoginController {
 		cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile, verificationCode);
 		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile,
 				AppConstant.REQUEST_SEND_SMS_EXPIRE_SECOND);
+		ResponseResult<String> result = new ResponseResult<>();
 		/**
 		 * 发送模板内容
 		 */
-		content = String.format(SendSMSTemplate.SMSCONTENT, verificationCode);
+		String content = String.format(SendSMSTemplate.SMSCONTENT, verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);
@@ -489,13 +483,13 @@ public class ApiStoreLoginController {
 	@RequestMapping(value = "store/1010/v1/storeUserLogout", method = RequestMethod.POST)
 	public ResponseResult<Void> storeUserLogout(
 			@RequestBody StoreUserLogoutCodeCondition storeUserLogoutCodeCondition) {
-		ResponseResult<Void> result = new ResponseResult<>();
-		StoreUserInfo info = new StoreUserInfo();
 		logger.info("{} - 惠小店app退出登录, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(storeUserLogoutCodeCondition));
 		if (null == storeUserLogoutCodeCondition) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
+		ResponseResult<Void> result = new ResponseResult<>();
+		StoreUserInfo info = new StoreUserInfo();
 		StoreUser user = UserContext.getCurrentStoreUser();
 		info.setId(user.getBusinessId());
 		info.setAppLoginStatus((short) 1);

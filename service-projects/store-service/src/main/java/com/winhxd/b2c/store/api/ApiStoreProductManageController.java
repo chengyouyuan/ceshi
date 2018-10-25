@@ -179,7 +179,6 @@ public class ApiStoreProductManageController {
             // 品牌
             List<String> brandCodeList = condition.getBrandCode();
             if (CollectionUtils.isNotEmpty(brandCodeList)) {
-
                 prodConditionByPage.setBrandCodes(brandCodeList);
             }
             ResponseResult<PagedList<ProductVO>> prodResult = productServiceClient
@@ -205,10 +204,9 @@ public class ApiStoreProductManageController {
             @ApiResponse(code = BusinessCode.CODE_101303, message = "价格无效！")})
     @PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
-
-        logger.info("B端商品操作接口入参为：{}", condition);
         // 参数校验
         if (!checkParam(condition)) {
+            logger.info("B端商品操作接口入参为：{}", condition.toString());
             return new ResponseResult<>(BusinessCode.CODE_101301);
         }
         ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -226,9 +224,9 @@ public class ApiStoreProductManageController {
         for (int i = 0; i < prodInfo.size(); i++) {
             BigDecimal sellMoney=prodInfo.get(i).getSellMoney();
             //判断价格是否无效
-            if(sellMoney!=null){
-                int r=sellMoney.compareTo(BigDecimal.ZERO); 
-                if(r<=0){
+            if (sellMoney!=null) {
+                int r = sellMoney.compareTo(BigDecimal.ZERO);
+                if (r <= 0) {
                     responseResult = new ResponseResult<>(BusinessCode.CODE_101303);
                     return responseResult;  
                 }
@@ -245,8 +243,7 @@ public class ApiStoreProductManageController {
             // 查询商品详情
             ResponseResult<List<ProductSkuVO>> productResult = productServiceClient.getProductSkus(prodCondition);
             if (productResult.getCode() == 0) {
-
-                List<ProductSkuVO> productList = productResult.getData();
+                List<ProductSkuVO> productList = productResult.getDataWithException();
                 // 查询信息一一对应
                 if (productList != null && productList.size() == prodInfo.size()) {
                     Map<String, ProdOperateInfoCondition> putawayInfo = new HashMap<>(prodInfo.size());
@@ -348,8 +345,8 @@ public class ApiStoreProductManageController {
                 pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                 pCondition.setProductSkus(skuCodes);
                 ResponseResult<List<ProductSkuVO>>  pResult = productServiceClient.getProductSkus(pCondition);
-                if(pResult != null && BusinessCode.CODE_OK == pResult.getCode() && pResult.getData() != null){
-                    List<ProductSkuVO> pVOList = pResult.getData();
+                List<ProductSkuVO> pVOList = pResult.getDataWithException();
+                if(pVOList != null && pVOList.size() > 0){
                     for(ProductSkuVO p : pVOList){
                         for(StoreSubmitProductVO sspVO : pageList.getData()){
                             if(p.getSkuCode().equals(sspVO.getSkuCode())){
@@ -403,7 +400,7 @@ public class ApiStoreProductManageController {
             productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
         }
         ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
-        responseResult.setData(productVo.getData());
+        responseResult.setData(productVo.getDataWithException());
         return responseResult;
     }
 
@@ -459,30 +456,28 @@ public class ApiStoreProductManageController {
             pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
             pCondition.setProductSkus(skuCodes);
             ResponseResult<List<ProductSkuVO>> prodResult = productServiceClient.getProductSkus(pCondition);
-            if (prodResult.getCode() == 0 && prodResult.getData() != null) {
-                List<ProductSkuVO> psList = prodResult.getData();
-                List<StoreProdSimpleVO> invalidSkuCode = new ArrayList<>();
-                for (int i = 0; i < simpleVOList.size(); i++) {
-                    for (int j = 0; j < psList.size(); j++) {
-                        if (psList.get(j).getSkuCode().equals(simpleVOList.get(i).getSkuCode())) {
-                            simpleVOList.get(i).setSkuName(psList.get(j).getSkuName());
-                            simpleVOList.get(i).setSkuImage(psList.get(j).getSkuImage());
-                            simpleVOList.get(i).setSkuAttributeOption(psList.get(j).getSkuAttributeOption());
-                        }
-                    }
-                    // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除
-                    if (StringUtils.isBlank(simpleVOList.get(i).getSkuName())) {
-                        invalidSkuCode.add(simpleVOList.get(i));
-                        logger.info("查询不到skuCode:{}的信息。{}",simpleVOList.get(i).getSkuCode());
+            List<ProductSkuVO> psList = prodResult.getDataWithException();
+            List<StoreProdSimpleVO> invalidSkuCode = new ArrayList<>();
+            for (int i = 0; i < simpleVOList.size(); i++) {
+                for (int j = 0; j < psList.size(); j++) {
+                    if (psList.get(j).getSkuCode().equals(simpleVOList.get(i).getSkuCode())) {
+                        simpleVOList.get(i).setSkuName(psList.get(j).getSkuName());
+                        simpleVOList.get(i).setSkuImage(psList.get(j).getSkuImage());
+                        simpleVOList.get(i).setSkuAttributeOption(psList.get(j).getSkuAttributeOption());
                     }
                 }
-                if (invalidSkuCode.size() > 0) {
-                    long oldNum = list.getTotalRows();
-                    long newNum = oldNum-invalidSkuCode.size();
-                    list.setTotalRows(newNum);
-                    // 移除
-                    simpleVOList.removeAll(invalidSkuCode);
+                // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除
+                if (StringUtils.isBlank(simpleVOList.get(i).getSkuName())) {
+                    invalidSkuCode.add(simpleVOList.get(i));
+                    logger.info("查询不到skuCode:{}的信息。{}",simpleVOList.get(i).getSkuCode());
                 }
+            }
+            if (invalidSkuCode.size() > 0) {
+                long oldNum = list.getTotalRows();
+                long newNum = oldNum-invalidSkuCode.size();
+                list.setTotalRows(newNum);
+                // 移除
+                simpleVOList.removeAll(invalidSkuCode);
             }
         }
         responseResult.setData(list);
@@ -529,9 +524,10 @@ public class ApiStoreProductManageController {
             pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
             pCondition.setProductSkus(skuCodes);
             ResponseResult<List<ProductSkuVO>> pResult = productServiceClient.getProductSkus(pCondition);
-            if(pResult != null && BusinessCode.CODE_OK == pResult.getCode() && pResult.getData() != null){
+            List<ProductSkuVO> resData = pResult.getDataWithException();
+            if(resData != null && resData.size()>0){
                 for(String skuCode : skuCodes){
-                    for(ProductSkuVO p : pResult.getData()){
+                    for(ProductSkuVO p : resData){
                         if(p.getSkuCode().equals(skuCode)){
                             count = count+1;
                             validSkuCode.add(skuCode);
@@ -645,9 +641,11 @@ public class ApiStoreProductManageController {
         }
         ResponseResult<List<Map<String, Object>>> storeBuyedProdSku = storeHxdServiceClient
                 .getStoreBuyedProdSku(storeCustomerId);
-        List<Map<String, Object>> skuDataMap = storeBuyedProdSku.getData();
-        for (Map<String, Object> skuMap : skuDataMap) {
-            skuData.add(String.valueOf(skuMap.get("prodSku")));
+        List<Map<String, Object>> skuDataMap = storeBuyedProdSku.getDataWithException();
+        if (skuDataMap != null && skuDataMap.size()>0){
+            for (Map<String, Object> skuMap : skuDataMap) {
+                skuData.add(String.valueOf(skuMap.get("prodSku")));
+            }
         }
         cache.setex(hxdSkuKey, 60 * 5, JsonUtil.toJSONString(skuData));
         return skuData;

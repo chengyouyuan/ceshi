@@ -117,7 +117,8 @@ public class ApiOpenStoreController {
             //未开店是否完善信息
             ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
             Byte flag = 1;
-            for (int i : noPerfectResult.getData()) {
+            List<Integer> resList = noPerfectResult.getDataWithException();
+            for (int i : resList) {
                 if (i == 0) {
                     flag = 0;
                     break;
@@ -153,7 +154,7 @@ public class ApiOpenStoreController {
         OpenStoreVO openStoreVO = new OpenStoreVO();
         //是否完善信息
         ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
-        openStoreVO.setNoPerfectMessage(noPerfectResult.getData());
+        openStoreVO.setNoPerfectMessage(noPerfectResult.getDataWithException());
         responseResult.setData(openStoreVO);
         logger.info("惠小店未完善信息接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;
@@ -178,7 +179,7 @@ public class ApiOpenStoreController {
         ResponseResult<Map<String, Object>> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
         StoreBaseInfoVO storeBaseInfoVO = new StoreBaseInfoVO();
         if (!result.getData().isEmpty()) {
-            Map<String, Object> map = result.getData();
+            Map<String, Object> map = result.getDataWithException();
             storeBaseInfoVO.setStoreImg(StringUtils.isBlank(storeUserInfo.getStorePicImg()) ? "" : storeUserInfo.getStorePicImg());
             storeBaseInfoVO.setShopOwnerImg(StringUtils.isBlank(storeUserInfo.getShopOwnerImg()) ? "" : storeUserInfo.getShopOwnerImg());
             storeBaseInfoVO.setStoreName(Objects.toString(map.get("storeName"), ""));
@@ -392,7 +393,7 @@ public class ApiOpenStoreController {
         MessageNeteaseCondition msgCondition = new MessageNeteaseCondition();
         msgCondition.setStoreId(businessId);
         msgCondition.setReadStatus((short) 0);
-        Integer neteaseMessageNum = messageServiceClient.getNeteaseMessageCount(msgCondition).getData();
+        Integer neteaseMessageNum = messageServiceClient.getNeteaseMessageCount(msgCondition).getDataWithException();
         storeManageInfoVO.setUnReadNeteaseMsgNum(neteaseMessageNum==null ? 0 : neteaseMessageNum);
 
         responseResult.setData(storeManageInfoVO);
@@ -436,17 +437,18 @@ public class ApiOpenStoreController {
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
 
         ResponseResult<Boolean> isCouponsAvailable = couponServiceClient.checkCouponsAvailable(customerUser.getCustomerId());
+        Boolean resStatus = isCouponsAvailable.getDataWithException();
         if (storeUserInfoVO != null) {
             //设置月销售量
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             storeUserInfoVO.setBindingStatus(bindingStatus.getStatus());
-            storeUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
+            storeUserInfoVO.setPushCouponStatus(resStatus ? (short)1 : (short)0);
             result.setData(storeUserInfoVO);
         } else {
             //前端目前不判断bindingStatus，通过请求的id和返回的绑定门店id进行简单验证，以后可以改成这样；
             StoreUserInfoVO emptyStoreUserInfoVO = new StoreUserInfoVO();
             emptyStoreUserInfoVO.setBindingStatus(StoreBindingStatus.NoneBinding.getStatus());
-            emptyStoreUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
+            emptyStoreUserInfoVO.setPushCouponStatus(resStatus ? (short)1 : (short)0);
             result.setData(emptyStoreUserInfoVO);
         }
         return result;
@@ -466,7 +468,7 @@ public class ApiOpenStoreController {
             StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
             condition.setStoreId(storeId);
             condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
-            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
+            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getDataWithException();
             if(storeOrderSalesSummaryVO != null) {
                 skuQuantity = storeOrderSalesSummaryVO.getSkuQuantity();
             }
@@ -552,7 +554,7 @@ public class ApiOpenStoreController {
         }
         //营业额、下单人数、订单数
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
-                orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();
+                orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getDataWithException();
         StoreManageInfoVO storeManageInfoVO = new StoreManageInfoVO();
         storeManageInfoVO.setBrowseNum(browseNum);
         if (storeOrderSalesSummaryVO != null) {

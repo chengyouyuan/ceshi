@@ -31,6 +31,7 @@ import com.winhxd.b2c.store.service.StoreSubmitProductService;
  */
 @Service
 public class StoreSubmitProductServiceImpl implements StoreSubmitProductService {
+
 	private Logger logger = LoggerFactory.getLogger(StoreProductManageServiceImpl.class);
 	@Autowired
 	private StoreSubmitProductMapper storeSubmitProductMapper;
@@ -39,7 +40,6 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 	
 	@Override
 	public void saveStoreSubmitProduct(Long storeId, StoreSubmitProduct storeSubmitProduct) {
-
 		//查询门店用户信息
 		StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(storeId);
 		storeSubmitProduct.setCreated(new Date());
@@ -62,8 +62,8 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 
 	@Override
 	public PagedList<StoreSubmitProductVO> findSimpelVOByCondition(StoreSubmitProductCondition condition) {
-		Page<StoreSubmitProductVO> page=storeSubmitProductMapper.selectVoByCondition(condition);
-		PagedList<StoreSubmitProductVO> list=new PagedList<>();
+		Page<StoreSubmitProductVO> page = storeSubmitProductMapper.selectVoByCondition(condition);
+		PagedList<StoreSubmitProductVO> list = new PagedList<>();
 		list.setData(page.getResult());
 		list.setTotalRows(page.getTotal());
 		list.setPageNo(condition.getPageNo());
@@ -74,23 +74,23 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 	@Override
 	public PagedList<BackStageStoreSubmitProdVO> findBackStageVOByCondition(
 			BackStageStoreSubmitProdCondition condition) {
-		PagedList<BackStageStoreSubmitProdVO> list=null;
-		Page<BackStageStoreSubmitProdVO> page=storeSubmitProductMapper.selectBackStageVOByCondition(condition);
-		if(page.getResult()!=null){
-			for(BackStageStoreSubmitProdVO p:page.getResult()){
+		PagedList<BackStageStoreSubmitProdVO> list = null;
+		Page<BackStageStoreSubmitProdVO> page = storeSubmitProductMapper.selectBackStageVOByCondition(condition);
+		if(page.getResult() != null){
+			for(BackStageStoreSubmitProdVO p : page.getResult()){
 				short status=p.getProdStatus();
-				if(StoreSubmitProductStatusEnum.CREATE.getStatusCode()==status){
+				if (StoreSubmitProductStatusEnum.CREATE.getStatusCode() == status) {
 					p.setProdStatusStr(StoreSubmitProductStatusEnum.CREATE.getStatusDes());
-				}else if(StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
+				} else if (StoreSubmitProductStatusEnum.PASS.getStatusCode() == status) {
 					p.setProdStatusStr(StoreSubmitProductStatusEnum.PASS.getStatusDes());
-				}else if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status){
+				} else if (StoreSubmitProductStatusEnum.NOTPASS.getStatusCode() == status) {
 					p.setProdStatusStr(StoreSubmitProductStatusEnum.NOTPASS.getStatusDes());
-				}else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
+				} else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode() == status) {
 					p.setProdStatusStr(StoreSubmitProductStatusEnum.ADDPROD.getStatusDes());
 				}
 			}
 		}
-		list=new PagedList<>();
+		list = new PagedList<>();
 		list.setPageNo(condition.getPageNo());
 		list.setPageSize(condition.getPageSize());
 		list.setData(page.getResult());

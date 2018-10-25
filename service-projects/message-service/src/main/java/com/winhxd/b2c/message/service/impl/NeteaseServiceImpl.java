@@ -38,7 +38,9 @@ import java.util.Map;
  */
 @Service
 public class NeteaseServiceImpl implements NeteaseService {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(NeteaseServiceImpl.class);
+
 	private static final String SUCCESS_CODE = "200";
 	private static final String ERROR_CODE = "414";
 	private static final String ERROR_MSG = "not register";
@@ -113,7 +115,6 @@ public class NeteaseServiceImpl implements NeteaseService {
 
 	@Override
 	public void updateNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
-		NeteaseAccountVO result = new NeteaseAccountVO();
 		Long customerId = neteaseAccountCondition.getCustomerId();
 		if (customerId == null) {
 			LOGGER.error("消息服务 ->更新云信账号信息异常，NeteaseServiceImpl.updateNeteaseAccount(),参数错误，customerId是null");
@@ -143,12 +144,11 @@ public class NeteaseServiceImpl implements NeteaseService {
 	@Override
 	@MessageEnumConvertAnnotation
 	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long storeId) {
-		String accid;
 		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(storeId);
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
-		accid = neteaseAccount.getAccid();
+		String accid = neteaseAccount.getAccid();
 		PagedList<NeteaseMsgVO> pagedList = new PagedList<>();
 		condition.setAccid(accid);
 		Date currentDate = new Date();

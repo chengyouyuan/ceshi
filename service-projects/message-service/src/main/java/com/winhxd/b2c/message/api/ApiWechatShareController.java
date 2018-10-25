@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
 import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.message.service.WechatShareService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,9 +34,6 @@ public class ApiWechatShareController {
     private Logger logger = LoggerFactory.getLogger(ApiWechatShareController.class);
     @Autowired
     private WechatShareService wechatShareService;
-
-    @Autowired
-    private StoreServiceClient storeServiceClient;
 
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})

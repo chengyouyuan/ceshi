@@ -123,7 +123,7 @@ public class StoreServiceImpl implements StoreService {
 
         //获取regioncode对应的区域名称
         List<String> regionCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
-        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(regionCodeList).getData();
+        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(regionCodeList).getDataWithException();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();
         userInfoList.stream().forEach(storeUserInfo1 -> {
@@ -209,7 +209,7 @@ public class StoreServiceImpl implements StoreService {
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
         //查询省市县五级信息
-        SysRegion sysRegion = regionServiceClient.getRegionByCode(storeUserInfo.getStoreRegionCode()).getData();
+        SysRegion sysRegion = regionServiceClient.getRegionByCode(storeUserInfo.getStoreRegionCode()).getDataWithException();
         if (sysRegion != null) {
             BeanUtils.copyProperties(sysRegion, backStageStoreVO);
         } else {

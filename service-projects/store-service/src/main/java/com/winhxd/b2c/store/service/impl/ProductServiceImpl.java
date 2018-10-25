@@ -154,12 +154,10 @@ public class ProductServiceImpl implements ProductService {
         if (storeProductManages.isEmpty()){
             return responseResult;
         }
-
         //获取商品列表信息
         ProductConditionByPage productConditionByPage = buildProductConditionByPage(false, condition, storeProductManages);
         responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
-
-        PagedList<ProductSkuVO> productSkus = responseResult.getData();
+        PagedList<ProductSkuVO> productSkus = responseResult.getDataWithException();
         if (productSkus == null || productSkus.getData().isEmpty()){
             return responseResult;
         }
@@ -182,7 +180,6 @@ public class ProductServiceImpl implements ProductService {
         if (storeProductManages.isEmpty()){
             return responseResult;
         }
-
         //获取商品列表信息
         ProductConditionByPage productConditionByPage = new ProductConditionByPage();
         productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
@@ -191,9 +188,8 @@ public class ProductServiceImpl implements ProductService {
         productConditionByPage.setPageNo(condition.getPageNo());
         productConditionByPage.setPageSize(condition.getPageSize());
         responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
-
         //价格赋值
-        assignSellMoney(responseResult.getData().getData(), storeProductManages);
+        assignSellMoney(responseResult.getDataWithException().getData(), storeProductManages);
         return responseResult;
     }
 

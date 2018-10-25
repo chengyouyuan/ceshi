@@ -121,55 +121,42 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 					prodCondition.setProductSkus(skuCodeList);
 					prodCondition.setProductName(condition.getProdName());
 					//调取商品接口查询商品名称相似的sku（在改门店所有sku集合当中）
-					ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
-					if(prodResult.getCode()!=0){
-						//异常
-						responseResult.setCode(prodResult.getCode());
-						responseResult.setMessage(prodResult.getMessage());
+					ResponseResult<List<ProductSkuVO>> prodResult = productServiceClient.getProductSkus(prodCondition);
+					List<ProductSkuVO> skuVOList = prodResult.getDataWithException();
+					if(skuVOList == null || skuVOList.size() <= 0){
+						responseResult.setMessage("查询不到数据！");
 						return responseResult;
 					}else{
-						List<ProductSkuVO> skuVOList=prodResult.getData();
-						if(skuVOList==null||skuVOList.size()<=0){
-							responseResult.setMessage("查询不到数据！");
-							return responseResult;
-						}else{
-							//查询到名称一样的商品SKU
-							List<String> resultSkus=new ArrayList<>();
-							for(ProductSkuVO psVO:skuVOList){
-								resultSkus.add(psVO.getSkuCode());
-							}
-
-							condition.setSkuCodeList(resultSkus);
+						//查询到名称一样的商品SKU
+						List<String> resultSkus = new ArrayList<>(skuVOList.size());
+						for(ProductSkuVO psVO : skuVOList){
+							resultSkus.add(psVO.getSkuCode());
 						}
+						condition.setSkuCodeList(resultSkus);
 					}
 				}
 			}
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 			//最终查询
-			PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
-			List<String> finalSkuCodes=new ArrayList<>(resultVO.getData().size());
-			for(BackStageStoreProdVO vo:resultVO.getData()){
+			PagedList<BackStageStoreProdVO> resultVO = storeProductManageService.findStoreProdManageList(condition);
+			List<String> finalSkuCodes = new ArrayList<>(resultVO.getData().size());
+			for(BackStageStoreProdVO vo : resultVO.getData()){
 				finalSkuCodes.add(vo.getSkuCode());
 			}
-			ProductCondition prodCondition=new ProductCondition();
+			ProductCondition prodCondition = new ProductCondition();
 			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
 			prodCondition.setProductSkus(finalSkuCodes);
-			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
-			
-			if(prodResult!=null&&prodResult.getCode()==0
-					&&prodResult.getData()!=null){
-			    List<ProductSkuVO> finalProdVoList=prodResult.getData();
-			    List<BackStageStoreProdVO> finalBSSPVoList=resultVO.getData();
-				for(int i=0;i<finalProdVoList.size();i++){
-				    System.err.println("skuCode:"+finalProdVoList.get(i).getSkuCode());
-				    for(int j=0;j<finalBSSPVoList.size();j++){
-				        if(finalBSSPVoList.get(j).getSkuCode().equals(finalProdVoList.get(i).getSkuCode())){
+			ResponseResult<List<ProductSkuVO>> prodResult = productServiceClient.getProductSkus(prodCondition);
+			List<ProductSkuVO> finalProdVoList = prodResult.getDataWithException();
+			if (finalProdVoList != null && finalProdVoList.size() > 0) {
+			    List<BackStageStoreProdVO> finalBSSPVoList = resultVO.getData();
+				for (int i = 0; i < finalProdVoList.size(); i++) {
+				    for (int j = 0;j < finalBSSPVoList.size(); j++) {
+				        if (finalBSSPVoList.get(j).getSkuCode().equals(finalProdVoList.get(i).getSkuCode())) {
 				            finalBSSPVoList.get(j).setProdName(finalProdVoList.get(i).getSkuName());
 				            finalBSSPVoList.get(j).setSkuImage(finalProdVoList.get(i).getSkuImage());
-		                   
 				        }
 				    }
-					
 				}
 			}
 			responseResult.setData(resultVO);
@@ -182,20 +169,20 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 
 	@Override
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
-		ResponseResult<BackStageStoreProdVO> responseResult=new ResponseResult<>();
-		PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
-		if(resultVO!=null&&resultVO.getData()!=null&&resultVO.getData().size()>0){
-			BackStageStoreProdVO vo=resultVO.getData().get(0);
-			ProductCondition prodCondition=new ProductCondition();
+		ResponseResult<BackStageStoreProdVO> responseResult = new ResponseResult<>();
+		PagedList<BackStageStoreProdVO> resultVO = storeProductManageService.findStoreProdManageList(condition);
+		if(resultVO != null && resultVO.getData() != null && resultVO.getData().size() > 0){
+			BackStageStoreProdVO vo = resultVO.getData().get(0);
+			ProductCondition prodCondition = new ProductCondition();
 			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-			List<String> finalSkuCodes=new ArrayList<>(1);
+			List<String> finalSkuCodes = new ArrayList<>(1);
 			finalSkuCodes.add(vo.getSkuCode());
 			prodCondition.setProductSkus(finalSkuCodes);
-			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
-			if(prodResult!=null&&prodResult.getCode()==0
-					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
-				vo.setProdName(prodResult.getData().get(0).getSkuName());
-				vo.setSkuImage(prodResult.getData().get(0).getSkuImage());
+			ResponseResult<List<ProductSkuVO>> prodResult = productServiceClient.getProductSkus(prodCondition);
+			List<ProductSkuVO> prodList = prodResult.getDataWithException();
+			if (prodList != null && prodList.size() == finalSkuCodes.size()) {
+				vo.setProdName(prodList.get(0).getSkuName());
+				vo.setSkuImage(prodList.get(0).getSkuImage());
 			}
 			responseResult.setData(vo);
 		}
@@ -204,14 +191,12 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 
 	@Override
 	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
+    	if (condition == null || condition.getProdStatus() == null || condition.getId() == null) {
+			return new ResponseResult<>(BusinessCode.CODE_1007);
+		}
 		ResponseResult<Void> responseResult = new ResponseResult<>();
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		if (condition == null || condition.getProdStatus() == null || condition.getId() == null) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数无效！");
-		}
 		storeProductManageService.modifyStoreProdManageByBackStage(adminUser,condition);
-
 		return responseResult;
 	}
 
@@ -234,7 +219,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	@Override
 	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<BackStageStoreSubmitProdVO> responseResult = null;
-
 		if (condition != null) {
 			responseResult = new ResponseResult<>();
 			PagedList<BackStageStoreSubmitProdVO> list = this.storeSubmitProductService
@@ -242,7 +226,6 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 			if (list != null && list.getData() != null && list.getData().size() > 0) {
 				responseResult.setData(list.getData().get(0));
 			}
-
 		} else {
 			responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
 		}
@@ -253,54 +236,47 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     public ResponseResult<Void> modifyStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> responseResult = null;
         AdminUser adminUser = UserContext.getCurrentAdminUser();
-        
-        if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
+        if(condition != null && condition.getProdStatus() != null && condition.getId() != null) {
             //主键
-            Long id=condition.getId();
+            Long id = condition.getId();
             //状态
-            Short status=condition.getProdStatus();
+            Short status = condition.getProdStatus();
             //提报商品信息
-            StoreSubmitProduct ssp=storeSubmitProductService.findById(id);
-            if(ssp==null){
-                responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
-                return responseResult;
+            StoreSubmitProduct ssp = storeSubmitProductService.findById(id);
+            if (ssp == null) {
+                return new ResponseResult<>(BusinessCode.CODE_1001);
             }
-            if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status||
-                    StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
+            if (StoreSubmitProductStatusEnum.NOTPASS.getStatusCode() == status ||
+                    StoreSubmitProductStatusEnum.PASS.getStatusCode() == status) {
                 ssp.setAuditRemark(condition.getAuditRemark());  
-            }else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
-                String skuCode=condition.getSkuCode(); 
-                if(StringUtils.isBlank(skuCode)){
-                    responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
-                    return responseResult;
-                }else{
-                    ProductCondition pCondition=new ProductCondition();
+            } else if (StoreSubmitProductStatusEnum.ADDPROD.getStatusCode() == status) {
+                String skuCode = condition.getSkuCode();
+                if (StringUtils.isBlank(skuCode)) {
+                    return new ResponseResult<>(BusinessCode.CODE_1001);
+                } else {
+                    ProductCondition pCondition = new ProductCondition();
                     pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-                    List<String> skuCodes=new ArrayList<>();
+                    List<String> skuCodes = new ArrayList<>();
                     skuCodes.add(skuCode);
                     pCondition.setProductSkus(skuCodes);
-                    ResponseResult<List<ProductSkuVO>> pResult= productServiceClient.getProductSkus(pCondition);
-                    if(pResult!=null&&pResult.getCode()==0&&pResult.getData()!=null
-                            &&pResult.getData().size()>0){
+                    ResponseResult<List<ProductSkuVO>> pResult = productServiceClient.getProductSkus(pCondition);
+					List<ProductSkuVO> voList = pResult.getDataWithException();
+                    if(voList != null && voList.size() > 0){
                         //查询对应的sku信息
-                        ProductSkuVO skuVO=pResult.getData().get(0);
+                        ProductSkuVO skuVO = voList.get(0);
                         ssp.setSkuCode(skuVO.getSkuCode());
                         ssp.setProdCode(skuVO.getProductCode());
                         ssp.setSkuAttributeOption(skuVO.getSkuAttributeOption());
                         ssp.setProdName(skuVO.getSkuName());
                     }else{
-                        responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
-                        return responseResult;  
+                        return new ResponseResult<>(BusinessCode.CODE_1001);
                     }
                 }
             }else{
                 //无该操作权限
-                responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
-                return responseResult;  
+                return new ResponseResult<>(BusinessCode.CODE_1001);
             }
-            
             ssp.setProdStatus(status);
-            
             storeSubmitProductService.modifyStoreSubmitProductByAdmin(adminUser, ssp);
         }
         return responseResult;

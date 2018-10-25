@@ -154,7 +154,7 @@ public class ExcelUtils {
      * @return
      * @throws Exception
      */
-    public static <T> ImportResult<T> importExcelVerify(InputStream inputStream, Class<?> pojoClass) throws Exception {
+    public static <T extends BaseExcelDomain> ImportResult<T> importExcelVerify(InputStream inputStream, Class<T> pojoClass) throws Exception {
         ImportParams params = new ImportParams();
         params.setNeedVerfiy(true);
         ExcelImportResult<T> result = ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
@@ -165,7 +165,7 @@ public class ExcelUtils {
         StringBuilder errorMsg = new StringBuilder();
         int errorCount = 0;// 显示错误的数量
         for (int i = 0; i < list.size(); i++) {
-            baseExcelDomain = (BaseExcelDomain) list.get(i);
+            baseExcelDomain = list.get(i);
             if (StringUtils.isNotBlank(baseExcelDomain.getErrorMsg())) {
                 errorMsg.append((i + 1)).append("行：").append(baseExcelDomain.getErrorMsg()).append("\n");
                 res.setErrorMsg(errorMsg.toString());

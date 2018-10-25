@@ -157,7 +157,11 @@ public class CouponController {
             return result;
         }
 		ResponseResult<List<StoreUserInfoVO>> resultStore = couponActivityServiceClient.couponActivityStoreImportExcel(list);
-
+		if(CollectionUtils.isEmpty(resultStore.getDataWithException())){
+			result.setCode(BusinessCode.CODE_1007);
+			result.setMessage("导入的小店ID不存在");
+			return result;
+		}
 		StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
 		List<String> storeIdList = list.stream().map(caiv -> caiv.getStoreId()).distinct().collect(Collectors.toList());
 		scrc.setStoreUserInfoIds(storeIdList);

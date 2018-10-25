@@ -244,7 +244,7 @@ public class PayServiceImpl implements PayService{
 					logger.info(log+"--订单更新失败");
 					return false;
 				}
-				logger.info(log+"--订单更新状态"+callbackResult.getData());
+				logger.info(log + "--订单更新状态--{}", callbackResult.getData());
 			} catch (Exception e) {
 				logger.error(log+"--订单更新失败",e);
 				return false;
@@ -258,24 +258,24 @@ public class PayServiceImpl implements PayService{
 	public void updateStoreBankroll(UpdateStoreBankRollCondition condition){
 		String log=logLabel+"门店资金变化updateStoreBankroll";
 		if (condition == null) {
-			logger.info(log+"--参数为空");
+			logger.error(log + "--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600001);
 		}
 		Long storeId=condition.getStoreId();
 		if (storeId == null) {
-			logger.info(log+"--门店id为空");
+			logger.error(log + "--门店id为空");
 			throw new BusinessException(BusinessCode.CODE_600002);
 		}
 		if (condition.getType() == null) {
-			logger.info(log+"--操作类型为空");
+			logger.error(log + "--操作类型为空");
 			throw new BusinessException(BusinessCode.CODE_600003);
 		}
 		if (condition.getMoney() == null) {
-			logger.info(log+"--金额为空");
+			logger.error(log + "--金额为空");
 			throw new BusinessException(BusinessCode.CODE_600009);
 		}
 		if (condition.getMoney().compareTo(BigDecimal.valueOf(0)) <= 0) {
-			logger.info(log+"--金额有误");
+			logger.error(log + "--金额有误");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}
 		logger.info(log + "--参数[{}]", JsonUtil.toJSONString(condition));
@@ -629,11 +629,11 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		//查询订单
 		ResponseResult<OrderInfoDetailVO4Management> orderResult=orderServiceClient.getOrderDetail4Management(orderNo);
-		if (orderResult==null||orderResult.getData().getOrderInfoDetailVO()==null) {
+		if (orderResult.getData().getOrderInfoDetailVO() == null) {
 			logger.info(log+"--未获取到订单数据");
 			return;
 		}
-		OrderInfoDetailVO orderVO=orderResult.getData().getOrderInfoDetailVO();
+		OrderInfoDetailVO orderVO = orderResult.getDataWithException().getOrderInfoDetailVO();
 		if (!orderVO.getPayStatus().equals( PayStatusEnum.PAID.getStatusCode()) || StringUtils.isBlank(order.getPaymentSerialNum())) {
 			logger.info(log+"--订单状态错误");
 			return;
@@ -860,11 +860,11 @@ public class PayServiceImpl implements PayService{
 		String  log =logLabel + "微信提现至银行卡transfersToBank";
 		logger.info(log+"--开始");
 		if (toWxBankCondition==null) {
-			logger.info(log+"--参数为空");
+			logger.error(log + "--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
 		if (StringUtils.isBlank(toWxBankCondition.getPartnerTradeNo())) {
-			logger.info(log+"--提现流水号号为空");
+			logger.error(log + "--提现流水号号为空");
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
@@ -980,7 +980,7 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
-			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
+			toWxBalanceCondition.setDesc(payWithdrawals.getName() + "用户提现,用户手机号:{}" + payWithdrawals.getMobile());
 			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
 			if (null == payWithdrawals.getSpbillCreateIp()) {

@@ -297,13 +297,11 @@ public class VerifyServiceImpl implements VerifyService {
             }
             Map<Long, String> storeMap = new HashMap<>(20);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult != null && responseResult.getCode() == 0) {
-                if (responseResult.getData() != null) {
+            if (responseResult.getDataWithException() != null) {
                     for (StoreUserInfoVO vo : responseResult.getData()) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
                 }
-            }
             for (VerifySummaryVO vo : page.getResult()) {
                 vo.setStoreName(storeMap.get(vo.getStoreId()));
             }
@@ -332,12 +330,10 @@ public class VerifyServiceImpl implements VerifyService {
             }
             Map<Long, String> storeMap = new HashMap<>(20);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult != null && responseResult.getCode() == 0) {
-                if (responseResult.getData() != null) {
+            if (responseResult.getDataWithException() != null) {
                     for (StoreUserInfoVO vo : responseResult.getData()) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
-                }
             }
             for (VerifyDetailVO vo : page.getResult()) {
                 vo.setStoreName(storeMap.get(vo.getStoreId()));
@@ -511,12 +507,10 @@ public class VerifyServiceImpl implements VerifyService {
             }
             Map<Long, String> storeMap = new HashMap<>(16);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult != null && responseResult.getCode() == 0) {
-                if (responseResult.getData() != null) {
+            if (responseResult.getDataWithException() != null) {
                     for (StoreUserInfoVO vo : responseResult.getData()) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
-                }
             }
             for (PayWithdrawalsVO vo : page.getResult()) {
                 vo.setStoreName(storeMap.get(vo.getStoreId()));

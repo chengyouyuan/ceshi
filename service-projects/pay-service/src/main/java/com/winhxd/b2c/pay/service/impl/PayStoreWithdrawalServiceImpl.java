@@ -97,7 +97,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		// 返回手机号参数
 		ResponseResult<StoreUserInfoVO> findStoreUserInfo = storeServiceClient.findStoreUserInfo(businessId);
 		String storeMobile = "";
-		if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
+		if (findStoreUserInfo.getDataWithException() != null) {
 			storeMobile = findStoreUserInfo.getData().getStoreMobile();
 		}
 		withdrawalPage.setMobile(storeMobile);
@@ -119,21 +119,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}else if(weixType == condition.getWithdrawType()){
 			String openId = UserContext.getCurrentStoreUser().getOpenId();
 			if(StringUtils.isBlank(openId)){
-				LOGGER.info("缓存中的微信的openid为空");
+				LOGGER.error("缓存中的微信的openid为空");
 				throw new BusinessException(BusinessCode.CODE_610802);
 			}
 			//获取登录微信钱包数据
 			if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
 				StoreUserInfoVO data = findStoreUserInfo.getData();
 				if(!openId.equals(data.getOpenid())){
-					LOGGER.info("缓存中的openid:{}和门店表中的openid:{}不对应",openId,data.getOpenid());
+					LOGGER.error("缓存中的openid:{}和门店表中的openid:{}不对应", openId, data.getOpenid());
 					throw new BusinessException(BusinessCode.CODE_610802);
 				}
 				withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getWechatName()+")");
 				withdrawalPage.setNick(data.getWechatName());
 				withdrawalPage.setOpenid(data.getOpenid());
 			} else {
-				LOGGER.info("门店表中的openId为空");
+				LOGGER.warn("门店表中的openId为空");
 				throw new BusinessException(BusinessCode.CODE_610802);
 			}
 

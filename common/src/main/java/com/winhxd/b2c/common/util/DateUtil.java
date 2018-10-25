@@ -44,20 +44,12 @@ public class DateUtil {
 	 * @param format
 	 * @return
 	 */
-	public static Date toDate(String strDate, String format) {
-		Date date = null;
-		
+	public static Date toDate(String strDate, String format) throws ParseException {
 		if(StringUtils.isEmpty(format)) {
 			return null;
 		}
-		
-		try {
-			date = new SimpleDateFormat(format).parse(strDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return date;
+
+		return new SimpleDateFormat(format).parse(strDate);
 	}
 
 	public static Date getStartDate(Date startDate){

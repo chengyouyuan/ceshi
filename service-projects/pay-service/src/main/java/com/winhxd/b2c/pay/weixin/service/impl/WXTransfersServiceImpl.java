@@ -560,7 +560,11 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     public void modifyTransfersToBankStatus(PayTransfersQueryToWxBankVO resultForWxBank) {
         PayTransfers payTransfers = payTransfersMapper.selectTOP1TransfersByPartnerTradeNoAndPaymentNo(
                 resultForWxBank.getPartnerTradeNo(), resultForWxBank.getPaymentNo());
-        payTransfers.setTimeEnd(DateUtil.toDate(resultForWxBank.getPaySuccTime(), DATE_FORMAT));
+        try {
+            payTransfers.setTimeEnd(DateUtil.toDate(resultForWxBank.getPaySuccTime(), DATE_FORMAT));
+        } catch (ParseException e) {
+            logger.error("时间解析错误", e);
+        }
         String transfersStatus = resultForWxBank.getStatus();
         if(PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)){
             payTransfers.setStatus((short) 1);

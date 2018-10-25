@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 @Service
 public class CouponApplyServiceImpl implements CouponApplyService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CouponApplyServiceImpl.class);
+
      @Autowired
      private CouponApplyMapper couponApplyMapper;
      @Autowired
@@ -77,25 +78,29 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                 }
                 //调用获取品牌信息接口
                 ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
-                if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+
+                List<BrandVO> brandVoList = result.getDataWithException();
+                if (CollectionUtils.isEmpty(brandVoList)) {
                     throw new BusinessException(result.getCode());
                 }
-                List<BrandVO> BrandVoList = result.getData();
+
                 for(int i=0;i<couponApplyBrandLists.size();i++){
                     CouponApplyBrandList couponApplyBrandList = couponApplyBrandLists.get(i);
-                    for(int j=0;j<BrandVoList.size();j++){
-                        if(couponApplyBrandList.getBrandCode().equals(BrandVoList.get(j).getBrandCode())){
-                            couponApplyBrandList.setBrandName(BrandVoList.get(j).getBrandName());
+                    for (int j = 0; j < brandVoList.size(); j++) {
+                        if (couponApplyBrandList.getBrandCode().equals(brandVoList.get(j).getBrandCode())) {
+                            couponApplyBrandList.setBrandName(brandVoList.get(j).getBrandName());
                             break;
                         }
                     }
                 }
                 //调用获取品牌商信息接口
                 ResponseResult<List<CompanyInfo>> result1 = companyServiceClient.getCompanyInfoByCodes(companyCodes);
-                if (result1 == null || result1.getCode() != BusinessCode.CODE_OK || result1.getData() == null) {
+
+                List<CompanyInfo> companyInfoList = result1.getDataWithException();
+                if (CollectionUtils.isEmpty(companyInfoList)) {
                     throw new BusinessException(result1.getCode());
                 }
-                List<CompanyInfo> companyInfoList = result1.getData();
+
                 for(int i=0;i<couponApplyBrandLists.size();i++){
                     CouponApplyBrandList couponApplyBrandList = couponApplyBrandLists.get(i);
                     for(int j=0;j<companyInfoList.size();j++){
@@ -122,10 +127,12 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                 //调用获取商品信息接口
                 productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                 ResponseResult<List<ProductSkuVO>> result2 = productServiceClient.getProductSkus(productCondition);
-                if (result2 == null || result2.getCode() != BusinessCode.CODE_OK || result2.getData() == null) {
+
+                List<ProductSkuVO> productSkuVOList = result2.getDataWithException();
+                if (CollectionUtils.isEmpty(productSkuVOList)) {
                     throw new BusinessException(result2.getCode());
                 }
-                List<ProductSkuVO> productSkuVOList = result2.getData();
+
                 for(int i=0;i<couponApplyProductLists.size();i++){
                     CouponApplyProductList couponApplyProductList = couponApplyProductLists.get(i);
                     for(int j=0;j<productSkuVOList.size();j++){

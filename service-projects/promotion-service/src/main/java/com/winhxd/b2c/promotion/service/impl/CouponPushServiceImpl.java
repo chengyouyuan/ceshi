@@ -3,7 +3,6 @@ package com.winhxd.b2c.promotion.service.impl;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -81,50 +80,11 @@ public class CouponPushServiceImpl implements CouponPushService {
 
     private static final int DEFAULT_COUPON_SEND_NUM = 1;
 
-    /**
-     * 校验优惠券是否可领取
-     * @param couponPushVO
-     * @param activityIds
-     * @param unActivityIds
-     * @param receiveCouponCount
-     * @param customerUser
-     * @return
-     */
-    private boolean checkCouponCollar(CouponPushVO couponPushVO,List<Long> activityIds,List<Long> unActivityIds,
-                                Long receiveCouponCount,CustomerUser customerUser) {
-        if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
-            return true;
-        }else if (unActivityIds.contains(couponPushVO.getActivityId())) {
-            return false;
-        }else {
-            receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
-            // 校验用户是否领取过优惠券
-            int count = checkCustomerJoinActive(customerUser, couponPushVO);
-            if (receiveCouponCount < couponPushVO.getCouponNum() && count == 0) {
-                activityIds.add(couponPushVO.getActivityId());
-                return true;
-            }else{
-                // 优惠券是否可领取 0 已领取,1 可领取,2已领完
-                couponPushVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
-                unActivityIds.add(couponPushVO.getActivityId());
-                return false;
-            }
-        }
-    }
-
-    private int checkCustomerJoinActive(CustomerUser customerUser, CouponPushVO couponPushVO) {
-        CouponActivityRecord car = new CouponActivityRecord();
-        car.setCouponActivityId(couponPushVO.getActivityId());
-        car.setCustomerId(customerUser.getCustomerId());
-        return couponActivityRecordMapper.checkCustomerJoinActive(car);
-    }
-
     @Override
     public List<CouponPushVO> getSpecifiedPushCoupon(CustomerUser customerUser) {
 
         StoreUserInfoVO storeUserInfo = getStoreUserInfoVO(customerUser);
         List<CouponPushVO> couponPushResult = getCouponPush(customerUser, storeUserInfo);
-
         // 初始化list的size
         List<CouponPushVO> resultList = new ArrayList<>(couponPushResult.size());
 
@@ -160,6 +120,46 @@ public class CouponPushServiceImpl implements CouponPushService {
             }
         }
         return this.getCouponPushDetail(resultList);
+    }
+
+
+    /**
+     * 校验优惠券是否可领取
+     *
+     * @param couponPushVO
+     * @param activityIds
+     * @param unActivityIds
+     * @param receiveCouponCount
+     * @param customerUser
+     * @return
+     */
+    private boolean checkCouponCollar(CouponPushVO couponPushVO, List<Long> activityIds, List<Long> unActivityIds,
+                                      Long receiveCouponCount, CustomerUser customerUser) {
+        if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
+            return true;
+        } else if (unActivityIds.contains(couponPushVO.getActivityId())) {
+            return false;
+        } else {
+            receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
+            // 校验用户是否领取过优惠券
+            int count = checkCustomerJoinActive(customerUser, couponPushVO);
+            if (receiveCouponCount < couponPushVO.getCouponNum() && count == 0) {
+                activityIds.add(couponPushVO.getActivityId());
+                return true;
+            } else {
+                // 优惠券是否可领取 0 已领取,1 可领取,2已领完
+                couponPushVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
+                unActivityIds.add(couponPushVO.getActivityId());
+                return false;
+            }
+        }
+    }
+
+    private int checkCustomerJoinActive(CustomerUser customerUser, CouponPushVO couponPushVO) {
+        CouponActivityRecord car = new CouponActivityRecord();
+        car.setCouponActivityId(couponPushVO.getActivityId());
+        car.setCustomerId(customerUser.getCustomerId());
+        return couponActivityRecordMapper.checkCustomerJoinActive(car);
     }
 
 
@@ -240,11 +240,11 @@ public class CouponPushServiceImpl implements CouponPushService {
                 productCondition.setProductSkus(productSkus);
                 //调用获取商品信息接口
                 ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
-                if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                if (CollectionUtils.isEmpty(result.getDataWithException())) {
                     logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
                     throw new BusinessException(result.getCode());
                 }
-                couponPushVO.setProducts(result.getData());
+                couponPushVO.setProducts(result.getDataWithException());
             }
         }
     }
@@ -265,13 +265,13 @@ public class CouponPushServiceImpl implements CouponPushService {
 
                 //调用获取商品信息接口
                 ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
-                if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                if (CollectionUtils.isEmpty(result.getDataWithException())) {
                     logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
                     throw new BusinessException(result.getCode());
                 }
 
-                couponPushVO.setBrands(result.getData());
-                getLogo(couponPushVO,result.getData(),couponApplyBrandLists);
+                couponPushVO.setBrands(result.getDataWithException());
+                getLogo(couponPushVO, result.getDataWithException(), couponApplyBrandLists);
             }
         }
     }
@@ -347,8 +347,8 @@ public class CouponPushServiceImpl implements CouponPushService {
             condition.setCompanyCode(couponApplyBrandLists.get(0).getCompanyCode());
 
             ResponseResult<PagedList<BrandVO>> brandInfo = productServiceClient.getBrandInfoByPage(condition);
-            if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getData().getData())) {
-                logoUrl = brandInfo.getData().getData().stream()
+            if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getDataWithException().getData())) {
+                logoUrl = brandInfo.getDataWithException().getData().stream()
                         .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo()))
                         .map(brand -> brand.getCompanyLogo()).findAny();
             }

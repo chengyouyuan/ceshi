@@ -288,7 +288,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
                     scrc.setStoreUserInfoIds(list);
                     ResponseResult<List<Long>> storeCustomerRegions = storeServiceClient.findStoreCustomerRegions(scrc);
-                    couponActivityVO.setStoreCustomerNum(storeCustomerRegions.getData() == null ?0:(long)storeCustomerRegions.getData().size());
+                    couponActivityVO.setStoreCustomerNum(storeCustomerRegions.getDataWithException() == null ? 0 : (long) storeCustomerRegions.getData().size());
                 }
             }
         }

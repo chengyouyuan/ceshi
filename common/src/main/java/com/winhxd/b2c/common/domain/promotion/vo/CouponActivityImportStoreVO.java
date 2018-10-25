@@ -14,18 +14,7 @@ import lombok.Data;
  */
 @ApiModel("优惠券活动导入小店信息")
 @Data
-public class CouponActivityImportStoreVO<T> extends BaseExcelDomain {
-	protected String errorMsg;
-
-	@Override
-	public String getErrorMsg() {
-		return errorMsg;
-	}
-
-	@Override
-	public void setErrorMsg(String errorMsg) {
-		this.errorMsg = errorMsg;
-	}
+public class CouponActivityImportStoreVO extends BaseExcelDomain {
 
     @ApiModelProperty(value = "小店ID")
     @Excel(name = "惠小店ID", orderNum = "1")

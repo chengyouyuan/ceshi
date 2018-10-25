@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
+import com.winhxd.b2c.common.constant.TransfersToWxError;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersQueryToWxBankVO;
@@ -15,7 +16,6 @@ import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import com.winhxd.b2c.pay.weixin.constant.TransfersChannelType;
-import com.winhxd.b2c.common.constant.TransfersToWxError;
 import com.winhxd.b2c.pay.weixin.dao.PayTransfersMapper;
 import com.winhxd.b2c.pay.weixin.model.PayTransfers;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
@@ -238,7 +238,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     /**
      * 转账结果失败时重新查询, 确认结果
-     * @param toWxChangeVO
+     * @param
      * @throws Exception
      */
     private PayTransfersQueryForWxChangeResponseDTO getExactResultForWxChange(String partnerTradeNo, int queryTimes) throws Exception {

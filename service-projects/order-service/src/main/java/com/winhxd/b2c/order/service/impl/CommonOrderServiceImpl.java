@@ -422,12 +422,13 @@ public class CommonOrderServiceImpl implements OrderService {
     public void cancelOrderByStore(StoreUser store,OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
         ResponseResult<StoreUserInfoVO> storeData = this.storeServiceClient.findStoreUserInfo(store.getBusinessId());
-        if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
+        StoreUserInfoVO storeVO = storeData.getDataWithException();
+        if (storeVO == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
         }
+
         //Oscar定的一期不上取消原因，定死
         String reason = StringUtils.isNotBlank(orderCancelCondition.getCancelReason()) ? orderCancelCondition.getCancelReason() : "商品暂时缺货";
-        StoreUserInfoVO storeVO = storeData.getData();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         if (lock.tryLock()) {
@@ -482,11 +483,11 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void handleOrderRefundByStore(StoreUser store,OrderRefundStoreHandleCondition condition) {
         ResponseResult<StoreUserInfoVO> storeData = this.storeServiceClient.findStoreUserInfo(store.getBusinessId());
-        if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
+        StoreUserInfoVO storeVO = storeData.getDataWithException();
+        if (storeVO == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
         }
 
-        StoreUserInfoVO storeVO = storeData.getData();
         String orderNo = condition.getOrderNo();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
@@ -730,10 +731,8 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderIsPayCondition orderIsPayCondition = new OrderIsPayCondition();
         orderIsPayCondition.setOrderNo(orderInfo.getOrderNo());
         ResponseResult<Boolean> orderPayRet = payServiceClient.orderIsPay(orderIsPayCondition);
-        if (orderPayRet == null || orderPayRet.getCode() != BusinessCode.CODE_OK) {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
-        }
-        if (orderPayRet.getData() == null || !orderPayRet.getData()) {
+
+        if (orderPayRet.getDataWithException() == null || !orderPayRet.getDataWithException()) {
             //如果已有支付单存在，则不允许修改支付价格
             throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
         }
@@ -1051,7 +1050,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private StoreUserInfoVO getStoreUserInfoByStoreId(Long storeId) {
         ResponseResult<StoreUserInfoVO> storeRet = storeServiceClient.findStoreUserInfo(storeId);
-        if (storeRet == null || storeRet.getCode() != BusinessCode.CODE_OK || storeRet.getData() == null) {
+        if (storeRet.getDataWithException() == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID);
         }
         logger.info("根据storeId={}获取门店信息成功，门店信息：{}", storeId, storeRet.getData());
@@ -1097,7 +1096,7 @@ public class CommonOrderServiceImpl implements OrderService {
         CouponPreAmountCondition couponPreAmountCondition = assembleCouponPreAmountCondition(orderInfo);
         couponPreAmountCondition.setSendIds(Arrays.asList(couponIds));
         ResponseResult<CouponDiscountVO> ret = couponServiceClient.couponDiscountAmount(couponPreAmountCondition);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+        if (ret.getDataWithException() == null) {
             //优惠券优惠金额计算失败
             logger.error("订单：{}优惠券优惠金额接口调用失败:code={}，创建订单异常！~", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());
             throw new BusinessException(BusinessCode.CODE_401009);
@@ -1120,7 +1119,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderUseCouponCondition.setOrderPrice(orderInfo.getOrderTotalMoney());
         orderUseCouponCondition.setSendIds(Arrays.asList(couponIds));
         ResponseResult<Boolean> ret = couponServiceClient.orderUseCoupon(orderUseCouponCondition);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || !ret.getData()) {
+        if (!ret.getDataWithException()) {
             //优惠券使用失败
             logger.error("订单：{}优惠券使用更新接口调用失败:code={}，创建订单异常！~", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());
             throw new BusinessException(BusinessCode.CODE_401009);
@@ -1277,7 +1276,7 @@ public class CommonOrderServiceImpl implements OrderService {
         productCondition.setProductSkus(skuCodes);
         productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
         ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+        if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             // 优惠券使用失败
             logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
                     Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
@@ -1293,7 +1292,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     public Map<String, ShopCartProdVO> queryStoreSkuInfos(OrderInfo orderInfo, List<String> skuCodes) {
         ResponseResult<List<ShopCartProdVO>> ret = storeServiceClient.findShopCarProd(skuCodes, orderInfo.getStoreId());
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+        if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             // 优惠券使用失败
             logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 门店商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
                     Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
@@ -1436,7 +1435,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 //状态置为退回
                 orderUntreadCouponCondition.setStatus("4");
                 ResponseResult<Boolean> ret = couponServiceClient.orderUntreadCoupon(orderUntreadCouponCondition);
-                if (ret == null || ret.getCode() != BusinessCode.CODE_OK || !ret.getData()) {
+                if (!ret.getDataWithException()) {
                     logger.info("订单：{} 提交失败，进行优惠券回退操作失败，code={}.", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());
                 } else {
                     logger.info("订单：{} 提交失败，进行优惠券回退操作成功，couponIds={}.", orderInfo.getOrderNo(), Arrays.toString(couponIds));
@@ -1882,7 +1881,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
         ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceclient.findCustomerUserByIds(Arrays.asList(customerId));
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null || ret.getData().isEmpty()) {
+        if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
         logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));

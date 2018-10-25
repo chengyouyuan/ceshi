@@ -233,7 +233,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
         ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceClient.findCustomerUserByIds(Arrays.asList(customerId));
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(ret.getData())) {
+        if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
         logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
@@ -242,11 +242,12 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     private StoreUserInfoVO getStoreUserInfoVO(Long storeId) {
         ResponseResult<StoreUserInfoVO> ret = storeServiceClient.findStoreUserInfo(storeId);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+        StoreUserInfoVO storeUserInfoVO = ret.getDataWithException();
+        if (storeUserInfoVO == null) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
-        logger.info("storeId={} 获取用户信息成功，用户信息：{}", ret.getData());
-        return ret.getData();
+        logger.info("storeId={} 获取用户信息成功，用户信息：{}", storeUserInfoVO);
+        return storeUserInfoVO;
     }
 
     @Override
@@ -270,11 +271,8 @@ public class ShopCarServiceImpl implements ShopCarService {
         orderAvailableCouponCondition.setPayType(getStoreUserInfoVO(storeId).getPayType());
         orderAvailableCouponCondition.setStoreId(storeId);
         ResponseResult<CouponVO> result = couponServiceClient.findDefaultCoupon(orderAvailableCouponCondition);
-        if (null == result || result.getCode() != BusinessCode.CODE_OK ) {
-            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + JsonUtil.toJSONString(result));
-            throw new BusinessException(BusinessCode.CODE_402018);
-        }
-        return result.getData();
+        CouponVO couponVO = result.getDataWithException();
+        return couponVO;
     }
 
     @Override
@@ -344,7 +342,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         couponPreAmountCondition.setProducts(products);
         couponPreAmountCondition.setPayType(payType);
         ResponseResult<CouponDiscountVO> result = couponServiceClient.couponDiscountAmount(couponPreAmountCondition);
-        if (null == result || result.getCode() != BusinessCode.CODE_OK || null == result.getData()) {
+        if (null == result.getDataWithException()) {
             logger.info(SHOP_CAR + "getDiscountAmount{} 计算优惠金额失败 CouponDiscountVO:" + result);
             throw new BusinessException(BusinessCode.CODE_402017);
         }

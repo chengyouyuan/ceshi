@@ -399,11 +399,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
                 payPreOrderCondition.setLimitPay(PAYMENT_NO_CREDIT);
                 ResponseResult<OrderPayVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
-                if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
-                	logger.info("----------------AAAAAAAAA--");
-                	throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+                ret = responseResult.getDataWithException();
+                if (ret == null) {
+                    logger.info("----------------AAAAAAAAA--");
+                    throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
                 }
-                ret = responseResult.getData();
             }finally {
                 lock.unlock();
             }

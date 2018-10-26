@@ -606,7 +606,7 @@ public class WXPayApiImpl implements WXPayApi {
     }
 
 	@Override
-	public String transferToChange(Map<String, String> reqData) throws Exception {
+	public String transferToChange(Map<String, String> reqData) {
 		String url;
 		if (this.useSandbox) {
 			url = WXPayConstants.SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX;
@@ -617,7 +617,7 @@ public class WXPayApiImpl implements WXPayApi {
 	}
 
 	@Override
-	public String queryTransferToChange(Map<String, String> reqData) throws Exception {
+	public String queryTransferToChange(Map<String, String> reqData) {
 		String url;
 		if (this.useSandbox) {
 			url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
@@ -628,7 +628,7 @@ public class WXPayApiImpl implements WXPayApi {
 	}
 
 	@Override
-	public String transferToBank(Map<String, String> reqData) throws Exception {
+	public String transferToBank(Map<String, String> reqData) {
 		String url;
 		if (this.useSandbox) {
 			url = WXPayConstants.SANDBOX_TRANSFER_TO_BANK_URL_SUFFIX;
@@ -639,7 +639,7 @@ public class WXPayApiImpl implements WXPayApi {
 	}
 
 	@Override
-	public String queryTransferToBank(Map<String, String> reqData) throws Exception {
+	public String queryTransferToBank(Map<String, String> reqData) {
 		String url;
 		if (this.useSandbox) {
 			url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_BANK_URL_SUFFIX;
@@ -650,7 +650,7 @@ public class WXPayApiImpl implements WXPayApi {
 	}
 
 	@Override
-	public String publicKey(Map<String, String> reqData) throws Exception {
+	public String publicKey(Map<String, String> reqData) {
 		String url;
 		if (this.useSandbox) {
 			url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;

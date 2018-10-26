@@ -21,7 +21,12 @@ user-service:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
     listOfServers: http://user.retail/
-    
+
+# 短信服务 惠下单短信微服务中心
+sms-service:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://smsapi.hxd/
 
 # 缓存配置
 redis:

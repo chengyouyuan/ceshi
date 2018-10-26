@@ -1775,7 +1775,7 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送云信--手机尾号8513顾客申请退款
                 String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
-                String msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款";
+                String msgContent = "《申请退款》手机尾号" + mobileStr + "顾客申请退款";
                 NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                 neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
                 NeteaseMsg neteaseMsg = new NeteaseMsg();
@@ -1828,11 +1828,11 @@ public class CommonOrderServiceImpl implements OrderService {
             CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
             switch (type) {
                 case 1:
-                    // 给门店【已取消】手机尾号8513张先生已取消订单
+                    // 给门店《已取消》手机尾号8513张先生已取消订单
                     String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
                     NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                     neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
-                    String storeMsgContent = "【已取消】手机尾号" + mobileStr + "的顾客已取消订单";
+                    String storeMsgContent = "《已取消》手机尾号" + mobileStr + "的顾客已取消订单";
                     NeteaseMsg neteaseMsg = new NeteaseMsg();
                     neteaseMsg.setTreeCode(orderInfo.getOrderNo());
                     neteaseMsg.setPageType(MsgPageTypeEnum.ORDER_DETAIL.getPageType());
@@ -1915,29 +1915,29 @@ public class CommonOrderServiceImpl implements OrderService {
             String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
             NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
             neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
-            //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款
+            //《申请退款》手机尾号8513顾客申请退款，系统1天后将自动退款
             String msgContent = "";
             NeteaseMsg neteaseMsg = new NeteaseMsg();
             switch (type) {
                 case 1:
-                    msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
+                    msgContent = "《申请退款》手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
                     neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
                     neteaseMsg.setAudioType(2);
                     break;
                 case 2:
-                    msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
+                    msgContent = "《申请退款》手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
                     neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
                     neteaseMsg.setAudioType(2);
                     break;
                 case 3:
                     //3天
-                    msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
+                    msgContent = "《退款中》手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
                     neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
                     neteaseMsg.setAudioType(0);
                     break;
                 case 4:
-                    //【已退款】手机尾号8513黄小姐退款已到账
-                    msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
+                    //《已退款》手机尾号8513黄小姐退款已到账
+                    msgContent = "《已退款》手机尾号" + mobileStr + "顾客退款已到账";
                     neteaseMsg.setAudioType(0);
                     neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_REFUND.getTypeCode());
                     break;

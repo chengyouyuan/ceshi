@@ -12,7 +12,7 @@ public class OrderNotifyMsg {
     
     public static final String NEW_ORDER_NOTIFY_MSG_4_STORE = "您有一笔新的惠小店订单";
     
-    public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE = "【待自提】手机尾号{0}订单已付款待自提";
+    public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE = "《待自提》手机尾号{0}订单已付款待自提";
     
     public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER = "门店已确认接收订单，取货码为{0}，到店提货时请将提货码出示给门店";
     
@@ -22,7 +22,7 @@ public class OrderNotifyMsg {
     
     public static final String OFFLINE_PRICE_ORDER_NEED_PAY_NOTIFY_MSG_4_CUSTOMER = "商店已接收并确认了价格，快去支付吧";
     
-    public static final String ORDER_COMPLETE_MSG_4_STORE = "【已完成】 手机尾号{0}订单已完成";
+    public static final String ORDER_COMPLETE_MSG_4_STORE = "《已完成》 手机尾号{0}订单已完成";
     
     public static final String ORDER_COMPLETE_MSG_4_CUSTOMER = "您购买的商品已成功取货";
     

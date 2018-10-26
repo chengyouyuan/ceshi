@@ -179,9 +179,9 @@ public class ApiPayStoreBindBankCardController {
 		result.setData("验证码："+modileVerifyCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
-			sMSCondition.setContent("【惠下单】"+ modileVerifyCode+"（惠小店验证码，您正在进行银行卡绑定，5分钟有效，请勿泄漏给他人）");
+			sMSCondition.setContent(modileVerifyCode+"（惠小店验证码，您正在进行银行卡绑定，5分钟有效，请勿泄漏给他人）");
 		}else if(withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()){
-			sMSCondition.setContent("【惠下单】"+ modileVerifyCode+"（惠小店验证码，您正在授权微信提现账号，5分钟有效，请勿泄漏给他人）");
+			sMSCondition.setContent(modileVerifyCode+"（惠小店验证码，您正在授权微信提现账号，5分钟有效，请勿泄漏给他人）");
 		}
 		sMSCondition.setMobile(condition.getMobile());
 		messageSendUtils.sendSms(sMSCondition);

@@ -179,8 +179,11 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId) {
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
-        StoreUserInfoVO infoVo = new StoreUserInfoVO();
-        BeanUtils.copyProperties(storeUserInfo, infoVo);
+        StoreUserInfoVO infoVo = null;
+        if (null != storeUserInfo) {
+            infoVo = new StoreUserInfoVO();
+            BeanUtils.copyProperties(storeUserInfo, infoVo);
+        }
         return infoVo;
     }
 

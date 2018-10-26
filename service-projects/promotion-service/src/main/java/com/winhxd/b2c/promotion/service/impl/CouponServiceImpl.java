@@ -654,7 +654,7 @@ public class CouponServiceImpl implements CouponService {
         List<CouponGradeDetail> couponGradeDetails = couponGradeDetailMapper.selectByGradeId(gradeId);
         CouponGradeDetail couponGradeDetail = couponGradeDetails.get(0);
         //优惠类型 1.金额2，折扣
-        if (String.valueOf(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode()).equals(couponGradeDetail.getReducedType())) {
+        if (CouponGradeEnum.UP_TO_REDUCE_CASH.getCode() == couponGradeDetail.getReducedType()) {
 
             //满减金额等于0 代表无门槛券
             if (couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0)) == 0) {

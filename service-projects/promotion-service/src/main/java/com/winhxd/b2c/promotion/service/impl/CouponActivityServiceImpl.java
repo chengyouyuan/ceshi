@@ -61,9 +61,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             if(condition.getDateInterval().getStart() != null){
                 condition.setCreatedStart(DateUtil.getStartDate(condition.getDateInterval().getStart()));
             }
-        }
-        if (condition.getDateInterval().getEnd() != null) {
-            condition.setCreatedEnd(DateUtil.getEndDate(condition.getDateInterval().getEnd()));
+            
+            if (condition.getDateInterval().getEnd() != null) {
+                condition.setCreatedEnd(DateUtil.getEndDate(condition.getDateInterval().getEnd()));
+            }
         }
 
         List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
@@ -165,10 +166,12 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
         //CouponActivityTemplate
         for (CouponActivityTemplate cat:condition.getCouponActivityTemplateList()) {
+
             cat.setCouponActivityId(couponActivity.getId());
             cat.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+
                 cat.setStartTime(DateUtil.getStartDate(cat.getStartTime()));
                 cat.setEndTime(DateUtil.getEndDate(cat.getEndTime()));
                 if(cat.getCustomerVoucherLimitType() != CouponActivityEnum.STORE_LIMITED.getCode()){

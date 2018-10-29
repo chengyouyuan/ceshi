@@ -430,9 +430,9 @@
     <if test="condition.gradeName!=null and condition.gradeName!=''">
       and c.name = #{condition.gradeName}
     </if>
-    <if test="condition.applyRuleName!=null and condition.applyRuleName!=''">
-      and d.name = #{condition.applyRuleName}
-    </if>
+    <!-- <if test="condition.applyRuleName!=null and condition.applyRuleName!=''">
+       and d.name = #{condition.applyRuleName}
+     </if>-->
 
     <if test="condition.applyRuleType!=null and condition.applyRuleType!=''">
       and d.apply_rule_type = #{condition.applyRuleType}

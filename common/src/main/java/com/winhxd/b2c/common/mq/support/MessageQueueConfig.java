@@ -50,6 +50,7 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Qualifier("normalCachingConnectionFactory")
     private ConnectionFactory connectionFactory;
 
+    
     @Bean(name = "normalMessageQueueProperties")
     @ConfigurationProperties(prefix = "mq.normal")
     public MessageQueueProperties normalMessageQueueProperties() {

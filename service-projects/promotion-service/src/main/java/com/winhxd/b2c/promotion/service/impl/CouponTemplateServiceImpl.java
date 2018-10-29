@@ -5,12 +5,14 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Author wl
@@ -109,6 +110,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
         PagedList<CouponTemplateVO> pagedList = new PagedList<>();
         PageHelper.startPage(couponTemplateCondition.getPageNo(),couponTemplateCondition.getPageSize());
+        checkApplyRuleName(couponTemplateCondition);
+
         List<CouponTemplateVO> couponTemplateVOList = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);
         PageInfo<CouponTemplateVO> pageInfo = new PageInfo<>(couponTemplateVOList);
         pagedList.setData(pageInfo.getList());
@@ -116,6 +119,21 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         return pagedList;
+    }
+
+    private void checkApplyRuleName(CouponTemplateCondition couponTemplateCondition) {
+        String applyRuleName = couponTemplateCondition.getApplyRuleName();
+        if (StringUtils.isNotBlank(applyRuleName)) {
+            if (CouponApplyEnum.COMMON_COUPON.getDesc().equals(applyRuleName.trim())) {
+                couponTemplateCondition.setApplyRuleType(CouponApplyEnum.COMMON_COUPON.getCode());
+            } else if (CouponApplyEnum.BRAND_COUPON.getDesc().equals(applyRuleName.trim())) {
+                couponTemplateCondition.setApplyRuleType(CouponApplyEnum.BRAND_COUPON.getCode());
+            } else if (CouponApplyEnum.CAT_COUPON.getDesc().equals(applyRuleName.trim())) {
+                couponTemplateCondition.setApplyRuleType(CouponApplyEnum.CAT_COUPON.getCode());
+            } else if (CouponApplyEnum.PRODUCT_COUPON.getDesc().equals(applyRuleName.trim())) {
+                couponTemplateCondition.setApplyRuleType(CouponApplyEnum.PRODUCT_COUPON.getCode());
+            }
+        }
     }
 
     @Override

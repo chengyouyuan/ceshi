@@ -352,6 +352,10 @@ public final class BusinessCode {
     public static final int CODE_503601 = 503601;
     @ApiModelProperty("推券方式只能是门店或者用户，二者不能同时存在")
     public static final int CODE_503701 = 503701;
+    @ApiModelProperty("活动区域内每种优惠券发放最大数量为正整数")
+    public static final int CODE_503702 = 503702;
+    @ApiModelProperty("C端用户领取优惠券为正整数")
+    public static final int CODE_503703 = 503703;
 
 
     @ApiModelProperty("门店资金变化  参数为空")

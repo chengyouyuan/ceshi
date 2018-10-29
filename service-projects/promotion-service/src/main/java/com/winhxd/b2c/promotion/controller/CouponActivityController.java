@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportCustomerVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
@@ -273,6 +274,12 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     throw new BusinessException(BusinessCode.CODE_1007);
                 }
             }
+
+            List<CouponActivityTemplate> couponActivityTemplateList = condition.getCouponActivityTemplateList();
+            for (CouponActivityTemplate cat : couponActivityTemplateList) {
+                checkCouponReceiveNum(cat);
+            }
+
         }
         //推券
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
@@ -297,6 +304,18 @@ public class CouponActivityController implements CouponActivityServiceClient {
             }
         }
 
+    }
+
+
+    private void checkCouponReceiveNum(CouponActivityTemplate cat) {
+        if (cat.getCouponNum() < 0) {
+            throw new BusinessException(BusinessCode.CODE_503702);
+        }
+        if (cat.getCustomerVoucherLimitType().shortValue() == (short) 2) {
+            if (cat.getCustomerVoucherLimitNum() < 0) {
+                throw new BusinessException(BusinessCode.CODE_503703);
+            }
+        }
     }
 
 

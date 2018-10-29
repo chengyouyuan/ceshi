@@ -151,9 +151,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         if(n==0){
             throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
         }
+        List<CouponActivityArea> distinctCouponActivityAreas = condition.getCouponActivityAreaList().stream().distinct().collect(Collectors.toList());
         //获取区域信息
-        if(!CollectionUtils.isEmpty(condition.getCouponActivityAreaList())){
-            for (CouponActivityArea couponActivityArea:condition.getCouponActivityAreaList()){
+        if (!CollectionUtils.isEmpty(distinctCouponActivityAreas)) {
+            for (CouponActivityArea couponActivityArea : distinctCouponActivityAreas) {
                 couponActivityArea.setCouponActivityId(couponActivity.getId());
                 couponActivityArea.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                 int n4 = couponActivityAreaMapper.insertSelective(couponActivityArea);

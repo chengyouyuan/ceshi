@@ -245,7 +245,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
         //领券
         if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
             if (StringUtils.isBlank(condition.getName()) || condition.getCouponActivityTemplateList() == null
-                    || StringUtils.isBlank(condition.getExolian()) || StringUtils.isBlank(condition.getRemarks())
                     || condition.getActivityStart()==null || condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
@@ -284,7 +283,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
         //推券
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
             if (StringUtils.isBlank(condition.getName()) || condition.getCouponActivityTemplateList() == null
-                    || StringUtils.isBlank(condition.getExolian()) || StringUtils.isBlank(condition.getRemarks())
                     || condition.getCouponType() == null || condition.getActivityStart() == null
                     || condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);

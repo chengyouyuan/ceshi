@@ -2,6 +2,7 @@ package com.winhxd.b2c.system.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 
@@ -76,4 +77,20 @@ public interface SysUserService {
      * @param id
      */
     int enable(Long id);
+
+    /**
+     * 根据用户名发送验证码
+     *
+     * @param userAccount
+     * @author chenyanqi
+     */
+    void sendVerifyCode(String userAccount);
+
+    /**
+     * 重置密码
+     * @param sysUserResetPasswordCondition
+     * @return
+     */
+    int resetPassword(SysUserResetPasswordCondition sysUserResetPasswordCondition);
+
 }

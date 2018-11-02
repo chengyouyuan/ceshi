@@ -10,6 +10,14 @@ public class CacheName {
      */
     public static final String CACHE_KEY_USER_TOKEN = "TOKEN:USER:";
     /**
+     * 后台重置密码，用户的验证码key
+     */
+    public static final String ADMIN_USER_SEND_VERIFICATION_CODE = "ADMIN:USER:SEND:VERIFICATION:CODE";
+    /**
+     * B端C端发送验证码请求key
+     */
+    public static final String ADMIN_SEND_VERIFICATION_CODE_REQUEST_TIME = "ADMIN:SEND:VERIFICATION:CODE:REQUEST:TIME:";
+    /**
      * B端用户登录key
      */
     public static final String STORE_USER_INFO_TOKEN = "TOKEN:STORE:";

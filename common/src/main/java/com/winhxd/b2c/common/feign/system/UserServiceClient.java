@@ -5,6 +5,8 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import feign.hystrix.FallbackFactory;
@@ -102,6 +104,25 @@ public interface UserServiceClient {
     @RequestMapping(value = "/user/3007/v1/enable/{id}", method = RequestMethod.PUT)
     ResponseResult<Void> enable(@PathVariable("id") Long id);
 
+    /**
+     * 重置密码，根据用户名发送验证码
+     *
+     * @param sysUserResetPasswordVerifyCondition
+     * @return
+     */
+    @RequestMapping(value = "/user/3008/v1/sendVerifyCode", method = RequestMethod.POST)
+    ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition);
+
+    /**
+     * 重置密码
+     *
+     * @param sysUserResetPasswordCondition
+     * @return
+     */
+    @RequestMapping(value = "/user/3009/v1/resetPassword", method = RequestMethod.POST)
+    ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition);
+
+
 }
 
 @Component
@@ -162,6 +183,18 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     public ResponseResult<Void> enable(Long id) {
         logger.error("UserServiceClientFallback -> enable", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> sendVerifyCode(SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
+        logger.error("UserServiceClientFallback -> sendVarifyCode", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> resetPassword(SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        logger.error("UserServiceClientFallback -> resetPassword", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override

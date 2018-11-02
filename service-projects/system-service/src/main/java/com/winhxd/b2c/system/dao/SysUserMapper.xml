@@ -238,4 +238,11 @@
     LEFT JOIN sys_region re ON u.region_code = re.region_code
     WHERE u.account = #{account}
   </select>
+
+  <update id="updatePasswordByAccount"
+          parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition">
+  update sys_user
+  set password = #{pwd,jdbcType=VARCHAR}
+  where account = #{userAccount}
+  </update>
 </mapper>

@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
@@ -169,6 +171,34 @@ public class SysUserController implements UserServiceClient {
         logger.info("{} - 根据主键启用用户, 参数：id={}", MODULE_NAME, id);
         ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
         sysUserService.enable(id);
+        return result;
+    }
+
+    /**
+     * 重置密码，根据用户名查询手机号，发送验证码
+     *
+     * @param sysUserResetPasswordVerifyCondition
+     * @return
+     * @author chenyanqi
+     */
+    @Override
+    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
+        sysUserService.sendVerifyCode(sysUserResetPasswordVerifyCondition.getUserAccount());
+        ResponseResult<Void> result = new ResponseResult<>();
+        return result;
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param sysUserResetPasswordCondition
+     * @return
+     * @author chenyanqi
+     */
+    @Override
+    public ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        sysUserService.resetPassword(sysUserResetPasswordCondition);
+        ResponseResult<Void> result = new ResponseResult<>();
         return result;
     }
 }

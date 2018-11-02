@@ -8,13 +8,17 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.enums.UserIdentityEnum;
 import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -252,5 +256,56 @@ public class UserController {
         return userServiceClient.enable(id);
     }
 
+    @ApiOperation(value = "重置密码，根据用户名发送验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userAccount", value = "用户名", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @PostMapping("/user/sendVerifyCode")
+    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
+        logger.info("根据用户名发送验证码, 参数：userAccount={}", JsonUtil.toJSONString(sysUserResetPasswordVerifyCondition));
+        String userAccount = sysUserResetPasswordVerifyCondition.getUserAccount();
+        if (StringUtils.isEmpty(userAccount)) {
+            logger.warn("重置密码发送验证码时，用户名为空");
+            throw new BusinessException(BusinessCode.CODE_1016);
+        }
+        ResponseResult<Void> enable = userServiceClient.sendVerifyCode(sysUserResetPasswordVerifyCondition);
+        return enable;
+    }
+
+    @ApiOperation(value = "重置密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userAccount", value = "用户名", required = true),
+            @ApiImplicitParam(name = "retrieveWay", value = "重置密码类型", required = true),
+            @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true),
+            @ApiImplicitParam(name = "pwd", value = "密码", required = true),
+            @ApiImplicitParam(name = "repwd", value = "确认密码", required = true),
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @PostMapping("/user/resetPassword")
+    public ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        logger.info("重置密码, 参数--{}", JsonUtil.toJSONString(sysUserResetPasswordCondition));
+        if (StringUtils.isEmpty(sysUserResetPasswordCondition.getUserAccount())) {
+            logger.error("重置密码用户名为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if (StringUtils.isEmpty(sysUserResetPasswordCondition.getVerifyCode())) {
+            logger.error("重置密码，验证码为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if (StringUtils.isEmpty(sysUserResetPasswordCondition.getPwd()) ||
+                StringUtils.isEmpty(sysUserResetPasswordCondition.getRepwd())) {
+            logger.error("重置密码，密码为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        ResponseResult<Void> result = userServiceClient.resetPassword(sysUserResetPasswordCondition);
+        return result;
+    }
 
 }

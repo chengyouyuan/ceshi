@@ -34,6 +34,11 @@ public final class BusinessCode {
     public static final int CODE_1014 = 1014;
     @ApiModelProperty("操作被禁止")
     public static final int CODE_1015 = 1015;
+    @ApiModelProperty("重置密码发送验证码，用户名为空")
+    public static final int CODE_1016 = 1016;
+    @ApiModelProperty("密码和确认密码不相同")
+    public static final int CODE_1017 = 1017;
+
 
 
     @ApiModelProperty("上传图片格式不正确*")

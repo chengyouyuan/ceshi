@@ -2,6 +2,7 @@ package com.winhxd.b2c.system.dao;
 
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -42,4 +43,13 @@ public interface SysUserMapper {
      * @return
      */
     SysUser getByAccount(@Param("account") String account);
+
+    /**
+     * 根据账号更新密码
+     *
+     * @param sysUserResetPasswordCondition
+     * @return
+     */
+    int updatePasswordByAccount(SysUserResetPasswordCondition sysUserResetPasswordCondition);
+
 }

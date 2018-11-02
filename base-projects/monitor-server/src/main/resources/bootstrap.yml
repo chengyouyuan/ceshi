@@ -15,6 +15,10 @@ spring:
   boot:
     admin:
       context-path: admin
+  security:
+      user:
+        name: admin
+        password: retail2c
 
 turbine:
   app-config: b2c-gateway-server

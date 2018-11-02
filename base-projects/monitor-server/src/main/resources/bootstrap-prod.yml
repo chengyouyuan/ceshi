@@ -2,3 +2,22 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://registry1.huistore:1111/eureka/,http://registry2.huistore:1111/eureka/
+spring:
+  boot:
+    admin:
+      notify:
+        mail:
+          to: hui_d1@winchannel.net                  # 邮件接收方
+          from: huistore_warning@winchannel.net      # 邮件发送方
+  mail:
+      host: smtp.winchannel.net                      # 邮箱设置中开启smtp协议
+      username: huistore_warning@winchannel.net      # 邮箱账号
+      password: Winchannel2018                       # 邮箱密码
+      properties:
+        mail:
+          debug: false
+          smtp:
+            auth: true
+            timeout: 5000
+            starttls:
+              enable: true

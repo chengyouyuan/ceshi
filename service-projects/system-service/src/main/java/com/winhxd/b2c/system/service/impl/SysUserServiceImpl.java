@@ -2,9 +2,12 @@ package com.winhxd.b2c.system.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
@@ -14,10 +17,14 @@ import com.winhxd.b2c.system.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.dao.SysUserMapper;
 import com.winhxd.b2c.system.dao.SysUserRoleMapper;
 import com.winhxd.b2c.system.service.SysUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -29,12 +36,16 @@ import java.util.List;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SysUserServiceImpl.class);
+
     @Autowired
     private SysUserMapper sysUserMapper;
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
     @Autowired
     private SysRolePermissionMapper sysRolePermissionMapper;
+    @Autowired
+    private Cache cache;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -122,5 +133,25 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setId(id);
         sysUser.setStatus(UserStatusEnum.ENABLED.getCode());
         return sysUserMapper.updateByPrimaryKeySelective(sysUser);
+    }
+
+    @Override
+    public int updatePassword(SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        String verifyCode = cache.get(CacheName.ADMIN_USER_SEND_VERIFICATION_CODE + sysUserResetPasswordCondition.getUserAccount());
+        if (StringUtils.isEmpty(verifyCode) ||
+                !verifyCode.equals(sysUserResetPasswordCondition.getVerifyCode())) {
+            logger.info("验证码错误");
+            throw new BusinessException(BusinessCode.CODE_100808);
+        }
+        if (!sysUserResetPasswordCondition.getPwd().equals(sysUserResetPasswordCondition.getRepwd())) {
+            logger.info("密码和确认密码不相同");
+            throw new BusinessException(BusinessCode.CODE_1017);
+        }
+        //通过用户名修改密码
+        sysUserResetPasswordCondition.setPwd(DigestUtils.md5DigestAsHex(org.apache.commons.lang3.StringUtils.trim(sysUserResetPasswordCondition.getPwd()).getBytes()));
+        int i = sysUserMapper.updatePasswordByAccount(sysUserResetPasswordCondition);
+        //删除缓存中的验证码
+        cache.del(CacheName.ADMIN_USER_SEND_VERIFICATION_CODE + sysUserResetPasswordCondition.getUserAccount());
+        return i;
     }
 }

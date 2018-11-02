@@ -14,7 +14,7 @@ public class CacheName {
      */
     public static final String ADMIN_USER_SEND_VERIFICATION_CODE = "ADMIN:USER:SEND:VERIFICATION:CODE:";
     /**
-     * B端C端发送验证码请求key
+     * 后台发送验证码请求key
      */
     public static final String ADMIN_SEND_VERIFICATION_CODE_REQUEST_TIME = "ADMIN:SEND:VERIFICATION:CODE:REQUEST:TIME:";
     /**

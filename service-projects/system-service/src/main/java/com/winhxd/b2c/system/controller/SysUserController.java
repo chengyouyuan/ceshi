@@ -184,8 +184,7 @@ public class SysUserController implements UserServiceClient {
     @Override
     public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
         sysUserService.sendVerifyCode(sysUserResetPasswordVerifyCondition.getUserAccount());
-        ResponseResult<Void> result = new ResponseResult<>();
-        return result;
+        return new ResponseResult<>();
     }
 
     /**
@@ -198,7 +197,6 @@ public class SysUserController implements UserServiceClient {
     @Override
     public ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
         sysUserService.resetPassword(sysUserResetPasswordCondition);
-        ResponseResult<Void> result = new ResponseResult<>();
-        return result;
+        return new ResponseResult<>();
     }
 }

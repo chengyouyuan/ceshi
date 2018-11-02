@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
-import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import feign.hystrix.FallbackFactory;
@@ -107,11 +106,11 @@ public interface UserServiceClient {
     /**
      * 重置密码，根据用户名发送验证码
      *
-     * @param sysUserResetPasswordVerifyCondition
+     * @param sysUserResetPasswordCondition
      * @return
      */
     @RequestMapping(value = "/user/3008/v1/sendVerifyCode", method = RequestMethod.POST)
-    ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition);
+    ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition);
 
     /**
      * 重置密码
@@ -186,7 +185,7 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<Void> sendVerifyCode(SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
+    public ResponseResult<Void> sendVerifyCode(SysUserResetPasswordCondition sysUserResetPasswordCondition) {
         logger.error("UserServiceClientFallback -> sendVarifyCode", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

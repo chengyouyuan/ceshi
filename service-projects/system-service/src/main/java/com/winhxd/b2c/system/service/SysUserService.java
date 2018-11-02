@@ -79,19 +79,11 @@ public interface SysUserService {
     int enable(Long id);
 
     /**
-     * 根据用户名发送验证码
-     *
-     * @param userAccount
-     * @author chenyanqi
-     */
-    void sendVerifyCode(String userAccount);
-
-    /**
      * 重置密码
      *
      * @param sysUserResetPasswordCondition
      * @return
      */
-    int resetPassword(SysUserResetPasswordCondition sysUserResetPasswordCondition);
+    int updatePassword(SysUserResetPasswordCondition sysUserResetPasswordCondition);
 
 }

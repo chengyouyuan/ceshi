@@ -12,7 +12,7 @@ public class CacheName {
     /**
      * 后台重置密码，用户的验证码key
      */
-    public static final String ADMIN_USER_SEND_VERIFICATION_CODE = "ADMIN:USER:SEND:VERIFICATION:CODE";
+    public static final String ADMIN_USER_SEND_VERIFICATION_CODE = "ADMIN:USER:SEND:VERIFICATION:CODE:";
     /**
      * B端C端发送验证码请求key
      */

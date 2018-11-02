@@ -9,7 +9,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
-import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.enums.UserIdentityEnum;
@@ -265,14 +264,14 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @PostMapping("/user/sendVerifyCode")
-    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
-        logger.info("根据用户名发送验证码, 参数：userAccount={}", JsonUtil.toJSONString(sysUserResetPasswordVerifyCondition));
-        String userAccount = sysUserResetPasswordVerifyCondition.getUserAccount();
+    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        logger.info("根据用户名发送验证码, 参数：userAccount={}", JsonUtil.toJSONString(sysUserResetPasswordCondition));
+        String userAccount = sysUserResetPasswordCondition.getUserAccount();
         if (StringUtils.isEmpty(userAccount)) {
             logger.warn("重置密码发送验证码时，用户名为空");
             throw new BusinessException(BusinessCode.CODE_1016);
         }
-        ResponseResult<Void> enable = userServiceClient.sendVerifyCode(sysUserResetPasswordVerifyCondition);
+        ResponseResult<Void> enable = userServiceClient.sendVerifyCode(sysUserResetPasswordCondition);
         return enable;
     }
 

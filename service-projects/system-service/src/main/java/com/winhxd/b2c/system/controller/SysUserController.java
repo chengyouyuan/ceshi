@@ -1,14 +1,21 @@
 package com.winhxd.b2c.system.controller;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordCondition;
-import com.winhxd.b2c.common.domain.system.user.condition.SysUserResetPasswordVerifyCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
+import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.system.service.SysRoleService;
 import com.winhxd.b2c.system.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -39,7 +46,10 @@ public class SysUserController implements UserServiceClient {
     private SysUserService sysUserService;
     @Autowired
     private SysRoleService sysRoleService;
-
+    @Autowired
+    private Cache cache;
+    @Autowired
+    MessageSendUtils messageSendUtils;
 
     /**
      * 新增用户
@@ -177,15 +187,46 @@ public class SysUserController implements UserServiceClient {
     /**
      * 重置密码，根据用户名查询手机号，发送验证码
      *
-     * @param sysUserResetPasswordVerifyCondition
+     * @param sysUserResetPasswordCondition
      * @return
      * @author chenyanqi
      */
     @Override
-    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordVerifyCondition sysUserResetPasswordVerifyCondition) {
-        sysUserService.sendVerifyCode(sysUserResetPasswordVerifyCondition.getUserAccount());
-        ResponseResult<Void> result = new ResponseResult<>();
-        return result;
+    public ResponseResult<Void> sendVerifyCode(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
+        String userAccount = sysUserResetPasswordCondition.getUserAccount();
+        SysUser sysUser = sysUserService.getSysUserByAccount(userAccount);
+        if (sysUser == null) {
+            logger.info("该用户还未注册");
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
+        if (sysUser.getStatus() != 1) {
+            logger.info("该账号未启用");
+            throw new BusinessException(BusinessCode.CODE_1006);
+        }
+        String mobilePhone = sysUser.getMobile();
+        if (cache.exists(CacheName.ADMIN_SEND_VERIFICATION_CODE_REQUEST_TIME + userAccount)) {
+            logger.info("{} - , 请求验证码时长没有超过一分钟", userAccount);
+            throw new BusinessException(BusinessCode.CODE_100912);
+        }
+        String verificationCode = GeneratePwd.generatePwd6Mobile();
+        cache.set(CacheName.ADMIN_USER_SEND_VERIFICATION_CODE + userAccount, verificationCode);
+        cache.expire(CacheName.ADMIN_USER_SEND_VERIFICATION_CODE + userAccount, AppConstant.SEND_SMS_EXPIRE_SECOND);
+        /**
+         * 60秒以后调用短信服务
+         */
+        cache.set(CacheName.ADMIN_SEND_VERIFICATION_CODE_REQUEST_TIME + userAccount, verificationCode);
+        cache.expire(CacheName.ADMIN_SEND_VERIFICATION_CODE_REQUEST_TIME + userAccount,
+                AppConstant.REQUEST_SEND_SMS_EXPIRE_SECOND);
+        /**
+         * 发送模板内容
+         */
+        String content = String.format(SendSMSTemplate.SMS_RESET_PASSWORD_CONTENT, verificationCode);
+        SMSCondition sMSCondition = new SMSCondition();
+        sMSCondition.setContent(content);
+        sMSCondition.setMobile(mobilePhone);
+        messageSendUtils.sendSms(sMSCondition);
+        logger.info(userAccount + ":发送的内容为:{}", content);
+        return new ResponseResult<>();
     }
 
     /**
@@ -197,8 +238,7 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     public ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
-        sysUserService.resetPassword(sysUserResetPasswordCondition);
-        ResponseResult<Void> result = new ResponseResult<>();
-        return result;
+        sysUserService.updatePassword(sysUserResetPasswordCondition);
+        return new ResponseResult<>();
     }
 }

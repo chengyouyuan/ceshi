@@ -1295,10 +1295,8 @@ public class CouponServiceImpl implements CouponService {
         //查询当前用户下的所有优惠券
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponListGroup(customerUser.getCustomerId(), null, null);
         // 初始化list的size
-        List<CouponVO> results = null;
-        if (!CollectionUtils.isEmpty(couponVOS)) {
-            results = new ArrayList<>(couponVOS.size());
-        }
+        int size = CollectionUtils.isEmpty(couponVOS) ? 0 : couponVOS.size();
+        List<CouponVO> results =  new ArrayList<>(couponVOS.size());
         //遍历添加优惠券是否可用状态
         for (CouponVO couponVO : couponVOS) {
             couponVO.setAvailableStatus((int) CouponAvailableStatusEnum.UN_AVAILABLE.getCode());

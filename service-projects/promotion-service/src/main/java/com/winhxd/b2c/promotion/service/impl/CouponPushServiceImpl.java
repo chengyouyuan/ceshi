@@ -104,7 +104,7 @@ public class CouponPushServiceImpl implements CouponPushService {
                         receiveCouponCount, customerUser);
 
                 // 是否领取只有推券给用户才会有值 1 可领取
-                if (CouponReceiveStatusEnum.CAN_RECEIVED.getCode().equals(couponPushVO.getReceiveStatus())
+                if (flag && CouponReceiveStatusEnum.CAN_RECEIVED.getCode().equals(couponPushVO.getReceiveStatus())
                         && couponPushVO.getReceive() == null) {
                     flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(), storeUserInfo.getId(), couponPushVO.getActivityId());
                 }

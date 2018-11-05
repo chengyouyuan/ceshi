@@ -152,7 +152,7 @@ public class SysUserServiceImpl implements SysUserService {
         int i = sysUserMapper.updatePasswordByAccount(sysUserResetPasswordCondition);
         //删除缓存中的验证码
         cache.del(CacheName.ADMIN_USER_SEND_VERIFICATION_CODE + sysUserResetPasswordCondition.getUserAccount());
-        logger.info("密码重置成功，新密码为：", sysUserResetPasswordCondition.getPwd());
+        logger.info("密码重置成功，新密码为:{}", sysUserResetPasswordCondition.getPwd());
         return i;
     }
 }

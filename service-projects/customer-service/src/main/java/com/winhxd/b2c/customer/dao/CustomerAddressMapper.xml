@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.customer.dao.CustomerAddressMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="contacter_name" jdbcType="VARCHAR" property="contacterName" />
+    <result column="contacter_mobile" jdbcType="CHAR" property="contacterMobile" />
+    <result column="contacter_region" jdbcType="VARCHAR" property="contacterRegion" />
+    <result column="contacter_detail_address" jdbcType="VARCHAR" property="contacterDetailAddress" />
+    <result column="label_id" jdbcType="BIGINT" property="labelId" />
+    <result column="default_address" jdbcType="INTEGER" property="defaultAddress" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, contacter_name, contacter_mobile, contacter_region, contacter_detail_address,
+    label_id, default_address, created, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from customer_address
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_address
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+    insert into customer_address (id, customer_id, contacter_name,
+      contacter_mobile, contacter_region, contacter_detail_address,
+      label_id, default_address, created,
+      updated)
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{contacterName,jdbcType=VARCHAR},
+      #{contacterMobile,jdbcType=CHAR}, #{contacterRegion,jdbcType=VARCHAR}, #{contacterDetailAddress,jdbcType=VARCHAR},
+      #{labelId,jdbcType=BIGINT}, #{defaultAddress,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP},
+      #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+    insert into customer_address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="contacterName != null">
+        contacter_name,
+      </if>
+      <if test="contacterMobile != null">
+        contacter_mobile,
+      </if>
+      <if test="contacterRegion != null">
+        contacter_region,
+      </if>
+      <if test="contacterDetailAddress != null">
+        contacter_detail_address,
+      </if>
+      <if test="labelId != null">
+        label_id,
+      </if>
+      <if test="defaultAddress != null">
+        default_address,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="contacterName != null">
+        #{contacterName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterMobile != null">
+        #{contacterMobile,jdbcType=CHAR},
+      </if>
+      <if test="contacterRegion != null">
+        #{contacterRegion,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDetailAddress != null">
+        #{contacterDetailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null">
+        #{labelId,jdbcType=BIGINT},
+      </if>
+      <if test="defaultAddress != null">
+        #{defaultAddress,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+    update customer_address
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="contacterName != null">
+        contacter_name = #{contacterName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterMobile != null">
+        contacter_mobile = #{contacterMobile,jdbcType=CHAR},
+      </if>
+      <if test="contacterRegion != null">
+        contacter_region = #{contacterRegion,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDetailAddress != null">
+        contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null">
+        label_id = #{labelId,jdbcType=BIGINT},
+      </if>
+      <if test="defaultAddress != null">
+        default_address = #{defaultAddress,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+    update customer_address
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      contacter_name = #{contacterName,jdbcType=VARCHAR},
+      contacter_mobile = #{contacterMobile,jdbcType=CHAR},
+      contacter_region = #{contacterRegion,jdbcType=VARCHAR},
+      contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},
+      label_id = #{labelId,jdbcType=BIGINT},
+      default_address = #{defaultAddress,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -361,6 +361,8 @@ public final class BusinessCode {
     public static final int CODE_503702 = 503702;
     @ApiModelProperty("C端用户领取优惠券为正整数")
     public static final int CODE_503703 = 503703;
+    @ApiModelProperty("C端用户收货地址不存在")
+    public static final int CODE_503704 = 503704;
 
 
     @ApiModelProperty("门店资金变化  参数为空")
@@ -487,6 +489,8 @@ public final class BusinessCode {
     public static final int CODE_611107 = 611107;
     @ApiModelProperty("单笔提现须小于2万元")
     public static final int CODE_611108 = 611108;
+    @ApiModelProperty("手机号格式不正确")
+    public static final int CODE_611109 = 611109;
 
 
     @ApiModelProperty("云信账户异常")

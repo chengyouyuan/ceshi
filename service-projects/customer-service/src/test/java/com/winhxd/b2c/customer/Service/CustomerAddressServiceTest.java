@@ -19,7 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @Description:
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CustomerAddressServiceTest.class)
+@SpringBootTest
 public class CustomerAddressServiceTest {
     private MockMvc mockMvc;
 
@@ -33,6 +33,7 @@ public class CustomerAddressServiceTest {
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
+
     /**
      * 测试用户收货地址保存功能
      */
@@ -43,7 +44,7 @@ public class CustomerAddressServiceTest {
         condition.setContacterRegion("北京市海淀区西三旗");
         condition.setContacterMobile("13800001111");
         condition.setContacterName("孙悟空");
-
+        condition.setLabelId(20L);
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
 
@@ -52,4 +53,18 @@ public class CustomerAddressServiceTest {
     }
 
 
+    @Test
+    public void upateCustomerAddress() {
+        CustomerAddressCondition condition = new CustomerAddressCondition();
+        condition.setContacterDetailAddress("东升科技园3");
+        condition.setContacterRegion("北京市海淀区西三旗3");
+        condition.setContacterMobile("13800003333");
+        condition.setContacterName("孙悟空3");
+        condition.setLabelId(23L);
+        CustomerUser customerUser = new CustomerUser();
+        condition.setId(2L);
+
+
+        customerAddressService.updateByPrimaryKey(condition, customerUser);
+    }
 }

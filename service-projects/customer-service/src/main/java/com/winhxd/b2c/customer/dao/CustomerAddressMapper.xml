@@ -6,7 +6,9 @@
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="contacter_name" jdbcType="VARCHAR" property="contacterName" />
     <result column="contacter_mobile" jdbcType="CHAR" property="contacterMobile" />
-    <result column="contacter_region" jdbcType="VARCHAR" property="contacterRegion" />
+    <result column="contacter_province" jdbcType="VARCHAR" property="contacterProvince" />
+    <result column="contacter_city" jdbcType="VARCHAR" property="contacterCity" />
+    <result column="contacter_county" jdbcType="VARCHAR" property="contacterCounty" />
     <result column="contacter_detail_address" jdbcType="VARCHAR" property="contacterDetailAddress" />
     <result column="label_id" jdbcType="BIGINT" property="labelId" />
     <result column="default_address" jdbcType="INTEGER" property="defaultAddress" />
@@ -14,8 +16,8 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, customer_id, contacter_name, contacter_mobile, contacter_region, contacter_detail_address,
-    label_id, default_address, created, updated
+    id, customer_id, contacter_name, contacter_mobile, contacter_province, contacter_city,
+    contacter_county, contacter_detail_address, label_id, default_address, created, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -43,8 +45,14 @@
       <if test="contacterMobile != null">
         contacter_mobile,
       </if>
-      <if test="contacterRegion != null">
-        contacter_region,
+      <if test="contacterProvince != null">
+        contacter_province,
+      </if>
+      <if test="contacterCity != null">
+        contacter_city,
+      </if>
+      <if test="contacterCounty != null">
+        contacter_county,
       </if>
       <if test="contacterDetailAddress != null">
         contacter_detail_address,
@@ -75,8 +83,14 @@
       <if test="contacterMobile != null">
         #{contacterMobile,jdbcType=CHAR},
       </if>
-      <if test="contacterRegion != null">
-        #{contacterRegion,jdbcType=VARCHAR},
+      <if test="contacterProvince != null">
+        #{contacterProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterCity != null">
+        #{contacterCity,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterCounty != null">
+        #{contacterCounty,jdbcType=VARCHAR},
       </if>
       <if test="contacterDetailAddress != null">
         #{contacterDetailAddress,jdbcType=VARCHAR},
@@ -107,8 +121,14 @@
       <if test="contacterMobile != null">
         contacter_mobile = #{contacterMobile,jdbcType=CHAR},
       </if>
-      <if test="contacterRegion != null">
-        contacter_region = #{contacterRegion,jdbcType=VARCHAR},
+      <if test="contacterProvince != null">
+        contacter_province = #{contacterProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterCity != null">
+        contacter_city = #{contacterCity,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterCounty != null">
+        contacter_county = #{contacterCounty,jdbcType=VARCHAR},
       </if>
       <if test="contacterDetailAddress != null">
         contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},

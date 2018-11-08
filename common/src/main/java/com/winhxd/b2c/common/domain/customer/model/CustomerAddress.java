@@ -14,7 +14,11 @@ public class CustomerAddress {
 
     private String contacterMobile;
 
-    private String contacterRegion;
+    private String contacterProvince;
+
+    private String contacterCity;
+
+    private String contacterCounty;
 
     private String contacterDetailAddress;
 

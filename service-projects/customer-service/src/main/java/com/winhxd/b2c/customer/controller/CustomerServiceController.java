@@ -1,12 +1,15 @@
 package com.winhxd.b2c.customer.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.customer.service.CustomerAddressService;
 import com.winhxd.b2c.customer.service.CustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,6 +31,9 @@ import java.util.List;
 public class CustomerServiceController implements CustomerServiceClient {
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CustomerAddressService customerAddressService;
     private Logger logger = LoggerFactory.getLogger(CustomerServiceController.class);
 
     @Override
@@ -99,5 +105,16 @@ public class CustomerServiceController implements CustomerServiceClient {
             responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;
+    }
+
+    @Override
+    public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition condition) {
+        ResponseResult<Boolean> result = new ResponseResult<>();
+
+        int effc = customerAddressService.updateByPrimaryKey(condition);
+
+        result.setData(effc > 0 ? true:false);
+
+        return result;
     }
 }

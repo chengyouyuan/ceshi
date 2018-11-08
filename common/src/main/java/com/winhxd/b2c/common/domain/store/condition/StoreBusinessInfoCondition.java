@@ -23,7 +23,7 @@ public class StoreBusinessInfoCondition extends ApiCondition {
     @ApiModelProperty(value = "店铺简称")
     private String storeShortName;
 
-    @ApiModelProperty(value = "取货方式（1、自提，多个用逗号分隔）", required = true)
+    @ApiModelProperty(value = "取货方式（1、到店自提  2:送货上门 多个用逗号分隔  ）", required = true)
     private String pickupType;
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）", required = true)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.customer.dao.CustomerAddressMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="contacter_name" jdbcType="VARCHAR" property="contacterName" />
@@ -27,16 +27,7 @@
     delete from customer_address
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
-    insert into customer_address (id, customer_id, contacter_name,
-      contacter_mobile, contacter_region, contacter_detail_address,
-      label_id, default_address, created,
-      updated)
-    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{contacterName,jdbcType=VARCHAR},
-      #{contacterMobile,jdbcType=CHAR}, #{contacterRegion,jdbcType=VARCHAR}, #{contacterDetailAddress,jdbcType=VARCHAR},
-      #{labelId,jdbcType=BIGINT}, #{defaultAddress,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP},
-      #{updated,jdbcType=TIMESTAMP})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
     insert into customer_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -104,7 +95,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO">
     update customer_address
     <set>
       <if test="customerId != null">
@@ -137,17 +128,5 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
-    update customer_address
-    set customer_id = #{customerId,jdbcType=BIGINT},
-      contacter_name = #{contacterName,jdbcType=VARCHAR},
-      contacter_mobile = #{contacterMobile,jdbcType=CHAR},
-      contacter_region = #{contacterRegion,jdbcType=VARCHAR},
-      contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},
-      label_id = #{labelId,jdbcType=BIGINT},
-      default_address = #{defaultAddress,jdbcType=INTEGER},
-      created = #{created,jdbcType=TIMESTAMP},
-      updated = #{updated,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
 </mapper>

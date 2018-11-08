@@ -54,7 +54,7 @@ public class StoreUserInfoVO {
     /**
      * 取货方式（1、自提，多个用逗号分隔）
      */
-    @ApiModelProperty("1、自提，多个用逗号分隔")
+    @ApiModelProperty("1、到店自提  2：送货上门  多个用逗号分隔")
     private String pickupType;
 
     /**

@@ -232,7 +232,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfoVO" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     update customer_user_info
     <set >
       <if test="customerMobile != null" >

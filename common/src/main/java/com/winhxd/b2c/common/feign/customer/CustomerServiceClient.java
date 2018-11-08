@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import feign.hystrix.FallbackFactory;
@@ -84,6 +85,17 @@ public interface CustomerServiceClient {
      */
     @RequestMapping(value = "/customer/2009/v1/findAvabileCustomerPageInfo", method = RequestMethod.POST)
     ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition);
+
+
+    /**
+     * @param condition 查询条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/21 14:38
+     * @Description 查询有效的用户(有与门店绑定关系的用户)
+     */
+    @RequestMapping(value = "/customer/2011/v1/customerUpdateAddress", method = RequestMethod.POST)
+    ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition condition);
 }
 
 @Component
@@ -132,4 +144,13 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
         logger.error("CustomerServiceClientFallBack -> findAvabileCustomerPageInfo错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+    @Override
+    public ResponseResult<Boolean> customerUpdateAddress(CustomerAddressCondition condition) {
+        logger.error("CustomerServiceClientFallBack -> customerUpdateAddress{}", throwable.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+
+
 }

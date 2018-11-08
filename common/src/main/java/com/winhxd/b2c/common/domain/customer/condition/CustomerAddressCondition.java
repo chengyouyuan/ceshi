@@ -31,4 +31,7 @@ public class CustomerAddressCondition extends ApiCondition {
 
     @ApiModelProperty(value = "收货人所选标签",required = true)
     private Long labelId;
+
+    @ApiModelProperty(value = "是否设置为默认地址 1：默认  0不是默认",required = false)
+    private Integer defaultAddress;
 }

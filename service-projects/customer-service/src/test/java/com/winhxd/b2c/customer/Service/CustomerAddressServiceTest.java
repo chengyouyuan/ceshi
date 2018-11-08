@@ -65,6 +65,6 @@ public class CustomerAddressServiceTest {
         condition.setId(2L);
 
 
-        customerAddressService.updateByPrimaryKey(condition, customerUser);
+        customerAddressService.updateByPrimaryKey(condition);
     }
 }

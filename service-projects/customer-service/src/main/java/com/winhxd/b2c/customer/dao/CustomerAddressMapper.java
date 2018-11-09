@@ -20,4 +20,6 @@ public interface CustomerAddressMapper {
     List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
 
     List<CustomerAddressVO> selectCustomerAddressByLabelId(@Param("labelId") Long labelId, @Param("customerId") Long customerId);
+
+    int updateCustomerAddressById(List<Long> list);
 }

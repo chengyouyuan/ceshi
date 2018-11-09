@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,13 +124,13 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         Long labelId = customerAddressLabelCondition.getId();
         //通过标签id和customer_id 查询地址列表
         List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByLabelId(labelId, customerId);
-
-//        if (customerAddressVOS.size() > 0) {
-//            customerAddressVOS
-//        }
+        List<Long> list = new ArrayList<>(5);
+        if (customerAddressVOS.size() > 0) {
+            list = customerAddressVOS.stream().map(customerAddressVO -> customerAddressVO.getId()).collect(Collectors.toList());
+        }
+        customerAddressMapper.updateCustomerAddressById(list);
         //删除
-        return customerAddressMapper.deleteByPrimaryKey(customerAddressLabelCondition.getId());
-
+        return customerAddressLabelMapper.deleteByPrimaryKey(customerAddressLabelCondition.getId());
     }
 
 

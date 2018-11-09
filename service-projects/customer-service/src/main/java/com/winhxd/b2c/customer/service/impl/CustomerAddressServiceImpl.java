@@ -42,7 +42,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     CustomerAddressLabelMapper customerAddressLabelMapper;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteByPrimaryKey(CustomerAddressSelectCondition condition) {
         //判断必填参数
         if (null == condition || null == condition.getId()) {
@@ -52,7 +52,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int insert(CustomerAddressCondition customerAddressCondition, CustomerUser customerUser) {
 
         //参数校验
@@ -79,7 +79,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateByPrimaryKey(CustomerAddressCondition condition) {
         //参数校验
         addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);

@@ -80,8 +80,12 @@ public class ApiCustomerAddressController {
 	@RequestMapping(value = "address/2025/v1/updateCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
+        ResponseResult<Boolean> result = new ResponseResult<>();
 
-		return customerAddressService.updateByPrimaryKey(customerAddressCondition,UserContext.getCurrentCustomerUser())
+        int effc = customerAddressService.updateByPrimaryKey(customerAddressCondition, UserContext.getCurrentCustomerUser());
+        result.setData(effc > 0 ? true:false);
+
+        return result;
 	}
 
 

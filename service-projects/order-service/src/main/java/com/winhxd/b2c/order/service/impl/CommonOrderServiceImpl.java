@@ -1015,13 +1015,12 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
         orderInfo.setPayType(orderCreateCondition.getPayType());
+        orderInfo.setPickupType(orderCreateCondition.getPickupType());
+        orderInfo.setOrderConsignee(orderCreateCondition.getOrderConsignee());
+        orderInfo.setOrderConsigneeMobile(orderCreateCondition.getOrderConsigneeMobile());
+        orderInfo.setOrderAddress(orderCreateCondition.getOrderAddress());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemarks(orderCreateCondition.getRemark());
-        if (orderInfo.getPickupDateTime() == null) {
-            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_NOW.getTypeCode());
-        } else {
-            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_LATER.getTypeCode());
-        }
         orderInfo.setOrderNo(generateOrderNo());
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());

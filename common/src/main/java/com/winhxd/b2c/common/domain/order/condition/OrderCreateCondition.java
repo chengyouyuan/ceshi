@@ -1,11 +1,12 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+@Data
 public class OrderCreateCondition {
 
     @ApiModelProperty(value = "门店id", required=true)
@@ -19,8 +20,20 @@ public class OrderCreateCondition {
     
     @ApiModelProperty(value = "优惠券id", required=false)
     private Long[] couponIds;
-    
-    @ApiModelProperty(value = "自提时间", required=true)
+
+    @ApiModelProperty(value = "提货类型:1:门店自提;2:送货上门", required=true)
+    private Short pickupType;
+
+    @ApiModelProperty(value = "订单收货人", required=false)
+    private String orderConsignee;
+
+    @ApiModelProperty(value = "订单收货人电话", required=false)
+    private String orderConsigneeMobile;
+
+    @ApiModelProperty(value = "订单收货地址", required=false)
+    private String orderAddress;
+
+    @ApiModelProperty(value = "自提时间", required=false)
     private Date pickupDateTime;
     
     @ApiModelProperty(value = "备注", required=false)
@@ -29,66 +42,4 @@ public class OrderCreateCondition {
     @ApiModelProperty(value = "订单商品明细", required=true)
     private List<OrderItemCondition> orderItemConditions;
 
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public Short getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Short payType) {
-        this.payType = payType;
-    }
-
-    public Long[] getCouponIds() {
-        return couponIds;
-    }
-
-    public void setCouponIds(Long[] couponIds) {
-        this.couponIds = couponIds;
-    }
-
-    public Date getPickupDateTime() {
-        return pickupDateTime;
-    }
-
-    public void setPickupDateTime(Date pickupDateTime) {
-        this.pickupDateTime = pickupDateTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public List<OrderItemCondition> getOrderItemConditions() {
-        return orderItemConditions;
-    }
-
-    public void setOrderItemConditions(List<OrderItemCondition> orderItemConditions) {
-        this.orderItemConditions = orderItemConditions;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderCreateCondition [storeId=" + storeId + ", customerId=" + customerId + ", payType=" + payType
-                + ", couponIds=" + Arrays.toString(couponIds) + ", pickupDateTime=" + pickupDateTime + ", remark="
-                + remark + ", orderItemConditions=" + orderItemConditions + "]";
-    }
 }

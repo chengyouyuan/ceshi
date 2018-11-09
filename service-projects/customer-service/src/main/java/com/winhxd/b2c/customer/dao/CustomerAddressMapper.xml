@@ -11,7 +11,7 @@
     <result column="contacter_county" jdbcType="VARCHAR" property="contacterCounty" />
     <result column="contacter_detail_address" jdbcType="VARCHAR" property="contacterDetailAddress" />
     <result column="label_id" jdbcType="BIGINT" property="labelId" />
-    <result column="default_address" jdbcType="INTEGER" property="defaultAddress" />
+    <result column="default_address" jdbcType="BIT" property="defaultAddress" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
@@ -99,7 +99,7 @@
         #{labelId,jdbcType=BIGINT},
       </if>
       <if test="defaultAddress != null">
-        #{defaultAddress,jdbcType=INTEGER},
+        #{defaultAddress,jdbcType=BIT},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -137,7 +137,7 @@
         label_id = #{labelId,jdbcType=BIGINT},
       </if>
       <if test="defaultAddress != null">
-        default_address = #{defaultAddress,jdbcType=INTEGER},
+        default_address = #{defaultAddress,jdbcType=BIT},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},

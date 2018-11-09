@@ -37,8 +37,8 @@ public class CustomerAddressVO {
     @ApiModelProperty("用户标签ID")
     private Long labelId;
 
-    @ApiModelProperty("1：默认地址  0不是默认")
-    private Integer defaultAddress;
+    @ApiModelProperty("true：默认地址  false不是默认")
+    private Boolean defaultAddress;
 
     @ApiModelProperty("创建时间")
     private Date created;

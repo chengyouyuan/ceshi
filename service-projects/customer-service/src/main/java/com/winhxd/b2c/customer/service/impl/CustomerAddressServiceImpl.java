@@ -52,7 +52,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
         CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(customerAddressCondition,customerAddress);
-        customerAddress.setDefaultAddress(CustomerAddressEnum.NO_DDFAULT_ADDRESS.getCode());
+        customerAddress.setDefaultAddress(false);
         customerAddress.setCreated(new Date());
         customerAddress.setUpdated(new Date());
 

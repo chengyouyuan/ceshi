@@ -24,7 +24,7 @@ public class CustomerAddress {
 
     private Long labelId;
 
-    private Integer defaultAddress;
+    private Boolean defaultAddress;
 
     private Date created;
 

@@ -118,10 +118,9 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    public List<String> findCustomerAddressLabelByUserId(Long customerId) {
+    public List<CustomerAddressLabelVO> findCustomerAddressLabelByUserId(Long customerId) {
         List<CustomerAddressLabelVO> customerAddressLabelVOS = customerAddressLabelMapper.selectCustomerAddressLabelByUserId(customerId);
-        List<String> labelList = customerAddressLabelVOS.stream().map(customerAddressLabelVO -> customerAddressLabelVO.getLabelName()).collect(Collectors.toList());
-        return labelList;
+        return customerAddressLabelVOS;
     }
 
     @Override

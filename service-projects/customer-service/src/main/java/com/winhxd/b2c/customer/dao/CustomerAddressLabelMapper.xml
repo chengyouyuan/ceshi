@@ -95,7 +95,7 @@
     <select id="selectCustomerAddressLabelByUserId"
             resultType="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO">
         SELECT
-        <include refid="Base_Column_List"/>
+        id,label_name
         FROM customer_address_label
         where label_type = 1 or (customer_id = #{customerId,jdbcType=BIGINT} and label_type = 2);
     </select>

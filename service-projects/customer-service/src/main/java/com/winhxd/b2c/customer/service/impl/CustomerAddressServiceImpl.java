@@ -3,12 +3,16 @@ package com.winhxd.b2c.customer.service.impl;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
 import com.winhxd.b2c.common.domain.customer.enums.CustomerAddressEnum;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
+import com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.SecurityCheckUtil;
+import com.winhxd.b2c.customer.dao.CustomerAddressLabelMapper;
 import com.winhxd.b2c.customer.dao.CustomerAddressMapper;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
 import org.slf4j.Logger;
@@ -20,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: sunwenwu
@@ -32,6 +37,8 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Autowired
     CustomerAddressMapper customerAddressMapper;
+    @Autowired
+    CustomerAddressLabelMapper customerAddressLabelMapper;
 
     @Override
     @Transactional
@@ -91,6 +98,40 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     public List<CustomerAddressVO> getCustomerAddressByUserId(Long userId) {
         return customerAddressMapper.selectCustomerAddressByUserId(userId);
     }
+
+    @Override
+    public List<String> findCustomerAddressLabelByUserId(Long customerId) {
+        List<CustomerAddressLabelVO> customerAddressLabelVOS = customerAddressLabelMapper.selectCustomerAddressLabelByUserId(customerId);
+        List<String> labelList = customerAddressLabelVOS.stream().map(customerAddressLabelVO -> customerAddressLabelVO.getLabelName()).collect(Collectors.toList());
+        return labelList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveCustomerAddressLabel(CustomerAddressLabelCondition customerAddressLabelCondition) {
+        CustomerAddressLabel customerAddressLabel = new CustomerAddressLabel();
+        BeanUtils.copyProperties(customerAddressLabelCondition, customerAddressLabel);
+        customerAddressLabel.setCreated(new Date());
+        customerAddressLabel.setLabelType(2);
+        return customerAddressLabelMapper.insertSelective(customerAddressLabel);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteCustomerAddressLabel(CustomerAddressLabelCondition customerAddressLabelCondition) {
+        Long customerId = customerAddressLabelCondition.getCustomerId();
+        Long labelId = customerAddressLabelCondition.getId();
+        //通过标签id和customer_id 查询地址列表
+        List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByLabelId(labelId, customerId);
+
+//        if (customerAddressVOS.size() > 0) {
+//            customerAddressVOS
+//        }
+        //删除
+        return customerAddressMapper.deleteByPrimaryKey(customerAddressLabelCondition.getId());
+
+    }
+
 
 
     public void addOrUpdateVerifyParam (CustomerAddressCondition condition,CustomerAddressEnum opt) {

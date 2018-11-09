@@ -1,22 +1,30 @@
 package com.winhxd.b2c.customer.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -118,5 +126,100 @@ public class ApiCustomerAddressController {
         return result;
     }
 
+	/**
+	 * @param
+	 * @return
+	 * @author chenyanqi
+	 * @Description C端用户地址标签的查询
+	 */
+	@ApiOperation(value = "C端用户地址标签的查询")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	@RequestMapping(value = "customer/2026/v1/getAddressLabelByUserId", method = RequestMethod.POST)
+	public ResponseResult<List<String>> getAddressLabelByUserId() {
+		logger.info("customer/2026/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
+		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+		long customerId = currentCustomerUser.getCustomerId();
+		List<String> list = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		ResponseResult<List<String>> result = new ResponseResult<>();
+		result.setData(list);
+		return result;
+	}
+
+	/**
+	 * @param
+	 * @return
+	 * @author chenyanqi
+	 * @Description 新增用户地址标签
+	 */
+	@ApiOperation(value = "新增用户地址标签")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	@RequestMapping(value = "customer/2027/v1/addCustomerAddressLabel", method = RequestMethod.POST)
+	public ResponseResult<Boolean> addCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
+		logger.info("customer/2027/v1/addCustomerAddressLabel -- 新增用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
+		String labelName = customerAddressLabelCondition.getLabelName();
+		if (customerAddressLabelCondition == null) {
+			logger.error("接口2027新增用户地址标签参数为空");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (StringUtils.isEmpty(labelName)) {
+			logger.error("接口2027新增用户地址标签，标签名字为空");
+			throw new BusinessException(BusinessCode.CODE_503705);
+		}
+		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+		Long customerId = currentCustomerUser.getCustomerId();
+		customerAddressLabelCondition.setCustomerId(customerId);
+		//校验是否有和以前重复保存的标签
+		List<String> labelNames = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		labelNames.forEach(
+				label -> {
+					if (label.equals(labelName)) {
+						logger.info("2027接口保存标签时，有和以前重复的标签 ，标签名--{}", label);
+						throw new BusinessException(BusinessCode.CODE_503706);
+					}
+				});
+		int i = customerAddressService.saveCustomerAddressLabel(customerAddressLabelCondition);
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		result.setData(i > 0 ? true : false);
+		return result;
+	}
+
+	/**
+	 * @param
+	 * @return
+	 * @author chenyanqi
+	 * @Description 删除用户地址标签
+	 */
+	@ApiOperation(value = "删除用户地址标签")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	@RequestMapping(value = "customer/2028/v1/deleteCustomerAddressLabel", method = RequestMethod.POST)
+	public ResponseResult<Boolean> deleteCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
+		logger.info("customer/2028/v1/deleteCustomerAddressLabel -- 删除用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
+		if (customerAddressLabelCondition == null) {
+			logger.error("接口2028删除用户地址标签参数为空");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (StringUtils.isEmpty(customerAddressLabelCondition.getLabelName())) {
+			logger.error("接口2028删除用户地址标签，标签名字为空");
+			throw new BusinessException(BusinessCode.CODE_503705);
+		}
+		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+		customerAddressLabelCondition.setCustomerId(currentCustomerUser.getCustomerId());
+		int i = customerAddressService.deleteCustomerAddressLabel(customerAddressLabelCondition);
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		result.setData(i > 0 ? true : false);
+		return result;
+	}
 
 }

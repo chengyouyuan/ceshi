@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.customer.dao.CustomerAddressLabelMapper">
+    <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="customer_id" jdbcType="BIGINT" property="customerId"/>
+        <result column="label_type" jdbcType="SMALLINT" property="labelType"/>
+        <result column="label_name" jdbcType="VARCHAR" property="labelName"/>
+        <result column="created" jdbcType="TIMESTAMP" property="created"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, customer_id, label_type, label_name, created
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from customer_address_label
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_address_label
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel">
+    insert into customer_address_label (id, customer_id, label_type, 
+      label_name, created)
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{labelType,jdbcType=SMALLINT}, 
+      #{labelName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel">
+        insert into customer_address_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="customerId != null">
+                customer_id,
+            </if>
+            <if test="labelType != null">
+                label_type,
+            </if>
+            <if test="labelName != null">
+                label_name,
+            </if>
+            <if test="created != null">
+                created,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="customerId != null">
+                #{customerId,jdbcType=BIGINT},
+            </if>
+            <if test="labelType != null">
+                #{labelType,jdbcType=SMALLINT},
+            </if>
+            <if test="labelName != null">
+                #{labelName,jdbcType=VARCHAR},
+            </if>
+            <if test="created != null">
+                #{created,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel">
+        update customer_address_label
+        <set>
+            <if test="customerId != null">
+                customer_id = #{customerId,jdbcType=BIGINT},
+            </if>
+            <if test="labelType != null">
+                label_type = #{labelType,jdbcType=SMALLINT},
+            </if>
+            <if test="labelName != null">
+                label_name = #{labelName,jdbcType=VARCHAR},
+            </if>
+            <if test="created != null">
+                created = #{created,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel">
+    update customer_address_label
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      label_type = #{labelType,jdbcType=SMALLINT},
+      label_name = #{labelName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectCustomerAddressLabelByUserId"
+            resultType="com..b2c.common.domain.customer.vo.CustomerAddressLabelVO">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM customer_address_label
+        where label_type = 1 or (customer_id = #{customerId,jdbcType=BIGINT} and label_type = 2);
+    </select>
+
+</mapper>

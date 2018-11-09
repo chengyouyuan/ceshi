@@ -7,18 +7,18 @@ package com.winhxd.b2c.common.domain.customer.enums;
  */
 public enum CustomerAddressEnum {
 
-    DDFAULT_ADDRESS(1,"默认地址"),
-    NO_DDFAULT_ADDRESS(0,"非默认地址");
+    INSERT("insert","保存收货地址"),
+    UPDATE("update","更新收货地址");
 
-    private Integer code;
+    private String opt;
     private String desc;
-    CustomerAddressEnum(Integer code, String desc){
-        this.code = code;
+    CustomerAddressEnum(String opt, String desc){
+        this.opt = opt;
         this.desc = desc;
     }
 
-    public Integer getCode() {
-        return code;
+    public String getOpt() {
+        return opt;
     }
 
 

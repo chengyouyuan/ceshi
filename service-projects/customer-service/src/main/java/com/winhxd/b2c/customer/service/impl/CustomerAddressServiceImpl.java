@@ -48,7 +48,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     public int insert(CustomerAddressCondition customerAddressCondition, CustomerUser customerUser) {
 
         //参数校验
-        addOrUpdateVerifyParam(customerAddressCondition,"insert");
+        addOrUpdateVerifyParam(customerAddressCondition,CustomerAddressEnum.INSERT);
 
         CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(customerAddressCondition,customerAddress);
@@ -74,7 +74,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     @Transactional
     public int updateByPrimaryKey(CustomerAddressCondition condition) {
         //参数校验
-        addOrUpdateVerifyParam(condition,"update");
+        addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);
 
         CustomerAddressVO customerAddress = customerAddressMapper.selectByPrimaryKey(condition.getId());
         if(null == customerAddress){
@@ -93,12 +93,12 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
 
-    public void addOrUpdateVerifyParam (CustomerAddressCondition condition,String opt) {
+    public void addOrUpdateVerifyParam (CustomerAddressCondition condition,CustomerAddressEnum opt) {
         //判断必填参数
         if (null == condition) {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        if ("insert".equals(opt)) {
+        if (CustomerAddressEnum.INSERT.equals(opt)) {
             if (null == condition.getContacterDetailAddress() ||
                     null == condition.getContacterMobile() ||
                     null == condition.getContacterName() ||
@@ -109,7 +109,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
             if (!SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {
                 throw new BusinessException(BusinessCode.CODE_611109);
             }
-        } else if ("update".equals(opt)) {
+        } else if (CustomerAddressEnum.UPDATE.equals(opt)) {
             if (null == condition.getId()) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }

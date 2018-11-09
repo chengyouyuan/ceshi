@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Api(value = "CustomerAddress Controller", tags = "C-Address")
 @RestController
-@RequestMapping(value = "/api-customerAddress/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-customer/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerAddressController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerAddressController.class);
 
@@ -60,7 +60,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
-	@RequestMapping(value = "customerAddress/2024/v1/saveCustomerSaveAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "address/2024/v1/saveCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerSaveAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 保存用户收货地址, 参数：customerAddressCondition={}", "", customerAddressCondition);
 
@@ -79,7 +79,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_503704, message = "C端用户收货地址不存在"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
-	@RequestMapping(value = "customerAddress/2025/v1/updateCustomerAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "address/2025/v1/updateCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
 
@@ -91,7 +91,7 @@ public class ApiCustomerAddressController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customerAddress/2026/v1/deleteCustomerAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "address/2026/v1/deleteCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerDeleteAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
 		logger.info("{} - 删除用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
@@ -105,7 +105,7 @@ public class ApiCustomerAddressController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-    @RequestMapping(value = "customerAddress/2027/v1/selectAllCustomerAddress", method = RequestMethod.POST)
+    @RequestMapping(value = "address/2027/v1/selectAllCustomerAddress", method = RequestMethod.POST)
     public ResponseResult<List<CustomerAddressVO>> selectAllCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
         logger.info("{} - 删除用户收货地址, 参数：CustomerAddressCondition={}", "", customerAddressCondition);
         ResponseResult<List<CustomerAddressVO>> result = new ResponseResult<>();
@@ -118,7 +118,7 @@ public class ApiCustomerAddressController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-    @RequestMapping(value = "customerAddress/2028/v1/selectOneCustomerAddress", method = RequestMethod.POST)
+    @RequestMapping(value = "address/2028/v1/selectOneCustomerAddress", method = RequestMethod.POST)
     public ResponseResult<CustomerAddressVO> selectOneCustomerAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
         logger.info("{} - 通过主键查询用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
         ResponseResult<CustomerAddressVO> result = new ResponseResult<>();

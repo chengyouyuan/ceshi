@@ -164,7 +164,7 @@
         and customer_id = #{customerId,jdbcType=BIGINT}
     </select>
 
-  <update id="updateCustomerAddressById" parameterType="java.util.List">
+    <update id="updateCustomerAddressById" parameterType="java.util.List">
         update customer_address
         set label_id = 1
         where id in

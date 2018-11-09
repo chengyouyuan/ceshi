@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -140,12 +141,12 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "customer/2029/v1/getAddressLabelByUserId", method = RequestMethod.POST)
-	public ResponseResult<List<String>> getAddressLabelByUserId(ApiCondition condition) {
+	public ResponseResult<List<CustomerAddressLabelVO>> getAddressLabelByUserId(ApiCondition condition) {
         logger.info("customer/2029/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
 		long customerId = currentCustomerUser.getCustomerId();
-		List<String> list = customerAddressService.findCustomerAddressLabelByUserId(customerId);
-		ResponseResult<List<String>> result = new ResponseResult<>();
+		List<CustomerAddressLabelVO> list = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		ResponseResult<List<CustomerAddressLabelVO>> result = new ResponseResult<>();
 		result.setData(list);
 		return result;
 	}
@@ -178,10 +179,10 @@ public class ApiCustomerAddressController {
 		Long customerId = currentCustomerUser.getCustomerId();
 		customerAddressLabelCondition.setCustomerId(customerId);
 		//校验是否有和以前重复保存的标签
-		List<String> labelNames = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		List<CustomerAddressLabelVO> labelNames = customerAddressService.findCustomerAddressLabelByUserId(customerId);
 		labelNames.forEach(
 				label -> {
-					if (label.equals(labelName)) {
+					if (labelName.equals(label.getLabelName())) {
                         logger.info("2030接口保存标签时，有和以前重复的标签 ，标签名--{}", label);
 						throw new BusinessException(BusinessCode.CODE_503706);
 					}

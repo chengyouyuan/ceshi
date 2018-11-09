@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface CustomerAddressService {
     /**
      * 根据用户id查询用户地址标签
      */
-    List<String> findCustomerAddressLabelByUserId(Long customerId);
+    List<CustomerAddressLabelVO> findCustomerAddressLabelByUserId(Long customerId);
 
     /**
      * 新增用户地址标签

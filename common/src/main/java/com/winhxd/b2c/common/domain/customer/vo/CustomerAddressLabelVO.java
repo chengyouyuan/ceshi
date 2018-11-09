@@ -17,17 +17,6 @@ public class CustomerAddressLabelVO {
      */
     @ApiModelProperty("标签id")
     private Long id;
-    /**
-     * 用户id
-     */
-    @ApiModelProperty("用户id")
-    private Long customerId;
-
-    /**
-     * 用户地址标签类型
-     */
-    @ApiModelProperty("用户地址标签类型")
-    private String labelType;
 
     /**
      * 用户地址标签名字

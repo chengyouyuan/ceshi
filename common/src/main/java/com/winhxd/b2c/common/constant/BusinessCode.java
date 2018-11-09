@@ -363,7 +363,10 @@ public final class BusinessCode {
     public static final int CODE_503703 = 503703;
     @ApiModelProperty("C端用户收货地址不存在")
     public static final int CODE_503704 = 503704;
-
+    @ApiModelProperty("C端用户收货地址标签名字为空")
+    public static final int CODE_503705 = 503705;
+    @ApiModelProperty("C端用户收货地址标签名重复")
+    public static final int CODE_503706 = 503706;
 
     @ApiModelProperty("门店资金变化  参数为空")
     public static final int CODE_600001 = 600001;

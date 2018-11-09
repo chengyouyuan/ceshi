@@ -157,4 +157,10 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
+    <select id="selectCustomerAddressByLabelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from customer_address where label_id = #{labelId,jdbcType=BIGINT}
+        and customer_id = #{customerId,jdbcType=BIGINT}
+    </select>
 </mapper>

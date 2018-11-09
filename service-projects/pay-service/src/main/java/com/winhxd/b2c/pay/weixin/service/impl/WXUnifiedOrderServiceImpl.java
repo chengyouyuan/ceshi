@@ -1,16 +1,5 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CurrencyEnum;
 import com.winhxd.b2c.common.constant.TradeTypeEnum;
@@ -27,6 +16,16 @@ import com.winhxd.b2c.pay.weixin.constant.TradeStateEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 支付网关微信统一下单API实现

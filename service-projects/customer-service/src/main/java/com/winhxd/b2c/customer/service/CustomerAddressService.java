@@ -4,8 +4,8 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
-import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 
 
 import java.util.List;
@@ -16,18 +16,18 @@ public interface CustomerAddressService {
 
     int insert(CustomerAddressCondition customerAddressCondition,CustomerUser customerUser);
 
-    CustomerAddress selectByPrimaryKey(CustomerAddressSelectCondition condition);
+    CustomerAddressVO selectByPrimaryKey(CustomerAddressSelectCondition condition);
 
     /**
      * 查询用户默认收货地址
      * @param customerUser
      * @return
      */
-    CustomerAddress selectCustomerDefaultAddress(CustomerUser customerUser);
+    CustomerAddressVO selectCustomerDefaultAddress(CustomerUser customerUser);
 
     int updateByPrimaryKey(CustomerAddressCondition condition,CustomerUser customerUser);
 
-    List<CustomerAddress> getCustomerAddressByUserId(Long userId);
+    List<CustomerAddressVO> getCustomerAddressByUserId(Long userId);
 
     /**
      * 根据用户id查询用户地址标签

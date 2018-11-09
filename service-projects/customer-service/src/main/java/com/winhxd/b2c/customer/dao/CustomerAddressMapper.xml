@@ -15,46 +15,59 @@
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
+
+  <resultMap id="SelectResultMap" type="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO" extends="BaseResultMap">
+    <result column="label_name" jdbcType="VARCHAR" property="labelName" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, customer_id, contacter_name, contacter_mobile, contacter_province, contacter_city,
     contacter_county, contacter_detail_address, label_id, default_address, created, updated
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+
+  <sql id="Select_Column_List">
+    cu.id, cu.customer_id, cu.contacter_name, cu.contacter_mobile, cu.contacter_province, cu.contacter_city,
+    cu.contacter_county, cu.contacter_detail_address, cu.label_id,cal.label_name, cu.default_address, cu.created, cu.updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="SelectResultMap">
     select
-    <include refid="Base_Column_List" />
-    from customer_address
-    where id = #{id,jdbcType=BIGINT}
+    <include refid="Select_Column_List" />
+    from customer_address cu left join customer_address_label cal
+    on cu.label_id = cal.id
+    where cu.id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="selectCustomerAddressByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectCustomerAddressByUserId" parameterType="java.lang.Long" resultMap="SelectResultMap">
       select
-      <include refid="Base_Column_List" />
-      from customer_address
-      where customer_id = #{userId,jdbcType=BIGINT}
+      <include refid="Select_Column_List" />
+      from customer_address  cu left join customer_address_label cal
+    on cu.label_id = cal.id
+    where cu.customer_id = #{userId,jdbcType=BIGINT}
   </select>
 
-  <select id="selectCustomerAddressByCondtion" parameterType="com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition" resultMap="BaseResultMap">
+  <select id="selectCustomerAddressByCondtion" parameterType="com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition" resultMap="SelectResultMap">
       select
-      <include refid="Base_Column_List" />
-      from customer_address
+      <include refid="Select_Column_List" />
+      from customer_address cu left join customer_address_label cal
+      on cu.label_id = cal.id
       <where>
         <if test="id!=null">
-          and id = #{id,jdbcType=BIGINT}
+          and cu.id = #{id,jdbcType=BIGINT}
         </if>
         <if test="customerId != null">
-          and customer_id = #{customerId,jdbcType=BIGINT}
+          and cu.customer_id = #{customerId,jdbcType=BIGINT}
         </if>
         <if test="contacterName != null">
-          and contacter_name = #{contacterName,jdbcType=VARCHAR}
+          and cu.contacter_name = #{contacterName,jdbcType=VARCHAR}
         </if>
         <if test="contacterMobile != null">
-          and contacter_mobile = #{contacterMobile,jdbcType=CHAR}
+          and cu.contacter_mobile = #{contacterMobile,jdbcType=CHAR}
         </if>
         <if test="labelId != null">
-          and label_id = #{labelId,jdbcType=BIGINT}
+          and cu.label_id = #{labelId,jdbcType=BIGINT}
         </if>
         <if test="defaultAddress != null">
-          and default_address = #{defaultAddress,jdbcType=BIT}
+          and cu.default_address = #{defaultAddress,jdbcType=BIT}
         </if>
       </where>
   </select>
@@ -143,7 +156,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO">
     update customer_address
     <set>
       <if test="customerId != null">

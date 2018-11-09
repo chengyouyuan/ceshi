@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.customer.dao.CustomerAddressMapper;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
 import org.junit.Before;
@@ -69,11 +70,11 @@ public class CustomerAddressServiceTest {
 //       condition.setContacterDetailAddress("东升科技园3");
 //        condition.setContacterRegion("北京市海淀区西三旗3");
 //        condition.setContacterMobile("13800003333");
-        condition.setContacterName("我就试试");
+        condition.setContacterName("我就tetst试试");
 //        condition.setLabelId(23L);
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
-        condition.setId(2L);
+        condition.setId(3L);
         condition.setDefaultAddress(true);
 
 
@@ -90,7 +91,7 @@ public class CustomerAddressServiceTest {
 //        condition.setDefaultAddress(true);
 
 
-        List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(condition);
+        List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(condition);
         System.out.println(customerAddressVOS);
     }
 
@@ -99,7 +100,7 @@ public class CustomerAddressServiceTest {
         CustomerUser cu = new CustomerUser();
         cu.setCustomerId(20l);
 
-        CustomerAddress customerAddressVOS = customerAddressService.selectCustomerDefaultAddress(cu);
+        CustomerAddressVO customerAddressVOS = customerAddressService.selectCustomerDefaultAddress(cu);
         System.out.println(customerAddressVOS);
     }
 }

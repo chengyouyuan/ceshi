@@ -8,8 +8,8 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
-import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
@@ -107,10 +107,10 @@ public class ApiCustomerAddressController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
     @RequestMapping(value = "address/2027/v1/selectAllCustomerAddress", method = RequestMethod.POST)
-    public ResponseResult<List<CustomerAddress>> selectAllCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
+    public ResponseResult<List<CustomerAddressVO>> selectAllCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
         logger.info("C端—查询当前用户所有收货地址, 参数：CustomerAddressCondition={}", "", customerAddressCondition);
-        ResponseResult<List<CustomerAddress>> result = new ResponseResult<>();
-        List<CustomerAddress> customerAddressList= customerAddressService.getCustomerAddressByUserId(UserContext.getCurrentCustomerUser().getCustomerId());
+        ResponseResult<List<CustomerAddressVO>> result = new ResponseResult<>();
+        List<CustomerAddressVO> customerAddressList= customerAddressService.getCustomerAddressByUserId(UserContext.getCurrentCustomerUser().getCustomerId());
         result.setData(customerAddressList);
         return result;
     }
@@ -120,10 +120,10 @@ public class ApiCustomerAddressController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
     @RequestMapping(value = "address/2028/v1/selectOneCustomerAddress", method = RequestMethod.POST)
-    public ResponseResult<CustomerAddress> selectOneCustomerAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
+    public ResponseResult<CustomerAddressVO> selectOneCustomerAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
         logger.info("通过主键查询用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
-        ResponseResult<CustomerAddress> result = new ResponseResult<>();
-        CustomerAddress customerAddress= customerAddressService.selectByPrimaryKey(customerAddressSelectCondition);
+        ResponseResult<CustomerAddressVO> result = new ResponseResult<>();
+        CustomerAddressVO customerAddress= customerAddressService.selectByPrimaryKey(customerAddressSelectCondition);
         result.setData(customerAddress);
         return result;
     }
@@ -133,10 +133,10 @@ public class ApiCustomerAddressController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
     @RequestMapping(value = "address/2032/v1/selectCustomerDefaultAddress", method = RequestMethod.POST)
-    public ResponseResult<CustomerAddress> selectCustomerDefaultAddress(@RequestBody ApiCondition condition) {
+    public ResponseResult<CustomerAddressVO> selectCustomerDefaultAddress(@RequestBody ApiCondition condition) {
         logger.info("查询当前用户默认收货地址, 参数：ApiCondition={}", "", condition);
-        ResponseResult<CustomerAddress> result = new ResponseResult<>();
-		CustomerAddress address = customerAddressService.selectCustomerDefaultAddress(UserContext.getCurrentCustomerUser());
+        ResponseResult<CustomerAddressVO> result = new ResponseResult<>();
+        CustomerAddressVO address = customerAddressService.selectCustomerDefaultAddress(UserContext.getCurrentCustomerUser());
 		result.setData(address);
 		return result;
     }

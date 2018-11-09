@@ -10,7 +10,7 @@ public class CustomerAddressLabel {
 
     private Long customerId;
 
-    private Integer labelType;
+    private Short labelType;
 
     private String labelName;
 

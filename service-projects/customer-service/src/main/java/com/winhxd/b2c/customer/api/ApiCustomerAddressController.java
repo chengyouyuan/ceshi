@@ -141,7 +141,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "customer/2029/v1/getAddressLabelByUserId", method = RequestMethod.POST)
 	public ResponseResult<List<String>> getAddressLabelByUserId(ApiCondition condition) {
-		logger.info("customer/2026/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
+        logger.info("customer/2029/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
 		long customerId = currentCustomerUser.getCustomerId();
 		List<String> list = customerAddressService.findCustomerAddressLabelByUserId(customerId);
@@ -164,14 +164,14 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "customer/2030/v1/addCustomerAddressLabel", method = RequestMethod.POST)
 	public ResponseResult<Boolean> addCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
-		logger.info("customer/2027/v1/addCustomerAddressLabel -- 新增用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
+        logger.info("customer/2030/v1/addCustomerAddressLabel -- 新增用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
 		String labelName = customerAddressLabelCondition.getLabelName();
 		if (customerAddressLabelCondition == null) {
-			logger.error("接口2027新增用户地址标签参数为空");
+            logger.error("接口2030新增用户地址标签参数为空");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		if (StringUtils.isEmpty(labelName)) {
-			logger.error("接口2027新增用户地址标签，标签名字为空");
+            logger.error("接口2030新增用户地址标签，标签名字为空");
 			throw new BusinessException(BusinessCode.CODE_503705);
 		}
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
@@ -182,7 +182,7 @@ public class ApiCustomerAddressController {
 		labelNames.forEach(
 				label -> {
 					if (label.equals(labelName)) {
-						logger.info("2027接口保存标签时，有和以前重复的标签 ，标签名--{}", label);
+                        logger.info("2030接口保存标签时，有和以前重复的标签 ，标签名--{}", label);
 						throw new BusinessException(BusinessCode.CODE_503706);
 					}
 				});
@@ -206,13 +206,13 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "customer/2031/v1/deleteCustomerAddressLabel", method = RequestMethod.POST)
 	public ResponseResult<Boolean> deleteCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
-		logger.info("customer/2028/v1/deleteCustomerAddressLabel -- 删除用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
+        logger.info("customer/2031/v1/deleteCustomerAddressLabel -- 删除用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
 		if (customerAddressLabelCondition == null) {
-			logger.error("接口2028删除用户地址标签参数为空");
+            logger.error("接口2031删除用户地址标签参数为空");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		if (StringUtils.isEmpty(customerAddressLabelCondition.getLabelName())) {
-			logger.error("接口2028删除用户地址标签，标签名字为空");
+            logger.error("接口2031删除用户地址标签，标签名字为空");
 			throw new BusinessException(BusinessCode.CODE_503705);
 		}
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();

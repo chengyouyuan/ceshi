@@ -2,6 +2,7 @@ package com.winhxd.b2c.customer.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition;
@@ -10,7 +11,6 @@ import com.winhxd.b2c.common.domain.customer.enums.CustomerAddressEnum;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddressLabel;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
-import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.SecurityCheckUtil;
 import com.winhxd.b2c.customer.dao.CustomerAddressLabelMapper;
@@ -72,7 +72,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
 
     @Override
-    public CustomerAddressVO selectByPrimaryKey(CustomerAddressSelectCondition condition) {
+    public CustomerAddress selectByPrimaryKey(CustomerAddressSelectCondition condition) {
         //判断必填参数
         if (null == condition || null == condition.getId()) {
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -81,12 +81,36 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
+    public CustomerAddress selectCustomerDefaultAddress(CustomerUser customerUser) {
+        CustomerAddress defaultAddress = null;
+        CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
+        queryCondtion.setDefaultAddress(true);
+        queryCondtion.setCustomerId(customerUser.getCustomerId());
+        List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
+        if (!CollectionUtils.isEmpty(customerAddressVOS)) {
+            defaultAddress = customerAddressVOS.get(0);
+            return defaultAddress;
+        }
+        List<CustomerAddress> customerAddressList= customerAddressMapper.selectCustomerAddressByUserId(customerUser.getCustomerId());
+        if (!CollectionUtils.isEmpty(customerAddressList)) {
+            defaultAddress = customerAddressList.get(0);
+            for (CustomerAddress address :customerAddressList){
+                if (address.getDefaultAddress()) {
+                    defaultAddress = address;
+                    break;
+                }
+            }
+        }
+        return defaultAddress;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateByPrimaryKey(CustomerAddressCondition condition,CustomerUser customerUser) {
         //参数校验
         addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);
 
-        CustomerAddressVO customerAddress = customerAddressMapper.selectByPrimaryKey(condition.getId());
+        CustomerAddress customerAddress = customerAddressMapper.selectByPrimaryKey(condition.getId());
         if (null == customerAddress) {
             logger.error("--customerAddressService.updateByPrimaryKey C端用户收货地址不存在");
             throw new BusinessException(BusinessCode.CODE_503704);
@@ -95,9 +119,9 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
             CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
             queryCondtion.setDefaultAddress(true);
             queryCondtion.setCustomerId(customerUser.getCustomerId());
-            List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
+            List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
             if (!CollectionUtils.isEmpty(customerAddressVOS)) {
-                CustomerAddressVO addressVO = customerAddressVOS.get(0);
+                CustomerAddress addressVO = customerAddressVOS.get(0);
                 if (addressVO.getId().longValue() !=  condition.getId().longValue()) {
                     //将之前默认的地址改为 非默认的
                     addressVO.setDefaultAddress(false);
@@ -113,7 +137,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    public List<CustomerAddressVO> getCustomerAddressByUserId(Long userId) {
+    public List<CustomerAddress> getCustomerAddressByUserId(Long userId) {
         return customerAddressMapper.selectCustomerAddressByUserId(userId);
     }
 
@@ -139,7 +163,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         Long customerId = customerAddressLabelCondition.getCustomerId();
         Long labelId = customerAddressLabelCondition.getId();
         //通过标签id和customer_id 查询地址列表
-        List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByLabelId(labelId, customerId);
+        List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByLabelId(labelId, customerId);
         List<Long> list = new ArrayList<>(5);
         if (customerAddressVOS.size() > 0) {
             list = customerAddressVOS.stream().map(customerAddressVO -> customerAddressVO.getId()).collect(Collectors.toList());

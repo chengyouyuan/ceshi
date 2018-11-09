@@ -2,6 +2,10 @@ package com.winhxd.b2c.customer.Service;
 
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
+import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
+import com.winhxd.b2c.customer.dao.CustomerAddressMapper;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.List;
 
 /**
  * @author: sunwenwu
@@ -28,6 +34,10 @@ public class CustomerAddressServiceTest {
 
     @Autowired
     private CustomerAddressService customerAddressService;
+    @Autowired
+    private CustomerAddressMapper customerAddressMapper;
+
+
 
     @Before
     public void setup() {
@@ -59,14 +69,37 @@ public class CustomerAddressServiceTest {
 //       condition.setContacterDetailAddress("东升科技园3");
 //        condition.setContacterRegion("北京市海淀区西三旗3");
 //        condition.setContacterMobile("13800003333");
-        condition.setContacterName("孙悟空啦啦啦");
+        condition.setContacterName("我就试试");
 //        condition.setLabelId(23L);
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
-        condition.setId(3L);
+        condition.setId(2L);
         condition.setDefaultAddress(true);
 
 
         customerAddressService.updateByPrimaryKey(condition,customerUser);
+    }
+
+    @Test
+    public void selectCustomerAddress() {
+        CustomerAddressQueryCondition condition = new CustomerAddressQueryCondition();
+
+        condition.setContacterMobile("18812345678");
+
+        condition.setId(2L);
+//        condition.setDefaultAddress(true);
+
+
+        List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(condition);
+        System.out.println(customerAddressVOS);
+    }
+
+    @Test
+    public void selectCustomerDefaultAddress() {
+        CustomerUser cu = new CustomerUser();
+        cu.setCustomerId(20l);
+
+        CustomerAddress customerAddressVOS = customerAddressService.selectCustomerDefaultAddress(cu);
+        System.out.println(customerAddressVOS);
     }
 }

@@ -27,7 +27,7 @@ public class ReadyShopCarCondition extends ApiCondition {
     @ApiModelProperty(value = "自提地址", required = true)
     private String extractAddress;
 
-    @ApiModelProperty(value = "自提时间", required = true)
+    @ApiModelProperty(value = "自提时间", required = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pickupDateTime;
 
@@ -48,6 +48,18 @@ public class ReadyShopCarCondition extends ApiCondition {
 
     @ApiModelProperty(value = "设备号", required = false)
     private String deviceInfo;
+
+    @ApiModelProperty(value = "提货类型:1:门店自提;2:送货上门", required=true)
+    private Short pickupType;
+
+    @ApiModelProperty(value = "订单收货人", required=false)
+    private String orderConsignee;
+
+    @ApiModelProperty(value = "订单收货人电话", required=false)
+    private String orderConsigneeMobile;
+
+    @ApiModelProperty(value = "订单收货地址", required=false)
+    private String orderAddress;
     
     @ApiModelProperty(value = "购物车商品Info", required = true)
     private List<ShopCarProdInfoVO> shopCarts;

@@ -124,7 +124,7 @@ public class OrderInfo {
      */
     private Date acceptOrderDatetime;
     /**
-     * 提货方式:1立即自提;2普通自提; 现阶段只有自提
+     * 提货类型:1: 门店自提;2: 送货上门;
      */
     private Short pickupType;
     /**
@@ -156,6 +156,20 @@ public class OrderInfo {
     private Long updatedBy;
     private String updatedByName;
     private String createdByName;
+
+    /**
+     * 订单收货人
+     */
+    private String orderConsignee;
+    /**
+     * 订单收货人电话
+     */
+    private String orderConsigneeMobile;
+    /**
+     * 订单收货地址
+     */
+    private String orderAddress;
+
 
     /**
      * 订单商品项

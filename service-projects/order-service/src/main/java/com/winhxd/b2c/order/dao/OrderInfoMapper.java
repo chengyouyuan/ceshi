@@ -110,6 +110,7 @@ public interface OrderInfoMapper {
 
     /**
      * 获取门店已支付订单门店信息统计
+     *
      * @param storeId
      * @param startDateTime
      * @param endDateTime
@@ -307,49 +308,54 @@ public interface OrderInfoMapper {
 
     /**
      * 获取指定时间内 门店下单付款(未取消)的用户id，及订单数
-     * @author wangbin
-     * @date  2018年8月23日 下午3:33:22
+     *
      * @param storeId
      * @param startDateTime
      * @param endDateTime
      * @return
+     * @author wangbin
+     * @date 2018年8月23日 下午3:33:22
      */
-    List<Map<String, Long>> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+    List<Map<String, Long>> getStoreOrderDistinctCustomerIds(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 
     /**
      * 获取门店完成订单销售信息
-     * @author wangbin
-     * @date  2018年8月24日 上午11:03:36
+     *
      * @param storeId
      * @param startDateTime
      * @param endDateTime
      * @return
+     * @author wangbin
+     * @date 2018年8月24日 上午11:03:36
      */
     StoreOrderSalesSummaryVO getStoreCompletedOrderTurnover(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 
     /**
      * 获取门店完成订单用户信息
-     * @author wangbin
-     * @date  2018年8月24日 上午11:03:50
+     *
      * @param storeId
      * @param startDateTime
      * @param endDateTime
      * @return
+     * @author wangbin
+     * @date 2018年8月24日 上午11:03:50
      */
     StoreOrderSalesSummaryVO getStoreCompletedOrderCustomerNum(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 
     /**
      * 更新订单状态为退款失败
+     *
      * @param orderNo
      * @param
      * @param customerFail 为true时更新订单状态，false时只更新退款失败原因
      * @return
      */
-    int updateOrderStatusForRefundFail(@Param("orderNo")String orderNo, @Param("refundErrorDesc")String refundErrorDesc, @Param("customerFail")Boolean customerFail);
+    int updateOrderStatusForRefundFail(@Param("orderNo") String orderNo, @Param("refundErrorDesc") String refundErrorDesc, @Param("customerFail") Boolean customerFail);
 
 
     /**
      * 是否都是退款失败的记录
+     *
      * @param orderNoList
      * @return true 订单号中有不符合退款的记录 false 反之
      */

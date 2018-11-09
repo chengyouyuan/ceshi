@@ -109,11 +109,6 @@ public class OrderInfoDetailVO implements Serializable {
     @ApiModelProperty(value = "订单支付完成时间", required = true)
     private Date payFinishDateTime;
     /**
-     * 提货时间
-     */
-    @ApiModelProperty(value = "提货时间", required = true)
-    private Date pickupDateTime;
-    /**
      * 订单完成时间
      */
     @ApiModelProperty(value = "订单完成时间", required = true)
@@ -130,24 +125,23 @@ public class OrderInfoDetailVO implements Serializable {
     private Date refundDateTime;
     @ApiModelProperty(value = "申请退款时间", required = true)
     private Date applyRefundDatetime;
-    /**
-     * 提货方式:1立即自提;2普通自提; 现阶段只有自提
-     */
-    @ApiModelProperty(value = "提货方式:1立即自提;2普通自提;", required = true)
+    @ApiModelProperty(value = "提货方式:1:到店自提;2:送货上门;", required = true)
     private Short pickupType;
     @ApiModelProperty(value = "提货方式描述", required = true)
     private String pickupTypeDesc;
-    /**
-     * 取消原因
-     */
+    @ApiModelProperty(value = "提货时间", required = true)
+    private Date pickupDateTime;
+    @ApiModelProperty(value = "送货上门收货人姓名;", required = false)
+    private String orderConsignee;
+    @ApiModelProperty(value = "送货上门收货人电话;", required = false)
+    private String orderConsigneeMobile;
+    @ApiModelProperty(value = "送货上门收货人电话;", required = false)
+    private String orderAddress;
     @ApiModelProperty(value = "取消原因", required = true)
     private String cancelReason;
-    /**
-     * 订单备注
-     */
     @ApiModelProperty(value = "订单备注", required = true)
     private String remarks;
-    @ApiModelProperty(value = "手机号码", required = true)
+    @ApiModelProperty(value = "客户手机号码", required = true)
     private String customerMobile;
     @ApiModelProperty(value = "用户昵称", required = true)
     private String nickName;

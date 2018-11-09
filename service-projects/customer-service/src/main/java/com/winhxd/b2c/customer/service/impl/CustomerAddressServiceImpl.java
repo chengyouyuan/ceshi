@@ -113,7 +113,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         CustomerAddressLabel customerAddressLabel = new CustomerAddressLabel();
         BeanUtils.copyProperties(customerAddressLabelCondition, customerAddressLabel);
         customerAddressLabel.setCreated(new Date());
-        customerAddressLabel.setLabelType(2);
+        customerAddressLabel.setLabelType((short) 2);
         return customerAddressLabelMapper.insertSelective(customerAddressLabel);
     }
 

@@ -111,7 +111,7 @@ public class CustomerServiceController implements CustomerServiceClient {
     public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition condition) {
         ResponseResult<Boolean> result = new ResponseResult<>();
 
-        int effc = customerAddressService.updateByPrimaryKey(condition);
+        int effc = customerAddressService.updateByPrimaryKey(condition,UserContext.getCurrentCustomerUser());
 
         result.setData(effc > 0 ? true:false);
 

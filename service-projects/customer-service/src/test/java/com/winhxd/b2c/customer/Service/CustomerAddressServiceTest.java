@@ -56,15 +56,17 @@ public class CustomerAddressServiceTest {
     @Test
     public void upateCustomerAddress() {
         CustomerAddressCondition condition = new CustomerAddressCondition();
-        condition.setContacterDetailAddress("东升科技园3");
-        condition.setContacterRegion("北京市海淀区西三旗3");
-        condition.setContacterMobile("13800003333");
-        condition.setContacterName("孙悟空3");
-        condition.setLabelId(23L);
+//       condition.setContacterDetailAddress("东升科技园3");
+//        condition.setContacterRegion("北京市海淀区西三旗3");
+//        condition.setContacterMobile("13800003333");
+        condition.setContacterName("孙悟空啦啦啦");
+//        condition.setLabelId(23L);
         CustomerUser customerUser = new CustomerUser();
-        condition.setId(2L);
+        customerUser.setCustomerId(20L);
+        condition.setId(3L);
+        condition.setDefaultAddress(true);
 
 
-        customerAddressService.updateByPrimaryKey(condition);
+        customerAddressService.updateByPrimaryKey(condition,customerUser);
     }
 }

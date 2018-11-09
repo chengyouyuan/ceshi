@@ -26,12 +26,38 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-    <select id="selectCustomerAddressByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from customer_address
-        where customer_id = #{userId,jdbcType=BIGINT}
-    </select>
+  <select id="selectCustomerAddressByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from customer_address
+      where customer_id = #{userId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectCustomerAddressByCondtion" parameterType="com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from customer_address
+      <where>
+        <if test="id!=null">
+          and id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="customerId != null">
+          and customer_id = #{customerId,jdbcType=BIGINT}
+        </if>
+        <if test="contacterName != null">
+          and contacter_name = #{contacterName,jdbcType=VARCHAR}
+        </if>
+        <if test="contacterMobile != null">
+          and contacter_mobile = #{contacterMobile,jdbcType=CHAR}
+        </if>
+        <if test="labelId != null">
+          and label_id = #{labelId,jdbcType=BIGINT}
+        </if>
+        <if test="defaultAddress != null">
+          and default_address = #{defaultAddress,jdbcType=BIT}
+        </if>
+      </where>
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from customer_address
@@ -164,7 +190,7 @@
         and customer_id = #{customerId,jdbcType=BIGINT}
     </select>
 
-    <update id="updateCustomerAddressById" parameterType="java.lang.List">
+    <update id="updateCustomerAddressById" parameterType="java.util.List">
         update customer_address
         set label_id = 1
         where id in

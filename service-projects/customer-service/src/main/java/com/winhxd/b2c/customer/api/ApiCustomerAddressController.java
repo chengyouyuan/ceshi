@@ -44,9 +44,6 @@ public class ApiCustomerAddressController {
 	@Autowired
 	private CustomerAddressService customerAddressService;
 
-    @Autowired
-    private CustomerServiceClient customerServiceClient;
-
 
 	/**
 	 * @author sunwenwu
@@ -83,7 +80,7 @@ public class ApiCustomerAddressController {
 	public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
 
-		return customerServiceClient.customerUpdateAddress(customerAddressCondition);
+		return customerAddressService.updateByPrimaryKey(customerAddressCondition,UserContext.getCurrentCustomerUser())
 	}
 
 

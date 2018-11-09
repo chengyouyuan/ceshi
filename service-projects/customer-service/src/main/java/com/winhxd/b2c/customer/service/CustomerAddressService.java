@@ -16,7 +16,7 @@ public interface CustomerAddressService {
 
     CustomerAddressVO selectByPrimaryKey(CustomerAddressSelectCondition condition);
 
-    int updateByPrimaryKey(CustomerAddressCondition condition);
+    int updateByPrimaryKey(CustomerAddressCondition condition,CustomerUser customerUser);
 
     List<CustomerAddressVO> getCustomerAddressByUserId(Long userId);
 

@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
 import com.winhxd.b2c.common.domain.customer.enums.CustomerAddressEnum;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
@@ -21,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,14 +82,29 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateByPrimaryKey(CustomerAddressCondition condition) {
+    public int updateByPrimaryKey(CustomerAddressCondition condition,CustomerUser customerUser) {
         //参数校验
         addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);
 
         CustomerAddressVO customerAddress = customerAddressMapper.selectByPrimaryKey(condition.getId());
-        if(null == customerAddress){
+        if (null == customerAddress) {
             logger.error("--customerAddressService.updateByPrimaryKey C端用户收货地址不存在");
             throw new BusinessException(BusinessCode.CODE_503704);
+        }
+        if (null != condition.getDefaultAddress() && condition.getDefaultAddress() == true) {
+            CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
+            queryCondtion.setDefaultAddress(true);
+            queryCondtion.setCustomerId(customerUser.getCustomerId());
+            List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
+            if (!CollectionUtils.isEmpty(customerAddressVOS)) {
+                CustomerAddressVO addressVO = customerAddressVOS.get(0);
+                if (addressVO.getId().longValue() !=  condition.getId().longValue()) {
+                    //将之前默认的地址改为 非默认的
+                    addressVO.setDefaultAddress(false);
+                    addressVO.setUpdated(new Date());
+                    customerAddressMapper.updateByPrimaryKeySelective(addressVO);
+                }
+            }
         }
         BeanUtils.copyProperties(condition,customerAddress);
         customerAddress.setUpdated(new Date());

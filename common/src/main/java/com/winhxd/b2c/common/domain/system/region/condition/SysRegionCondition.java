@@ -10,7 +10,7 @@ import lombok.Data;
  * @create: 2018-08-06 11:39
  **/
 @Data
-public class SysRegionCondition {
+public class SysRegionCondition extends ApiCondition{
 
     @ApiModelProperty(value = "区域编号", required = true)
     private String regionCode;

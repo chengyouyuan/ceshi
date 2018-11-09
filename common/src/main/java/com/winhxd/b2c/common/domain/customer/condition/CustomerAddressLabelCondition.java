@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.customer.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 @ApiModel("用户地址标签入参")
 @Data
-public class CustomerAddressLabelCondition {
+public class CustomerAddressLabelCondition extends ApiCondition {
 
     /**
      * 标签id

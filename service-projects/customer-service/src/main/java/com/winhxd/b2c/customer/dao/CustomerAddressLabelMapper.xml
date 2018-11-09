@@ -93,7 +93,7 @@
   </update>
 
     <select id="selectCustomerAddressLabelByUserId"
-            resultType="com..b2c.common.domain.customer.vo.CustomerAddressLabelVO">
+            resultType="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO">
         SELECT
         <include refid="Base_Column_List"/>
         FROM customer_address_label

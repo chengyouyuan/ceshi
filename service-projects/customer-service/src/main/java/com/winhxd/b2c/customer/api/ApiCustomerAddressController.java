@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
@@ -59,7 +60,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
-	@RequestMapping(value = "customerAddress/2024/v1/customerSaveAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "customerAddress/2024/v1/saveCustomerSaveAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerSaveAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 保存用户收货地址, 参数：customerAddressCondition={}", "", customerAddressCondition);
 
@@ -78,7 +79,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_503704, message = "C端用户收货地址不存在"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
-	@RequestMapping(value = "customerAddress/2025/v1/customerUpdateAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "customerAddress/2025/v1/updateCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
 
@@ -90,7 +91,7 @@ public class ApiCustomerAddressController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customerAddress/2026/v1/customerDeleteAddress", method = RequestMethod.POST)
+	@RequestMapping(value = "customerAddress/2026/v1/deleteCustomerAddress", method = RequestMethod.POST)
 	public ResponseResult<Boolean> customerDeleteAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
 		logger.info("{} - 删除用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
@@ -138,8 +139,8 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customer/2026/v1/getAddressLabelByUserId", method = RequestMethod.POST)
-	public ResponseResult<List<String>> getAddressLabelByUserId() {
+	@RequestMapping(value = "customer/2029/v1/getAddressLabelByUserId", method = RequestMethod.POST)
+	public ResponseResult<List<String>> getAddressLabelByUserId(ApiCondition condition) {
 		logger.info("customer/2026/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
 		long customerId = currentCustomerUser.getCustomerId();
@@ -161,7 +162,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customer/2027/v1/addCustomerAddressLabel", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/2030/v1/addCustomerAddressLabel", method = RequestMethod.POST)
 	public ResponseResult<Boolean> addCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
 		logger.info("customer/2027/v1/addCustomerAddressLabel -- 新增用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
 		String labelName = customerAddressLabelCondition.getLabelName();
@@ -203,7 +204,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customer/2028/v1/deleteCustomerAddressLabel", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/2031/v1/deleteCustomerAddressLabel", method = RequestMethod.POST)
 	public ResponseResult<Boolean> deleteCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
 		logger.info("customer/2028/v1/deleteCustomerAddressLabel -- 删除用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
 		if (customerAddressLabelCondition == null) {

@@ -95,7 +95,7 @@ public interface CustomerServiceClient {
      * @Description 查询有效的用户(有与门店绑定关系的用户)
      */
     @RequestMapping(value = "/customer/2011/v1/customerUpdateAddress", method = RequestMethod.POST)
-    ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition condition);
+    ResponseResult<Boolean> updateCustomerAddress(@RequestBody CustomerAddressCondition condition);
 }
 
 @Component
@@ -146,7 +146,7 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<Boolean> customerUpdateAddress(CustomerAddressCondition condition) {
+    public ResponseResult<Boolean> updateCustomerAddress(CustomerAddressCondition condition) {
         logger.error("CustomerServiceClientFallBack -> customerUpdateAddress{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

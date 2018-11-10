@@ -27,7 +27,7 @@ public class StoreBusinessInfoVO {
     @ApiModelProperty(value = "店主姓名", required = true)
     private String shopkeeper;
 
-    @ApiModelProperty(value = "取货方式列表（1、自提）", required = true)
+    @ApiModelProperty(value = "取货方式（1:到店自提;2:送货上门）", required = true)
     private List<StoreEnumObject> pickupType;
 
     @ApiModelProperty(value = "支付方式列表（1、微信在线付款2、微信扫码付款）", required = true)

@@ -167,7 +167,7 @@ public class OrderServiceTest {
     public void orderNeedPickupSendMsg2Store(){
         String last4MobileNums = "3479";
         Long storeId = 12L;
-        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_SELF_LIFTING_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             String createdBy= "";
             int expiration = 0;

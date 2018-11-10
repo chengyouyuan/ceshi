@@ -60,6 +60,9 @@ public class ReadyShopCarCondition extends ApiCondition {
 
     @ApiModelProperty(value = "订单收货地址", required=false)
     private String orderAddress;
+
+    @ApiModelProperty(value = "用户收货地址ID", required=false)
+    private String customerAddressId;
     
     @ApiModelProperty(value = "购物车商品Info", required = true)
     private List<ShopCarProdInfoVO> shopCarts;

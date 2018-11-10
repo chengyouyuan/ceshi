@@ -881,6 +881,7 @@
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>
         <result column="unreceivedNum" jdbcType="INTEGER" property="unreceivedNum"/>
         <result column="waitSelfLiftingNum" jdbcType="INTEGER" property="waitSelfLiftingNum"/>
+        <result column="waitDeliveryNum" jdbcType="INTEGER" property="waitDeliveryNum"/>
         <result column="waitRefundNum" jdbcType="INTEGER" property="waitRefundNum"/>
         <result column="waitPayNum" jdbcType="INTEGER" property="waitPayNum"/>
         <result column="finishedNum" jdbcType="INTEGER" property="finishedNum"/>
@@ -894,6 +895,7 @@
 			sum(case when order_status=2 then 1 else 0 end) waitPayNum,
 			sum(case when order_status=3 then 1 else 0 end) unreceivedNum,
 			sum(case when order_status=9 then 1 else 0 end) waitSelfLiftingNum,
+			sum(case when order_status=10 then 1 else 0 end) waitDeliveryNum,
 			sum(case when order_status=33 or order_status=66 then 1 else 0 end) waitRefundNum,
 			sum(case when order_status=22 then 1 else 0 end) finishedNum,
 			sum(case when order_status=77 then 1 else 0 end) refundedNum,

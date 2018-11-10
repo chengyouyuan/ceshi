@@ -12,10 +12,10 @@ public enum PickUpTypeEnum {
     /**
      * 立即自提
      */
-    SELF_PICK_UP((short) 1, "门店自提"),
+    SELF_PICK_UP((short) 1, "到店自提"),
 
     /**
-     * 普通自提
+     * 送货上门
      */
     DELIVERY_PICK_UP((short) 2, "送货上门");
 

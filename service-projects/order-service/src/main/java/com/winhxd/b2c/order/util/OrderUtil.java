@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -245,8 +246,13 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:37:26
      */
-    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId, String orderNo) {
-        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId, String orderNo,Short orderStatus) {
+        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_SELF_LIFTING_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        String orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes();
+        if (orderStatus.equals(OrderStatusEnum.WAIT_DELIVERY.getStatusCode())) {
+            storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_DELIVERY_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+            orderStatusDesc = OrderStatusEnum.WAIT_DELIVERY.getStatusDes();
+        }
         try {
             // 发送云信
             String createdBy = "";
@@ -260,8 +266,8 @@ public class OrderUtil {
                     pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
-            logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
-            logger.error("订单待提货给门店发送消息失败：", e);
+            logger.error("订单{}给门店:storeId={},发送消息:{},失败", orderStatusDesc, storeId, storeMsg);
+            logger.error("订单待提货待送货给门店发送消息失败：", e);
         }
     }
 

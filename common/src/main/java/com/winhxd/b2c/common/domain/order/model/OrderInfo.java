@@ -12,7 +12,6 @@ import java.util.List;
  * @author pangjianhua
  * @date 2018/8/2 14:50
  */
-@Data
 public class OrderInfo {
 
     /**
@@ -175,4 +174,340 @@ public class OrderInfo {
      * 订单商品项
      */
     private List<OrderItem> orderItems;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public Short getValuationType() {
+        return valuationType;
+    }
+
+    public void setValuationType(Short valuationType) {
+        this.valuationType = valuationType;
+    }
+
+    public Short getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(Short orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getPickupCode() {
+        return pickupCode;
+    }
+
+    public void setPickupCode(String pickupCode) {
+        this.pickupCode = pickupCode;
+    }
+
+    public BigDecimal getRandomReductionMoney() {
+        return randomReductionMoney;
+    }
+
+    public void setRandomReductionMoney(BigDecimal randomReductionMoney) {
+        this.randomReductionMoney = randomReductionMoney;
+    }
+
+    public String getCouponTitles() {
+        return couponTitles;
+    }
+
+    public void setCouponTitles(String couponTitles) {
+        this.couponTitles = couponTitles;
+    }
+
+    public BigDecimal getCouponHxdMoney() {
+        return couponHxdMoney;
+    }
+
+    public void setCouponHxdMoney(BigDecimal couponHxdMoney) {
+        this.couponHxdMoney = couponHxdMoney;
+    }
+
+    public BigDecimal getCouponBrandMoney() {
+        return couponBrandMoney;
+    }
+
+    public void setCouponBrandMoney(BigDecimal couponBrandMoney) {
+        this.couponBrandMoney = couponBrandMoney;
+    }
+
+    public BigDecimal getOrderTotalMoney() {
+        return orderTotalMoney;
+    }
+
+    public void setOrderTotalMoney(BigDecimal orderTotalMoney) {
+        this.orderTotalMoney = orderTotalMoney;
+    }
+
+    public BigDecimal getRealPaymentMoney() {
+        return realPaymentMoney;
+    }
+
+    public void setRealPaymentMoney(BigDecimal realPaymentMoney) {
+        this.realPaymentMoney = realPaymentMoney;
+    }
+
+    public Integer getSkuQuantity() {
+        return skuQuantity;
+    }
+
+    public void setSkuQuantity(Integer skuQuantity) {
+        this.skuQuantity = skuQuantity;
+    }
+
+    public Integer getSkuCategoryQuantity() {
+        return skuCategoryQuantity;
+    }
+
+    public void setSkuCategoryQuantity(Integer skuCategoryQuantity) {
+        this.skuCategoryQuantity = skuCategoryQuantity;
+    }
+
+    public Short getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Short payType) {
+        this.payType = payType;
+    }
+
+    public Short getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(Short payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public String getPaymentSerialNum() {
+        return paymentSerialNum;
+    }
+
+    public void setPaymentSerialNum(String paymentSerialNum) {
+        this.paymentSerialNum = paymentSerialNum;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getPayFinishDateTime() {
+        return payFinishDateTime;
+    }
+
+    public void setPayFinishDateTime(Date payFinishDateTime) {
+        this.payFinishDateTime = payFinishDateTime;
+    }
+
+    public Date getPickupDateTime() {
+        return pickupDateTime;
+    }
+
+    public void setPickupDateTime(Date pickupDateTime) {
+        this.pickupDateTime = pickupDateTime;
+    }
+
+    public Date getFinishDateTime() {
+        return finishDateTime;
+    }
+
+    public void setFinishDateTime(Date finishDateTime) {
+        this.finishDateTime = finishDateTime;
+    }
+
+    public Date getCancelDateTime() {
+        return cancelDateTime;
+    }
+
+    public void setCancelDateTime(Date cancelDateTime) {
+        this.cancelDateTime = cancelDateTime;
+    }
+
+    public Date getRefundDateTime() {
+        return refundDateTime;
+    }
+
+    public void setRefundDateTime(Date refundDateTime) {
+        this.refundDateTime = refundDateTime;
+    }
+
+    public Date getApplyRefundDatetime() {
+        return applyRefundDatetime;
+    }
+
+    public void setApplyRefundDatetime(Date applyRefundDatetime) {
+        this.applyRefundDatetime = applyRefundDatetime;
+    }
+
+    public Date getAcceptOrderDatetime() {
+        return acceptOrderDatetime;
+    }
+
+    public void setAcceptOrderDatetime(Date acceptOrderDatetime) {
+        this.acceptOrderDatetime = acceptOrderDatetime;
+    }
+
+    public Short getPickupType() {
+        return pickupType;
+    }
+
+    public void setPickupType(Short pickupType) {
+        this.pickupType = pickupType;
+    }
+
+    public String getInviterCode() {
+        return inviterCode;
+    }
+
+    public void setInviterCode(String inviterCode) {
+        this.inviterCode = inviterCode;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getImie() {
+        return imie;
+    }
+
+    public void setImie(String imie) {
+        this.imie = imie;
+    }
+
+    public String getRegionCode() {
+        return regionCode;
+    }
+
+    public void setRegionCode(String regionCode) {
+        this.regionCode = regionCode;
+    }
+
+    public String getRefundFailReason() {
+        return refundFailReason;
+    }
+
+    public void setRefundFailReason(String refundFailReason) {
+        this.refundFailReason = refundFailReason;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedByName() {
+        return updatedByName;
+    }
+
+    public void setUpdatedByName(String updatedByName) {
+        this.updatedByName = updatedByName;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
+    }
+
+    public String getOrderConsignee() {
+        return orderConsignee;
+    }
+
+    public void setOrderConsignee(String orderConsignee) {
+        this.orderConsignee = orderConsignee;
+    }
+
+    public String getOrderConsigneeMobile() {
+        return orderConsigneeMobile;
+    }
+
+    public void setOrderConsigneeMobile(String orderConsigneeMobile) {
+        this.orderConsigneeMobile = orderConsigneeMobile;
+    }
+
+    public String getOrderAddress() {
+        return orderAddress;
+    }
+
+    public void setOrderAddress(String orderAddress) {
+        this.orderAddress = orderAddress;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }

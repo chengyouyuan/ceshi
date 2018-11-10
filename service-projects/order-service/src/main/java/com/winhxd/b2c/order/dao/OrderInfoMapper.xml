@@ -95,7 +95,8 @@
       #{orderConsignee,jdbcType=VARCHAR}, #{orderConsigneeMobile,jdbcType=CHAR}, #{orderAddress,jdbcType=VARCHAR}
       )
   </insert>
-    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo"  keyProperty="id"
+            keyColumn="id" useGeneratedKeys="true">
         insert into order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

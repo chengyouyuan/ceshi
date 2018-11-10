@@ -252,7 +252,10 @@ public class ApiCustomerAddressController {
 					null == condition.getLabelId() ||
                     null == condition.getContacterProvince() ||
                     null == condition.getContacterCity() ||
-                    null == condition.getContacterCounty()) {
+                    null == condition.getContacterCounty() ||
+                    null == condition.getContacterProvinceCode() ||
+                    null == condition.getContacterCityCode() ||
+                    null == condition.getContacterCountyCode()) {
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			if (!SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {

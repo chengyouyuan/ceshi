@@ -55,6 +55,9 @@ public class CustomerAddressServiceTest {
         condition.setContacterProvince("北京市");
         condition.setContacterCity("海淀区");
         condition.setContacterCounty("西三旗");
+        condition.setContacterProvinceCode("22222");
+        condition.setContacterCityCode("3333");
+        condition.setContacterCountyCode("224444222");
         condition.setContacterMobile("13800001111");
         condition.setContacterName("孙悟空之间测试");
         condition.setLabelId(3L);

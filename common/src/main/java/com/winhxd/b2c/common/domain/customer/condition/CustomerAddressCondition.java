@@ -26,11 +26,20 @@ public class CustomerAddressCondition extends ApiCondition {
     @ApiModelProperty("收货人所属省")
     private String contacterProvince;
 
+    @ApiModelProperty("收货人所属省code")
+    private String contacterProvinceCode;
+
     @ApiModelProperty("收货人所属市")
     private String contacterCity;
 
+    @ApiModelProperty("收货人所属市code")
+    private String contacterCityCode;
+
     @ApiModelProperty("收货人所属区")
     private String contacterCounty;
+
+    @ApiModelProperty("收货人所属区code")
+    private String contacterCountyCode;
 
     @ApiModelProperty(value = "收货人详细地址",required = true)
     private String contacterDetailAddress;

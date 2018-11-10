@@ -7,8 +7,11 @@
     <result column="contacter_name" jdbcType="VARCHAR" property="contacterName" />
     <result column="contacter_mobile" jdbcType="CHAR" property="contacterMobile" />
     <result column="contacter_province" jdbcType="VARCHAR" property="contacterProvince" />
+    <result column="contacter_province_code" jdbcType="CHAR" property="contacterProvinceCode" />
     <result column="contacter_city" jdbcType="VARCHAR" property="contacterCity" />
+    <result column="contacter_city_code" jdbcType="CHAR" property="contacterCityCode" />
     <result column="contacter_county" jdbcType="VARCHAR" property="contacterCounty" />
+    <result column="contacter_county_code" jdbcType="CHAR" property="contacterCountyCode" />
     <result column="contacter_detail_address" jdbcType="VARCHAR" property="contacterDetailAddress" />
     <result column="label_id" jdbcType="BIGINT" property="labelId" />
     <result column="default_address" jdbcType="BIT" property="defaultAddress" />
@@ -21,13 +24,13 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, customer_id, contacter_name, contacter_mobile, contacter_province, contacter_city,
-    contacter_county, contacter_detail_address, label_id, default_address, created, updated
+    id, customer_id, contacter_name, contacter_mobile, contacter_province,contacter_province_code, contacter_city,
+    contacter_city_code,contacter_county,contacter_county_code, contacter_detail_address, label_id, default_address, created, updated
   </sql>
 
   <sql id="Select_Column_List">
-    cu.id, cu.customer_id, cu.contacter_name, cu.contacter_mobile, cu.contacter_province, cu.contacter_city,
-    cu.contacter_county, cu.contacter_detail_address, cu.label_id,cal.label_name, cu.default_address, cu.created, cu.updated
+    cu.id, cu.customer_id, cu.contacter_name, cu.contacter_mobile, cu.contacter_province,cu.contacter_province_code, cu.contacter_city,cu.contacter_city_code,
+    cu.contacter_county,cu.contacter_county_code, cu.contacter_detail_address, cu.label_id,cal.label_name, cu.default_address, cu.created, cu.updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="SelectResultMap">
     select
@@ -78,123 +81,151 @@
   </delete>
 
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
-    insert into customer_address
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="customerId != null">
-        customer_id,
-      </if>
-      <if test="contacterName != null">
-        contacter_name,
-      </if>
-      <if test="contacterMobile != null">
-        contacter_mobile,
-      </if>
-      <if test="contacterProvince != null">
-        contacter_province,
-      </if>
-      <if test="contacterCity != null">
-        contacter_city,
-      </if>
-      <if test="contacterCounty != null">
-        contacter_county,
-      </if>
-      <if test="contacterDetailAddress != null">
-        contacter_detail_address,
-      </if>
-      <if test="labelId != null">
-        label_id,
-      </if>
-      <if test="defaultAddress != null">
-        default_address,
-      </if>
-      <if test="created != null">
-        created,
-      </if>
-      <if test="updated != null">
-        updated,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="customerId != null">
-        #{customerId,jdbcType=BIGINT},
-      </if>
-      <if test="contacterName != null">
-        #{contacterName,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterMobile != null">
-        #{contacterMobile,jdbcType=CHAR},
-      </if>
-      <if test="contacterProvince != null">
-        #{contacterProvince,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterCity != null">
-        #{contacterCity,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterCounty != null">
-        #{contacterCounty,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterDetailAddress != null">
-        #{contacterDetailAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="labelId != null">
-        #{labelId,jdbcType=BIGINT},
-      </if>
-      <if test="defaultAddress != null">
-        #{defaultAddress,jdbcType=BIT},
-      </if>
-      <if test="created != null">
-        #{created,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updated != null">
-        #{updated,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
+      insert into customer_address
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              id,
+          </if>
+          <if test="customerId != null">
+              customer_id,
+          </if>
+          <if test="contacterName != null">
+              contacter_name,
+          </if>
+          <if test="contacterMobile != null">
+              contacter_mobile,
+          </if>
+          <if test="contacterProvince != null">
+              contacter_province,
+          </if>
+          <if test="contacterProvinceCode != null">
+              contacter_province_code,
+          </if>
+          <if test="contacterCity != null">
+              contacter_city,
+          </if>
+          <if test="contacterCityCode != null">
+              contacter_city_code,
+          </if>
+          <if test="contacterCounty != null">
+              contacter_county,
+          </if>
+          <if test="contacterCountyCode != null">
+              contacter_county_code,
+          </if>
+          <if test="contacterDetailAddress != null">
+              contacter_detail_address,
+          </if>
+          <if test="labelId != null">
+              label_id,
+          </if>
+          <if test="defaultAddress != null">
+              default_address,
+          </if>
+          <if test="created != null">
+              created,
+          </if>
+          <if test="updated != null">
+              updated,
+          </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+              #{id,jdbcType=BIGINT},
+          </if>
+          <if test="customerId != null">
+              #{customerId,jdbcType=BIGINT},
+          </if>
+          <if test="contacterName != null">
+              #{contacterName,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterMobile != null">
+              #{contacterMobile,jdbcType=CHAR},
+          </if>
+          <if test="contacterProvince != null">
+              #{contacterProvince,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterProvinceCode != null">
+              #{contacterProvinceCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterCity != null">
+              #{contacterCity,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterCityCode != null">
+              #{contacterCityCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterCounty != null">
+              #{contacterCounty,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterCountyCode != null">
+              #{contacterCountyCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterDetailAddress != null">
+              #{contacterDetailAddress,jdbcType=VARCHAR},
+          </if>
+          <if test="labelId != null">
+              #{labelId,jdbcType=BIGINT},
+          </if>
+          <if test="defaultAddress != null">
+              #{defaultAddress,jdbcType=BIT},
+          </if>
+          <if test="created != null">
+              #{created,jdbcType=TIMESTAMP},
+          </if>
+          <if test="updated != null">
+              #{updated,jdbcType=TIMESTAMP},
+          </if>
+      </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
-    update customer_address
-    <set>
-      <if test="customerId != null">
-        customer_id = #{customerId,jdbcType=BIGINT},
-      </if>
-      <if test="contacterName != null">
-        contacter_name = #{contacterName,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterMobile != null">
-        contacter_mobile = #{contacterMobile,jdbcType=CHAR},
-      </if>
-      <if test="contacterProvince != null">
-        contacter_province = #{contacterProvince,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterCity != null">
-        contacter_city = #{contacterCity,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterCounty != null">
-        contacter_county = #{contacterCounty,jdbcType=VARCHAR},
-      </if>
-      <if test="contacterDetailAddress != null">
-        contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},
-      </if>
-      <if test="labelId != null">
-        label_id = #{labelId,jdbcType=BIGINT},
-      </if>
-      <if test="defaultAddress != null">
-        default_address = #{defaultAddress,jdbcType=BIT},
-      </if>
-      <if test="created != null">
-        created = #{created,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updated != null">
-        updated = #{updated,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
+      update customer_address
+      <set>
+          <if test="customerId != null">
+              customer_id = #{customerId,jdbcType=BIGINT},
+          </if>
+          <if test="contacterName != null">
+              contacter_name = #{contacterName,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterMobile != null">
+              contacter_mobile = #{contacterMobile,jdbcType=CHAR},
+          </if>
+          <if test="contacterProvince != null">
+              contacter_province = #{contacterProvince,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterProvinceCode != null">
+              contacter_province_code = #{contacterProvinceCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterCity != null">
+              contacter_city = #{contacterCity,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterCityCode != null">
+              contacter_city_code = #{contacterCityCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterCounty != null">
+              contacter_county = #{contacterCounty,jdbcType=VARCHAR},
+          </if>
+          <if test="contacterCountyCode != null">
+              contacter_county_code = #{contacterCountyCode,jdbcType=CHAR},
+          </if>
+          <if test="contacterDetailAddress != null">
+              contacter_detail_address = #{contacterDetailAddress,jdbcType=VARCHAR},
+          </if>
+          <if test="labelId != null">
+              label_id = #{labelId,jdbcType=BIGINT},
+          </if>
+          <if test="defaultAddress != null">
+              default_address = #{defaultAddress,jdbcType=BIT},
+          </if>
+          <if test="created != null">
+              created = #{created,jdbcType=TIMESTAMP},
+          </if>
+          <if test="updated != null">
+              updated = #{updated,jdbcType=TIMESTAMP},
+          </if>
+      </set>
+      where id = #{id,jdbcType=BIGINT}
   </update>
+
 
     <update id="updateCustomerAddressByLabel" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
         update customer_address

@@ -156,7 +156,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
     update customer_address
     <set>
       <if test="customerId != null">
@@ -196,20 +196,12 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-    <select id="selectCustomerAddressByLabelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from customer_address where label_id = #{labelId,jdbcType=BIGINT}
-        and customer_id = #{customerId,jdbcType=BIGINT}
-    </select>
-
-    <update id="updateCustomerAddressById" parameterType="java.util.List">
+    <update id="updateCustomerAddressByLabel" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
         update customer_address
         set label_id = 1
-        where id in
-        <foreach collection="list" item="item" separator="," open="(" close=")">
-            #{item}
-        </foreach>
+        where
+        customer_id = #{customerId,jdbcType=BIGINT}
+        and label_id = #{labelId,jdbcType=BIGINT}
     </update>
 
 </mapper>

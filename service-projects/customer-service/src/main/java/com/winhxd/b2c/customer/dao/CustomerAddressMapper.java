@@ -8,21 +8,18 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface CustomerAddressMapper {
-    int deleteByPrimaryKey(Long id);
 
+    int deleteByPrimaryKey(Long id);
 
     int insertSelective(CustomerAddress record);
 
     CustomerAddressVO selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(CustomerAddressVO record);
-
+    int updateByPrimaryKeySelective(CustomerAddress customerAddress);
 
     List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
 
-    List<CustomerAddress> selectCustomerAddressByLabelId(@Param("labelId") Long labelId, @Param("customerId") Long customerId);
-
-    int updateCustomerAddressById(List<Long> list);
+    int updateCustomerAddressByLabel(CustomerAddress condition);
 
     List<CustomerAddressVO> selectCustomerAddressByCondtion(CustomerAddressQueryCondition condition);
 

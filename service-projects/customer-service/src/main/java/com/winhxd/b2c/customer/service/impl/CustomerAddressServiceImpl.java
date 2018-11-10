@@ -46,7 +46,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteByPrimaryKey(CustomerAddressSelectCondition condition) {
+    public int deleteCustomerAddress(CustomerAddressSelectCondition condition) {
         //判断必填参数
         if (null == condition || null == condition.getId()) {
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -56,24 +56,19 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insert(CustomerAddressCondition customerAddressCondition, CustomerUser customerUser) {
-
-        //参数校验
-        addOrUpdateVerifyParam(customerAddressCondition,CustomerAddressEnum.INSERT);
-
+    public int saveCustomerAddress(CustomerAddressCondition customerAddressCondition, CustomerUser customerUser) {
         CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(customerAddressCondition,customerAddress);
         customerAddress.setDefaultAddress(false);
         customerAddress.setCreated(new Date());
         customerAddress.setUpdated(new Date());
-
         customerAddress.setCustomerId(customerUser.getCustomerId());
         return customerAddressMapper.insertSelective(customerAddress);
     }
 
 
     @Override
-    public CustomerAddressVO selectByPrimaryKey(CustomerAddressSelectCondition condition) {
+    public CustomerAddressVO selectCustomerAddressById(CustomerAddressSelectCondition condition) {
         //判断必填参数
         if (null == condition || null == condition.getId()) {
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -82,7 +77,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    public CustomerAddressVO selectCustomerDefaultAddress(CustomerUser customerUser) {
+    public CustomerAddressVO selectDefaultCustomerAddress(CustomerUser customerUser) {
         CustomerAddressVO defaultAddress = null;
         CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
         queryCondtion.setDefaultAddress(true);
@@ -90,16 +85,10 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
         if (!CollectionUtils.isEmpty(customerAddressVOS)) {
             defaultAddress = customerAddressVOS.get(0);
-            return defaultAddress;
-        }
-        List<CustomerAddressVO> customerAddressList= customerAddressMapper.selectCustomerAddressByUserId(customerUser.getCustomerId());
-        if (!CollectionUtils.isEmpty(customerAddressList)) {
-            defaultAddress = customerAddressList.get(0);
-            for (CustomerAddressVO address :customerAddressList){
-                if (address.getDefaultAddress()) {
-                    defaultAddress = address;
-                    break;
-                }
+        } else {
+            List<CustomerAddressVO> customerAddressList= customerAddressMapper.selectCustomerAddressByUserId(customerUser.getCustomerId());
+            if (!CollectionUtils.isEmpty(customerAddressList)) {
+                defaultAddress = customerAddressList.get(0);
             }
         }
         return defaultAddress;
@@ -108,42 +97,40 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser) {
-        //参数校验
-        addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);
-
-        CustomerAddressVO customerAddress = customerAddressMapper.selectByPrimaryKey(condition.getId());
-        if (null == customerAddress) {
-            logger.error("--customerAddressService.updateByPrimaryKey C端用户收货地址不存在");
-            throw new BusinessException(BusinessCode.CODE_503704);
-        }
-        if (null != condition.getDefaultAddress() && condition.getDefaultAddress() == true) {
-            CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
-            queryCondtion.setDefaultAddress(true);
-            queryCondtion.setCustomerId(customerUser.getCustomerId());
-            List<CustomerAddressVO> customerAddressVOS = customerAddressMapper.selectCustomerAddressByCondtion(queryCondtion);
-            if (!CollectionUtils.isEmpty(customerAddressVOS)) {
-                CustomerAddressVO addressVO = customerAddressVOS.get(0);
-                if (addressVO.getId().longValue() !=  condition.getId().longValue()) {
-                    //将之前默认的地址改为 非默认的
-                    addressVO.setDefaultAddress(false);
-                    addressVO.setUpdated(new Date());
-                    customerAddressMapper.updateByPrimaryKeySelective(addressVO);
-                }
-            }
-        }
+        CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(condition,customerAddress);
         customerAddress.setUpdated(new Date());
-
         return customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
     }
 
     @Override
-    public List<CustomerAddressVO> getCustomerAddressByUserId(Long userId) {
+    public int updateDefaultCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser) {
+        CustomerAddressQueryCondition query = new CustomerAddressQueryCondition();
+        query.setCustomerId(customerUser.getCustomerId());
+        query.setDefaultAddress(true);
+        List<CustomerAddressVO> addressList = customerAddressMapper.selectCustomerAddressByCondtion(query);
+        if(addressList != null && addressList.size() > 0){
+            CustomerAddressVO customerAddressVO = addressList.get(0);
+            if (!customerAddressVO.getId().equals(condition.getId())) {
+                CustomerAddress customerAddress = new CustomerAddress();
+                customerAddress.setId(customerAddressVO.getId());
+                customerAddress.setDefaultAddress(false);
+                customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
+                customerAddress.setId(condition.getId());
+                customerAddress.setDefaultAddress(true);
+                customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId) {
         return customerAddressMapper.selectCustomerAddressByUserId(userId);
     }
 
     @Override
-    public List<CustomerAddressLabelVO> findCustomerAddressLabelByUserId(Long customerId) {
+    public List<CustomerAddressLabelVO> selectAddressLabelByUserId(Long customerId) {
         List<CustomerAddressLabelVO> customerAddressLabelVOS = customerAddressLabelMapper.selectCustomerAddressLabelByUserId(customerId);
         return customerAddressLabelVOS;
     }
@@ -164,41 +151,12 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         Long customerId = customerAddressLabelCondition.getCustomerId();
         Long labelId = customerAddressLabelCondition.getId();
         //通过标签id和customer_id 查询地址列表
-        List<CustomerAddress> customerAddressVOS = customerAddressMapper.selectCustomerAddressByLabelId(labelId, customerId);
-        List<Long> list = new ArrayList<>(5);
-        if (customerAddressVOS.size() > 0) {
-            list = customerAddressVOS.stream().map(customerAddressVO -> customerAddressVO.getId()).collect(Collectors.toList());
-        }
-        customerAddressMapper.updateCustomerAddressById(list);
+        CustomerAddress condition = new CustomerAddress();
+        condition.setCustomerId(customerId);
+        condition.setLabelId(labelId);
+        customerAddressMapper.updateCustomerAddressByLabel(condition);
         //删除
-        return customerAddressLabelMapper.deleteByPrimaryKey(customerAddressLabelCondition.getId());
+        return customerAddressLabelMapper.deleteByPrimaryKey(labelId);
     }
 
-
-
-    public void addOrUpdateVerifyParam (CustomerAddressCondition condition,CustomerAddressEnum opt) {
-        //判断必填参数
-        if (null == condition) {
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        if (CustomerAddressEnum.INSERT.equals(opt)) {
-            if (null == condition.getContacterDetailAddress() ||
-                    null == condition.getContacterMobile() ||
-                    null == condition.getContacterName() ||
-                    null == condition.getLabelId() ||
-                    null == condition.getContacterRegion()) {
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if (!SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {
-                throw new BusinessException(BusinessCode.CODE_611109);
-            }
-        } else if (CustomerAddressEnum.UPDATE.equals(opt)) {
-            if (null == condition.getId()) {
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if (null != condition.getContacterMobile() && !SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {
-                throw new BusinessException(BusinessCode.CODE_611109);
-            }
-        }
-    }
 }

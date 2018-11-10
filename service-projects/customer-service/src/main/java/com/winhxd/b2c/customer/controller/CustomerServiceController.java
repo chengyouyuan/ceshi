@@ -108,13 +108,10 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<Boolean> updateCustomerAddress(@RequestBody CustomerAddressCondition condition) {
+    public ResponseResult<Boolean> updateDefaultCustomerAddress(@RequestBody CustomerAddressCondition condition) {
         ResponseResult<Boolean> result = new ResponseResult<>();
-
-        int effc = customerAddressService.updateCustomerAddress(condition,UserContext.getCurrentCustomerUser());
-
+        int effc = customerAddressService.updateDefaultCustomerAddress(condition,UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
-
         return result;
     }
 }

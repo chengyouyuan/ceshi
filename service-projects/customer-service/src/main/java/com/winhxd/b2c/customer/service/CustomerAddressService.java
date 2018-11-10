@@ -12,27 +12,30 @@ import java.util.List;
 
 
 public interface CustomerAddressService {
-    int deleteByPrimaryKey(CustomerAddressSelectCondition condition);
 
-    int insert(CustomerAddressCondition customerAddressCondition,CustomerUser customerUser);
+    int deleteCustomerAddress(CustomerAddressSelectCondition condition);
 
-    CustomerAddressVO selectByPrimaryKey(CustomerAddressSelectCondition condition);
+    int saveCustomerAddress(CustomerAddressCondition customerAddressCondition,CustomerUser customerUser);
+
+    CustomerAddressVO selectCustomerAddressById(CustomerAddressSelectCondition condition);
 
     /**
      * 查询用户默认收货地址
      * @param customerUser
      * @return
      */
-    CustomerAddressVO selectCustomerDefaultAddress(CustomerUser customerUser);
+    CustomerAddressVO selectDefaultCustomerAddress(CustomerUser customerUser);
 
     int updateCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser);
 
-    List<CustomerAddressVO> getCustomerAddressByUserId(Long userId);
+    int updateDefaultCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser);
+
+    List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
 
     /**
      * 根据用户id查询用户地址标签
      */
-    List<CustomerAddressLabelVO> findCustomerAddressLabelByUserId(Long customerId);
+    List<CustomerAddressLabelVO> selectAddressLabelByUserId(Long customerId);
 
     /**
      * 新增用户地址标签

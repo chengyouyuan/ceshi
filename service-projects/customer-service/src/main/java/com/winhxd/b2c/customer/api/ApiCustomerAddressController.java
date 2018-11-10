@@ -8,10 +8,12 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressLabelCondition;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressSelectCondition;
+import com.winhxd.b2c.common.domain.customer.enums.CustomerAddressEnum;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressLabelVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.SecurityCheckUtil;
 import com.winhxd.b2c.customer.service.CustomerAddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,11 +41,11 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api-customer/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerAddressController {
+
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerAddressController.class);
 
 	@Autowired
 	private CustomerAddressService customerAddressService;
-
 
 	/**
 	 * @author sunwenwu
@@ -58,14 +60,13 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
 	@RequestMapping(value = "address/2024/v1/saveCustomerAddress", method = RequestMethod.POST)
-	public ResponseResult<Boolean> customerSaveAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
+	public ResponseResult<Boolean> saveCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 保存用户收货地址, 参数：customerAddressCondition={}", "", customerAddressCondition);
-
 		ResponseResult<Boolean> result = new ResponseResult<>();
-
-		int effc = customerAddressService.insert(customerAddressCondition, UserContext.getCurrentCustomerUser());
+		//参数校验
+		addOrUpdateVerifyParam(customerAddressCondition,CustomerAddressEnum.INSERT);
+		int effc = customerAddressService.saveCustomerAddress(customerAddressCondition, UserContext.getCurrentCustomerUser());
 		result.setData(effc > 0 ? true:false);
-
 		return result;
 	}
 
@@ -77,10 +78,11 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_503704, message = "C端用户收货地址不存在"),
 			@ApiResponse(code = BusinessCode.CODE_611109, message = "手机号格式不正确")})
 	@RequestMapping(value = "address/2025/v1/updateCustomerAddress", method = RequestMethod.POST)
-	public ResponseResult<Boolean> customerUpdateAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
+	public ResponseResult<Boolean> updateCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-
+		//参数校验
+		addOrUpdateVerifyParam(customerAddressCondition,CustomerAddressEnum.UPDATE);
         int effc = customerAddressService.updateCustomerAddress(customerAddressCondition, UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
 
@@ -93,10 +95,10 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "address/2026/v1/deleteCustomerAddress", method = RequestMethod.POST)
-	public ResponseResult<Boolean> customerDeleteAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
+	public ResponseResult<Boolean> deleteCustomerAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
 		logger.info("删除用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-        int effc = customerAddressService.deleteByPrimaryKey(customerAddressSelectCondition);
+        int effc = customerAddressService.deleteCustomerAddress(customerAddressSelectCondition);
         result.setData(effc > 0 ? true:false);
         return result;
 	}
@@ -106,11 +108,11 @@ public class ApiCustomerAddressController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-    @RequestMapping(value = "address/2027/v1/selectAllCustomerAddress", method = RequestMethod.POST)
-    public ResponseResult<List<CustomerAddressVO>> selectAllCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
+    @RequestMapping(value = "address/2027/v1/selectCustomerAddressByUserId", method = RequestMethod.POST)
+    public ResponseResult<List<CustomerAddressVO>> selectCustomerAddressByUserId(@RequestBody CustomerAddressCondition customerAddressCondition) {
         logger.info("C端—查询当前用户所有收货地址, 参数：CustomerAddressCondition={}", "", customerAddressCondition);
         ResponseResult<List<CustomerAddressVO>> result = new ResponseResult<>();
-        List<CustomerAddressVO> customerAddressList= customerAddressService.getCustomerAddressByUserId(UserContext.getCurrentCustomerUser().getCustomerId());
+        List<CustomerAddressVO> customerAddressList= customerAddressService.selectCustomerAddressByUserId(UserContext.getCurrentCustomerUser().getCustomerId());
         result.setData(customerAddressList);
         return result;
     }
@@ -119,11 +121,11 @@ public class ApiCustomerAddressController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-    @RequestMapping(value = "address/2028/v1/selectOneCustomerAddress", method = RequestMethod.POST)
-    public ResponseResult<CustomerAddressVO> selectOneCustomerAddress(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
+    @RequestMapping(value = "address/2028/v1/selectCustomerAddressById", method = RequestMethod.POST)
+    public ResponseResult<CustomerAddressVO> selectCustomerAddressById(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
         logger.info("通过主键查询用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
         ResponseResult<CustomerAddressVO> result = new ResponseResult<>();
-        CustomerAddressVO customerAddress= customerAddressService.selectByPrimaryKey(customerAddressSelectCondition);
+        CustomerAddressVO customerAddress= customerAddressService.selectCustomerAddressById(customerAddressSelectCondition);
         result.setData(customerAddress);
         return result;
     }
@@ -132,11 +134,11 @@ public class ApiCustomerAddressController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-    @RequestMapping(value = "address/2032/v1/selectCustomerDefaultAddress", method = RequestMethod.POST)
-    public ResponseResult<CustomerAddressVO> selectCustomerDefaultAddress(@RequestBody ApiCondition condition) {
+    @RequestMapping(value = "address/2032/v1/selectDefaultCustomerAddress", method = RequestMethod.POST)
+    public ResponseResult<CustomerAddressVO> selectDefaultCustomerAddress(@RequestBody ApiCondition condition) {
         logger.info("查询当前用户默认收货地址, 参数：ApiCondition={}", "", condition);
         ResponseResult<CustomerAddressVO> result = new ResponseResult<>();
-        CustomerAddressVO address = customerAddressService.selectCustomerDefaultAddress(UserContext.getCurrentCustomerUser());
+        CustomerAddressVO address = customerAddressService.selectDefaultCustomerAddress(UserContext.getCurrentCustomerUser());
 		result.setData(address);
 		return result;
     }
@@ -153,12 +155,12 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_202308, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
-	@RequestMapping(value = "customer/2029/v1/getAddressLabelByUserId", method = RequestMethod.POST)
-	public ResponseResult<List<CustomerAddressLabelVO>> getAddressLabelByUserId(ApiCondition condition) {
+	@RequestMapping(value = "customer/2029/v1/selectAddressLabelByUserId", method = RequestMethod.POST)
+	public ResponseResult<List<CustomerAddressLabelVO>> selectAddressLabelByUserId(ApiCondition condition) {
         logger.info("customer/2029/v1/getAddressLabelByUserId -- 查询C端用户地址标签开始");
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
 		long customerId = currentCustomerUser.getCustomerId();
-		List<CustomerAddressLabelVO> list = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		List<CustomerAddressLabelVO> list = customerAddressService.selectAddressLabelByUserId(customerId);
 		ResponseResult<List<CustomerAddressLabelVO>> result = new ResponseResult<>();
 		result.setData(list);
 		return result;
@@ -192,7 +194,7 @@ public class ApiCustomerAddressController {
 		Long customerId = currentCustomerUser.getCustomerId();
 		customerAddressLabelCondition.setCustomerId(customerId);
 		//校验是否有和以前重复保存的标签
-		List<CustomerAddressLabelVO> labelNames = customerAddressService.findCustomerAddressLabelByUserId(customerId);
+		List<CustomerAddressLabelVO> labelNames = customerAddressService.selectAddressLabelByUserId(customerId);
 		labelNames.forEach(
 				label -> {
 					if (labelName.equals(label.getLabelName())) {
@@ -235,6 +237,33 @@ public class ApiCustomerAddressController {
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		result.setData(i > 0 ? true : false);
 		return result;
+	}
+
+	//参数校验
+	public void addOrUpdateVerifyParam (CustomerAddressCondition condition,CustomerAddressEnum opt) {
+		//判断必填参数
+		if (null == condition) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (CustomerAddressEnum.INSERT.equals(opt)) {
+			if (null == condition.getContacterDetailAddress() ||
+					null == condition.getContacterMobile() ||
+					null == condition.getContacterName() ||
+					null == condition.getLabelId() ||
+					null == condition.getContacterRegion()) {
+				throw new BusinessException(BusinessCode.CODE_1007);
+			}
+			if (!SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {
+				throw new BusinessException(BusinessCode.CODE_611109);
+			}
+		} else if (CustomerAddressEnum.UPDATE.equals(opt)) {
+			if (null == condition.getId()) {
+				throw new BusinessException(BusinessCode.CODE_1007);
+			}
+			if (null != condition.getContacterMobile() && !SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {
+				throw new BusinessException(BusinessCode.CODE_611109);
+			}
+		}
 	}
 
 }

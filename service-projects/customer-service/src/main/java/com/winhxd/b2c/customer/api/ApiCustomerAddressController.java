@@ -81,7 +81,7 @@ public class ApiCustomerAddressController {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
 
-        int effc = customerAddressService.updateByPrimaryKey(customerAddressCondition, UserContext.getCurrentCustomerUser());
+        int effc = customerAddressService.updateCustomerAddress(customerAddressCondition, UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
 
         return result;

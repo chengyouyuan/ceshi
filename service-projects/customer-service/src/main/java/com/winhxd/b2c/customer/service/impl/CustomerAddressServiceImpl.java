@@ -107,7 +107,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateByPrimaryKey(CustomerAddressCondition condition,CustomerUser customerUser) {
+    public int updateCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser) {
         //参数校验
         addOrUpdateVerifyParam(condition,CustomerAddressEnum.UPDATE);
 

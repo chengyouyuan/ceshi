@@ -21,11 +21,11 @@
         <result column="pay_status" jdbcType="SMALLINT" property="payStatus"/>
         <result column="payment_serial_num" jdbcType="VARCHAR" property="paymentSerialNum"/>
         <result column="created" jdbcType="TIMESTAMP" property="created"/>
-        <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime"/>
-        <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime"/>
-        <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime"/>
-        <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime"/>
-        <result column="refund_datetime" jdbcType="TIMESTAMP" property="refundDateTime"/>
+        <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDatetime"/>
+        <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDatetime"/>
+        <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDatetime"/>
+        <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDatetime"/>
+        <result column="refund_datetime" jdbcType="TIMESTAMP" property="refundDatetime"/>
         <result column="apply_refund_datetime" jdbcType="TIMESTAMP" property="applyRefundDatetime"/>
         <result column="accept_order_datetime" jdbcType="TIMESTAMP" property="acceptOrderDatetime"/>
         <result column="pickup_type" jdbcType="SMALLINT" property="pickupType"/>
@@ -788,7 +788,7 @@
         update order_info
         set pay_status=#{payStatus,jdbcType=SMALLINT}, 
         payment_serial_num = #{paymentSerialNum,jdbcType=VARCHAR},
-        pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
+        pay_finish_datetime = #{payFinishDatetime,jdbcType=TIMESTAMP},
         updated = now()
         where id=#{orderId,jdbcType=BIGINT}
         and pay_status=0

@@ -211,7 +211,7 @@ public class CommonOrderServiceImpl implements OrderService {
         // 生产订单流转日志
         String oldOrderJsonString = JsonUtil.toJSONString(orderInfo);
         orderInfo.setPayStatus(PayStatusEnum.PAID.getStatusCode());
-        orderInfo.setPayFinishDateTime(payFinishDateTime);
+        orderInfo.setPayFinishDatetime(payFinishDateTime);
         String newOrderJsonString = JsonUtil.toJSONString(orderInfo);
         String orderPayMsg = "订单支付";
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJsonString, newOrderJsonString, orderInfo.getOrderStatus(),
@@ -1024,7 +1024,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setOrderConsignee(orderCreateCondition.getOrderConsignee());
         orderInfo.setOrderConsigneeMobile(orderCreateCondition.getOrderConsigneeMobile());
         orderInfo.setOrderAddress(orderCreateCondition.getOrderAddress());
-        orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
+        orderInfo.setPickupDatetime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemarks(orderCreateCondition.getRemark());
         orderInfo.setOrderNo(generateOrderNo());
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
@@ -2035,7 +2035,7 @@ public class CommonOrderServiceImpl implements OrderService {
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
-        if (order.getPayFinishDateTime() == null || order.getPayFinishDateTime().before(startDateTime) || order.getPayFinishDateTime().after(endDateTime)) {
+        if (order.getPayFinishDatetime() == null || order.getPayFinishDatetime().before(startDateTime) || order.getPayFinishDatetime().after(endDateTime)) {
             logger.info("订单：{} 取消,非当天支付订单,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
             return;
         }

@@ -52,7 +52,9 @@ public class CustomerAddressServiceTest {
     public void customerSaveAddressTest() throws Exception {
         CustomerAddressCondition condition = new CustomerAddressCondition();
         condition.setContacterDetailAddress("东升科技园");
-        condition.setContacterRegion("北京市海淀区西三旗");
+        condition.setContacterProvince("北京市");
+        condition.setContacterCity("海淀区");
+        condition.setContacterCounty("西三旗");
         condition.setContacterMobile("13800001111");
         condition.setContacterName("孙悟空之间测试");
         condition.setLabelId(3L);

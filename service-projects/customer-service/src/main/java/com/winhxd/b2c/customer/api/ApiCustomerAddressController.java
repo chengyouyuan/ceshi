@@ -107,8 +107,8 @@ public class ApiCustomerAddressController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
     @RequestMapping(value = "address/2027/v1/selectAllCustomerAddress", method = RequestMethod.POST)
-    public ResponseResult<List<CustomerAddressVO>> selectAllCustomerAddress(@RequestBody CustomerAddressCondition customerAddressCondition) {
-        logger.info("C端—查询当前用户所有收货地址, 参数：CustomerAddressCondition={}", "", customerAddressCondition);
+    public ResponseResult<List<CustomerAddressVO>> selectAllCustomerAddress(@RequestBody ApiCondition condition) {
+        logger.info("C端—查询当前用户所有收货地址, 参数：condition={}", "", condition);
         ResponseResult<List<CustomerAddressVO>> result = new ResponseResult<>();
         List<CustomerAddressVO> customerAddressList= customerAddressService.getCustomerAddressByUserId(UserContext.getCurrentCustomerUser().getCustomerId());
         result.setData(customerAddressList);

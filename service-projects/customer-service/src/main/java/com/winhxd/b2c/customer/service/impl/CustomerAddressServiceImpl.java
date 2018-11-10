@@ -78,7 +78,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
     @Override
     public CustomerAddressVO selectDefaultCustomerAddress(CustomerUser customerUser) {
-        CustomerAddressVO defaultAddress = new CustomerAddressVO();
+        CustomerAddressVO defaultAddress = null;
         CustomerAddressQueryCondition queryCondtion = new CustomerAddressQueryCondition();
         queryCondtion.setDefaultAddress(true);
         queryCondtion.setCustomerId(customerUser.getCustomerId());

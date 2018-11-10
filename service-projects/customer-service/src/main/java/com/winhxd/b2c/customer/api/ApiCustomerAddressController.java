@@ -249,7 +249,6 @@ public class ApiCustomerAddressController {
 			if (null == condition.getContacterDetailAddress() ||
 					null == condition.getContacterMobile() ||
 					null == condition.getContacterName() ||
-					null == condition.getLabelId() ||
                     null == condition.getContacterProvince() ||
                     null == condition.getContacterCity() ||
                     null == condition.getContacterCounty() ||

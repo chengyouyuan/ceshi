@@ -78,7 +78,7 @@ public class CustomerAddressServiceTest {
         condition.setDefaultAddress(true);
 
 
-        customerAddressService.updateByPrimaryKey(condition,customerUser);
+        customerAddressService.updateCustomerAddress(condition,customerUser);
     }
 
     @Test

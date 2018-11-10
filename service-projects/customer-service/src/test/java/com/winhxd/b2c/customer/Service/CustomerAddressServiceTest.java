@@ -61,7 +61,7 @@ public class CustomerAddressServiceTest {
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
 
-        int insert = customerAddressService.insert(condition,customerUser);
+        int insert = customerAddressService.saveCustomerAddress(condition,customerUser);
         System.out.println("customerSaveAddressTest----------------result:"+insert);
     }
 
@@ -102,7 +102,7 @@ public class CustomerAddressServiceTest {
         CustomerUser cu = new CustomerUser();
         cu.setCustomerId(20l);
 
-        CustomerAddressVO customerAddressVOS = customerAddressService.selectCustomerDefaultAddress(cu);
+        CustomerAddressVO customerAddressVOS = customerAddressService.selectDefaultCustomerAddress(cu);
         System.out.println(customerAddressVOS);
     }
 }

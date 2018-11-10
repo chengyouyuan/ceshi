@@ -14,6 +14,6 @@ import lombok.Data;
 @Data
 public class CustomerAddressSelectCondition extends ApiCondition {
 
-    @ApiModelProperty(value = "主键",required = true)
+    @ApiModelProperty(value = "收货地址主键ID",required = true)
     private Long id;
 }

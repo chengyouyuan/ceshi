@@ -250,7 +250,9 @@ public class ApiCustomerAddressController {
 					null == condition.getContacterMobile() ||
 					null == condition.getContacterName() ||
 					null == condition.getLabelId() ||
-					null == condition.getContacterRegion()) {
+                    null == condition.getContacterProvince() ||
+                    null == condition.getContacterCity() ||
+                    null == condition.getContacterCounty()) {
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			if (!SecurityCheckUtil.validateMobile(condition.getContacterMobile())) {

@@ -894,6 +894,7 @@
 			sum(case when order_status=2 then 1 else 0 end) waitPayNum,
 			sum(case when order_status=3 then 1 else 0 end) unreceivedNum,
 			sum(case when order_status=9 then 1 else 0 end) waitSelfLiftingNum,
+			sum(case when order_status=10 then 1 else 0 end) waitDeliveryNum,
 			sum(case when order_status=33 or order_status=66 then 1 else 0 end) waitRefundNum,
 			sum(case when order_status=22 then 1 else 0 end) finishedNum,
 			sum(case when order_status=77 then 1 else 0 end) refundedNum,

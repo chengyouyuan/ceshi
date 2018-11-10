@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,12 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         }
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         logger.info("{},orderNo={} 支付成功后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        Short orderStatusCode = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode();
+        String orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes();
+        if (orderInfo.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP)) {
+            orderStatusCode = OrderStatusEnum.DELIVERY_PICK_UP.getStatusCode();
+            orderStatusDesc = OrderStatusEnum.DELIVERY_PICK_UP.getStatusDes();
+        }
         orderStatusChange(orderInfo, OrderStatusEnum.WAIT_PAY.getStatusCode(), OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
         String pickUpCode = orderQueryService.getPickUpCode(orderInfo.getStoreId());
         if (StringUtils.isBlank(pickUpCode)) {

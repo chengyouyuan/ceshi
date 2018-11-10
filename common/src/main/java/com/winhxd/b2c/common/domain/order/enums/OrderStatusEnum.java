@@ -34,6 +34,10 @@ public enum OrderStatusEnum {
      */
     WAIT_SELF_LIFTING((short) 9, "订单待提取，取货码：{0}", "待自提"),
     /**
+     * 待自提（已确认）
+     */
+    WAIT_DELIVERY((short) 10, "订单待送货，取货码：{0}", "待送货"),
+    /**
      * 已完成
      */
     FINISHED((short) 22, "已完成", "已完成"),

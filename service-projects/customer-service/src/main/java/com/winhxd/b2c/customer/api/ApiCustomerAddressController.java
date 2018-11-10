@@ -226,7 +226,7 @@ public class ApiCustomerAddressController {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		if (StringUtils.isEmpty(customerAddressLabelCondition.getLabelName())) {
-            logger.error("接口2031删除用户地址标签，标签名字为空");
+			logger.error("接口2031删除用户的地址标签，标签名字为空");
 			throw new BusinessException(BusinessCode.CODE_503705);
 		}
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();

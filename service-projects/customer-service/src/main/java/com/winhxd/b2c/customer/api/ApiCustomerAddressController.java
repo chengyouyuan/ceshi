@@ -81,7 +81,7 @@ public class ApiCustomerAddressController {
 		logger.info("{} - 更新用户收货地址, 参数：customerUpdateAddress={}", "", customerAddressCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
 
-        int effc = customerAddressService.updateByPrimaryKey(customerAddressCondition, UserContext.getCurrentCustomerUser());
+        int effc = customerAddressService.updateCustomerAddress(customerAddressCondition, UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
 
         return result;
@@ -226,7 +226,7 @@ public class ApiCustomerAddressController {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		if (StringUtils.isEmpty(customerAddressLabelCondition.getLabelName())) {
-            logger.error("接口2031删除用户地址标签，标签名字为空");
+			logger.error("接口2031删除用户的地址标签，标签名字为空");
 			throw new BusinessException(BusinessCode.CODE_503705);
 		}
 		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();

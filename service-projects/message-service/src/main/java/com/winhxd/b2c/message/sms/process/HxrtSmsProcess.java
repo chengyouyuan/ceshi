@@ -174,7 +174,7 @@ public class HxrtSmsProcess extends BaseSmsProcess {
         HxrtSmsProcess tt = new HxrtSmsProcess();
         try {
             String ret = tt.sendMsg("", "18701243491",
-                "测试短信发送" + "《惠赢天下》");
+                "测试短信发送" + "[惠赢天下]");
             String[] results = ret.split("&");
             if (results != null) {
                 for (int i = 0; i < results.length; i++) {

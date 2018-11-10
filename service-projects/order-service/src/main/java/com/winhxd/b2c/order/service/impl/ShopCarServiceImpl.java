@@ -217,6 +217,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 orderCreateCondition.setOrderItemConditions(items);
                 logger.info(SHOP_CAR + READY_ORDER + "{}-> 订单接口submitOrder开始...");
                 OrderInfo orderInfo = orderService.submitOrder(orderCreateCondition);
+//                customerServiceClient.updateCustomerAddress();
                 logger.info(SHOP_CAR + READY_ORDER + "{}-> 订单接口submitOrder结束...");
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));

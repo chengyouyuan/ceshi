@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -145,7 +146,14 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         }
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         logger.info("{},orderNo={} 确认订单后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
-        orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
+        Short orderStatusCode = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode();
+        String orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes();
+        //订单如果是送货上门，更改为待送货状态
+        if (orderInfo.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP.getTypeCode())) {
+            orderStatusCode = OrderStatusEnum.WAIT_DELIVERY.getStatusCode();
+            orderStatusDesc = OrderStatusEnum.WAIT_DELIVERY.getStatusDes();
+        }
+        orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), orderStatusCode);
         String pickUpCode = orderQueryService.getPickUpCode(orderInfo.getStoreId());
         if (StringUtils.isBlank(pickUpCode)) {
             throw new BusinessException(BusinessCode.ORDER_PICK_UP_CODE_WRONG);
@@ -156,12 +164,12 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
                     MessageFormat.format("订单orderNo={0}, 提货码更新失败", orderInfo.getOrderNo()));
         }
         orderInfo.setPickupCode(pickUpCode);
-        orderInfo.setOrderStatus(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
+        orderInfo.setOrderStatus(orderStatusCode);
         String newOrderJson = JsonUtil.toJSONString(orderInfo);
         // 生成订单流转日志
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.UNRECEIVED.getStatusCode(),
-                OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
-                MessageFormat.format(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes(), pickUpCode), MainPointEnum.MAIN);
+                orderStatusCode, orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
+                MessageFormat.format(orderStatusDesc, pickUpCode), MainPointEnum.MAIN);
         logger.info("{},orderNo={} 确认订单后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
     

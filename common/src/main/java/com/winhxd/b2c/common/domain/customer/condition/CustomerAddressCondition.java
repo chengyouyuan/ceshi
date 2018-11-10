@@ -23,13 +23,19 @@ public class CustomerAddressCondition extends ApiCondition {
     @ApiModelProperty(value = "收货人手机号",required = true)
     private String contacterMobile;
 
-    @ApiModelProperty(value = "收货人所属区域",required = true)
-    private String contacterRegion;
+    @ApiModelProperty("收货人所属省")
+    private String contacterProvince;
+
+    @ApiModelProperty("收货人所属市")
+    private String contacterCity;
+
+    @ApiModelProperty("收货人所属区")
+    private String contacterCounty;
 
     @ApiModelProperty(value = "收货人详细地址",required = true)
     private String contacterDetailAddress;
 
-    @ApiModelProperty(value = "收货人所选标签",required = true)
+    @ApiModelProperty(value = "收货人所选标签",required = false)
     private Long labelId;
 
     @ApiModelProperty(value = "是否设置为默认地址 true：默认  false不是默认",required = false)

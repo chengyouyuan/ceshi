@@ -259,6 +259,7 @@ public class ApiOpenStoreController {
             storeEnumObject.setCode(pickupType.getTypeCode());
             storeEnumObject.setName(pickupType.getTypeDesc());
             storeEnumObject = this.typeMatch(storeUserInfo.getPickupType(), pickupType.getTypeCode(), storeEnumObject);
+            pickupTypeList.add(storeEnumObject);
         }
         storeBusinessInfoVO.setPickupType(pickupTypeList);
         //判断付款方式是否是该小店的配置

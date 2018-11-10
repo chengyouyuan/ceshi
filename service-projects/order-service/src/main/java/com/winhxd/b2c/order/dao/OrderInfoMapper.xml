@@ -531,8 +531,38 @@
         where customer_id = #{customerId,jdbcType=BIGINT}
         order by created desc
     </select>
-    <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
+    <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        <result column="id" jdbcType="BIGINT" property="id"/>
         <result column="discount_money" jdbcType="DECIMAL" property="discountMoney"/>
+        <result column="order_no" jdbcType="CHAR" property="orderNo"/>
+        <result column="customer_id" jdbcType="BIGINT" property="customerId"/>
+        <result column="store_id" jdbcType="BIGINT" property="storeId"/>
+        <result column="valuation_type" jdbcType="SMALLINT" property="valuationType"/>
+        <result column="order_status" jdbcType="SMALLINT" property="orderStatus"/>
+        <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode"/>
+        <result column="coupon_titles" jdbcType="VARCHAR" property="couponTitles"/>
+        <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney"/>
+        <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney"/>
+        <result column="sku_quantity" jdbcType="INTEGER" property="skuQuantity"/>
+        <result column="sku_category_quantity" jdbcType="INTEGER" property="skuCategoryQuantity"/>
+        <result column="pay_type" jdbcType="SMALLINT" property="payType"/>
+        <result column="pay_status" jdbcType="SMALLINT" property="payStatus"/>
+        <result column="payment_serial_num" jdbcType="VARCHAR" property="paymentSerialNum"/>
+        <result column="created" jdbcType="TIMESTAMP" property="created"/>
+        <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime"/>
+        <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime"/>
+        <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime"/>
+        <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime"/>
+        <result column="refund_datetime" jdbcType="TIMESTAMP" property="refundDateTime"/>
+        <result column="apply_refund_datetime" jdbcType="TIMESTAMP" property="applyRefundDatetime"/>
+        <result column="accept_order_datetime" jdbcType="TIMESTAMP" property="acceptOrderDatetime"/>
+        <result column="pickup_type" jdbcType="SMALLINT" property="pickupType"/>
+        <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="refund_fail_reason" jdbcType="VARCHAR" property="refundFailReason"/>
+        <result column="order_consignee" jdbcType="VARCHAR" property="orderConsignee" />
+        <result column="order_consignee_mobile" jdbcType="CHAR" property="orderConsigneeMobile" />
+        <result column="order_address" jdbcType="VARCHAR" property="orderAddress" />
         <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
             <id column="itemId" property="itemId"/>
             <result column="order_no" property="orderNo"/>

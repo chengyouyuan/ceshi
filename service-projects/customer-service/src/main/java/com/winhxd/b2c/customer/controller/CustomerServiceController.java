@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -112,6 +113,14 @@ public class CustomerServiceController implements CustomerServiceClient {
         ResponseResult<Boolean> result = new ResponseResult<>();
         int effc = customerAddressService.updateDefaultCustomerAddress(condition,UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<CustomerAddressVO> findDefaultCustomerAddress() {
+        ResponseResult<CustomerAddressVO> result = new ResponseResult<CustomerAddressVO>();
+        CustomerAddressVO address = customerAddressService.selectDefaultCustomerAddress(UserContext.getCurrentCustomerUser());
+        result.setData(address);
         return result;
     }
 }

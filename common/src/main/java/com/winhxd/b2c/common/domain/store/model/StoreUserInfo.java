@@ -51,7 +51,7 @@ public class StoreUserInfo implements Serializable {
      */
     private String shopOwnerImg;
     /**
-     * 取货方式（1、自提，多个用逗号分隔）
+     * 取货方式（1:到店自提2:送货上门，多个用逗号分隔）
      */
     private String pickupType;
     /**

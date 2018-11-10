@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -260,10 +262,20 @@ public class ShopCarServiceImpl implements ShopCarService {
         vo.setOrderMoney(orderTotalMoney);
         logger.info(SHOP_CAR + "findReadyOrder{} -> 获取门店信息执行...");
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoVO(storeId);
+        vo.setPickupType(storeUserInfoVO.getPickupType());
         vo.setStoreAddress(storeUserInfoVO.getStoreAddress());
         vo.setPayType(storeUserInfoVO.getPayType());
         vo.setCoupon(coupon);
         vo.setShopCarts(this.findShopCar(storeId, customerId).getShopCarts());
+        CustomerAddressVO address = customerServiceClient.findDefaultCustomerAddress().getData();
+        if(address != null ){
+            vo.setCustomerAddressId(address.getId());
+            vo.setOrderConsignee(address.getContacterName());
+            vo.setOrderConsigneeMobile(address.getContacterMobile());
+            String detailAddress = address.getContacterProvince()+address.getContacterCity()+address.getContacterCounty()+address.getContacterDetailAddress();
+            vo.setOrderAddress(detailAddress);
+            vo.setLabelName(address.getLabelName());
+        }
         return vo;
     }
 

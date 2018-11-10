@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import feign.hystrix.FallbackFactory;
@@ -96,6 +97,16 @@ public interface CustomerServiceClient {
      */
     @RequestMapping(value = "/customer/2011/v1/updateDefaultCustomerAddress", method = RequestMethod.POST)
     ResponseResult<Boolean> updateDefaultCustomerAddress(@RequestBody CustomerAddressCondition condition);
+
+    /**
+     * @return 数据
+     * @author louis
+     * @date 2018/8/21 14:38
+     * @Description 查询有效的用户(有与门店绑定关系的用户)
+     */
+    @RequestMapping(value = "/customer/2012/v1/selectDefaultCustomerAddress", method = RequestMethod.POST)
+    ResponseResult<CustomerAddressVO> findDefaultCustomerAddress();
+
 }
 
 @Component
@@ -151,6 +162,10 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
-
+    @Override
+    public ResponseResult<CustomerAddressVO> findDefaultCustomerAddress() {
+        logger.error("CustomerServiceClientFallBack -> findDefaultCustomerAddress{}", throwable.getMessage());
+        return new ResponseResult<CustomerAddressVO>(BusinessCode.CODE_1001);
+    }
 
 }

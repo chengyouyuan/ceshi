@@ -303,6 +303,9 @@ public class ApiOpenStoreController {
             } else {
                 storeEnumObject.setStatus((short) 0);
             }
+        } else {
+            //初始化默认选中为1
+            storeEnumObject.setStatus((short) 1);
         }
         return storeEnumObject;
     }
@@ -586,4 +589,5 @@ public class ApiOpenStoreController {
         }
         return result;
     }
+
 }

@@ -30,7 +30,7 @@ public class SmsHxdServiceTest {
     public void sendSmsAsyncByCondition() {
         SMSCondition smsCondition = new SMSCondition();
         String modileVerifyCode = GeneratePwd.generatePwd6Mobile();
-        smsCondition.setContent(modileVerifyCode+"（惠小店验证码，您正在进行银行卡绑定，5分钟有效，请勿泄漏给他人）");
+        smsCondition.setContent(modileVerifyCode+"（惠小店验证码，[您]正在进行银行卡绑定，5分钟有效，请勿泄漏给他人）");
         //smsCondition.setContent(PayNotifyMsg.STORE_APPLY_WITHDRWAL);
         smsCondition.setTelePhoneNo("18513108620");
         smsCondition.setType("1");

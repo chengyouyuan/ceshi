@@ -124,4 +124,8 @@ public class TransfersTest {
         System.out.println(payConfig.getAppID());
     }
 
+    @Test
+    public void testValues(){
+        System.out.println("1");
+    }
 }

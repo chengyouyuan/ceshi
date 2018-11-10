@@ -14,7 +14,11 @@ public enum PickupTypeEnum {
     /**
      * 到店自提
      */
-    PICK_UP_SELF((short) 1, "到店自提");
+    PICK_UP_SELF((short) 1, "到店自提"),
+    /**
+     * 送货上门
+     */
+    PICK_UP_DELIVEY((short) 2, "送货上门");
 
     private short typeCode;
     private String typeDesc;

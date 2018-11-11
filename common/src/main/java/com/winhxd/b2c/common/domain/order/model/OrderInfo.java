@@ -37,7 +37,7 @@ public class OrderInfo {
     private Short valuationType;
     /**
      * 订单状态 1:已提交;2:待付款；3:待接单;7:已计价;
-     * 9:待自提(已确认);10:待送货(已确认);11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；88:退款失败；
+     * 9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；88:退款失败；
      */
     private Short orderStatus;
     /**
@@ -98,23 +98,23 @@ public class OrderInfo {
     /**
      * 订单支付完成时间
      */
-    private Date payFinishDatetime;
+    private Date payFinishDateTime;
     /**
      * 提货时间
      */
-    private Date pickupDatetime;
+    private Date pickupDateTime;
     /**
      * 订单完成时间
      */
-    private Date finishDatetime;
+    private Date finishDateTime;
     /**
      * 取消订单时间
      */
-    private Date cancelDatetime;
+    private Date cancelDateTime;
     /**
      * 退款时间
      */
-    private Date refundDatetime;
+    private Date refundDateTime;
     /**
      * 申请退款时间
      */

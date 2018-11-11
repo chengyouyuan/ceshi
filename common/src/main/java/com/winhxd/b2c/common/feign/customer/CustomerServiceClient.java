@@ -115,7 +115,7 @@ public interface CustomerServiceClient {
      * @Description 查询有效的用户(有与门店绑定关系的用户)
      */
     @RequestMapping(value = "/customer/2013/v1/getCustomerAddressById", method = RequestMethod.POST)
-    ResponseResult<CustomerAddressVO> getCustomerAddressById(Long customerAddressId);
+    ResponseResult<CustomerAddressVO> getCustomerAddressById(@RequestParam("customerAddressId") Long customerAddressId);
 }
 
 @Component

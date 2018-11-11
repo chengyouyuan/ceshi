@@ -125,7 +125,7 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<CustomerAddressVO> getCustomerAddressById(Long customerAddressId) {
+    public ResponseResult<CustomerAddressVO> getCustomerAddressById(@RequestParam("customerAddressId") Long customerAddressId) {
         ResponseResult<CustomerAddressVO> result = new ResponseResult<CustomerAddressVO>();
         CustomerAddressVO address = customerAddressService.selectCustomerAddressById(customerAddressId);
         result.setData(address);

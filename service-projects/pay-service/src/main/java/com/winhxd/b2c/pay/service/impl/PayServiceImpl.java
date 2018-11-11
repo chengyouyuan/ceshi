@@ -980,7 +980,7 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
-			toWxBalanceCondition.setDesc(payWithdrawals.getName() + "用户提现,用户手机号:{}" + payWithdrawals.getMobile());
+			toWxBalanceCondition.setDesc(payWithdrawals.getName() + "用户提现,用户手机号:" + payWithdrawals.getMobile());
 			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
 			if (null == payWithdrawals.getSpbillCreateIp()) {

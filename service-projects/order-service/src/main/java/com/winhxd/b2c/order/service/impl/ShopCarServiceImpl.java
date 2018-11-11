@@ -194,14 +194,8 @@ public class ShopCarServiceImpl implements ShopCarService {
             logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 账号被锁定：customerId=" + customerId);
             throw new BusinessException(BusinessCode.CODE_402019);
         }
-        if (condition.getPickupType().equals(PickUpTypeEnum.SELF_PICK_UP.getTypeCode())) {
-            if (StringUtils.isEmpty(condition.getExtractAddress())) {
-                logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 到店自提地址为空：customerId=" + customerId);
-                throw new BusinessException(BusinessCode.CODE_403201);
-            }
-        }
         if (condition.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP.getTypeCode())) {
-            if (null != condition.getCustomerAddressId()) {
+            if (null == condition.getCustomerAddressId()) {
                 logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 送货上门地址为空：customerId=" + customerId);
                 throw new BusinessException(BusinessCode.CODE_403202);
             }

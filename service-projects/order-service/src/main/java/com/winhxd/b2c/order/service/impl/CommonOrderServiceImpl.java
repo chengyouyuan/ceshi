@@ -962,10 +962,10 @@ public class CommonOrderServiceImpl implements OrderService {
                 || !condition.getPickupCode().equals(orderInfo.getPickupCode())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_PICKUP_CODE);
         }
-        if ((OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode() != orderInfo.getOrderStatus().shortValue()) && (OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode() != orderInfo.getOrderStatus().shortValue())) {
+        if ((OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode() != orderInfo.getOrderStatus().shortValue()) && (OrderStatusEnum.WAIT_DELIVERY.getStatusCode() != orderInfo.getOrderStatus().shortValue())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
         }
-        logger.info("订单：orderNo={} 自提收货开始", condition.getOrderNo());
+        logger.info("订单：orderNo={} 自提收货或者送货上门提货开始", condition.getOrderNo());
         Short orderStatusCode = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode();
         //订单如果是送货上门，更改为待配送状态
         if (orderInfo.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP.getTypeCode())) {

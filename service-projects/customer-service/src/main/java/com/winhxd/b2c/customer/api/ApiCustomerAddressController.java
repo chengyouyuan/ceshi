@@ -122,10 +122,10 @@ public class ApiCustomerAddressController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
     @RequestMapping(value = "address/2028/v1/selectCustomerAddressById", method = RequestMethod.POST)
-    public ResponseResult<CustomerAddressVO> selectCustomerAddressById(@RequestBody CustomerAddressSelectCondition customerAddressSelectCondition) {
-        logger.info("通过主键查询用户收货地址, 参数：customerAddressSelectCondition={}", "", customerAddressSelectCondition);
+    public ResponseResult<CustomerAddressVO> selectCustomerAddressById(@RequestBody CustomerAddressSelectCondition ondition) {
+        logger.info("通过主键查询用户收货地址, 参数：customerAddressSelectCondition={}", "", ondition);
         ResponseResult<CustomerAddressVO> result = new ResponseResult<>();
-        CustomerAddressVO customerAddress= customerAddressService.selectCustomerAddressById(customerAddressSelectCondition);
+        CustomerAddressVO customerAddress= customerAddressService.selectCustomerAddressById(ondition.getId());
         result.setData(customerAddress);
         return result;
     }

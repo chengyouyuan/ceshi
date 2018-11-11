@@ -70,12 +70,8 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
 
 
     @Override
-    public CustomerAddressVO selectCustomerAddressById(CustomerAddressSelectCondition condition) {
-        //判断必填参数
-        if (null == condition || null == condition.getId()) {
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        return customerAddressMapper.selectByPrimaryKey(condition.getId());
+    public CustomerAddressVO selectCustomerAddressById(Long customerAddressId) {
+        return customerAddressMapper.selectByPrimaryKey(customerAddressId);
     }
 
     @Override
@@ -109,10 +105,10 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     }
 
     @Override
-    public int updateDefaultCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser) {
+    public int updateDefaultCustomerAddress(Long customerAddressId,CustomerUser customerUser) {
         customerAddressMapper.setDefaultCustomerAddressFalse(customerUser.getCustomerId());
         CustomerAddress customerAddress = new CustomerAddress();
-        customerAddress.setId(condition.getId());
+        customerAddress.setId(customerAddressId);
         customerAddress.setDefaultAddress(true);
         return customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
     }

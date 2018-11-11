@@ -17,7 +17,7 @@ public interface CustomerAddressService {
 
     int saveCustomerAddress(CustomerAddressCondition customerAddressCondition,CustomerUser customerUser);
 
-    CustomerAddressVO selectCustomerAddressById(CustomerAddressSelectCondition condition);
+    CustomerAddressVO selectCustomerAddressById(Long customerAddressId);
 
     /**
      * 查询用户默认收货地址
@@ -28,7 +28,7 @@ public interface CustomerAddressService {
 
     int updateCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser);
 
-    int updateDefaultCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser);
+    int updateDefaultCustomerAddress(Long customerAddressId,CustomerUser customerUser);
 
     List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
 

@@ -109,9 +109,9 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<Boolean> updateDefaultCustomerAddress(@RequestBody CustomerAddressCondition condition) {
+    public ResponseResult<Boolean> updateDefaultCustomerAddress(@RequestParam("customerAddressId") Long customerAddressId) {
         ResponseResult<Boolean> result = new ResponseResult<>();
-        int effc = customerAddressService.updateDefaultCustomerAddress(condition,UserContext.getCurrentCustomerUser());
+        int effc = customerAddressService.updateDefaultCustomerAddress(customerAddressId,UserContext.getCurrentCustomerUser());
         result.setData(effc > 0 ? true:false);
         return result;
     }
@@ -120,6 +120,14 @@ public class CustomerServiceController implements CustomerServiceClient {
     public ResponseResult<CustomerAddressVO> findDefaultCustomerAddress() {
         ResponseResult<CustomerAddressVO> result = new ResponseResult<CustomerAddressVO>();
         CustomerAddressVO address = customerAddressService.selectDefaultCustomerAddress(UserContext.getCurrentCustomerUser());
+        result.setData(address);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<CustomerAddressVO> getCustomerAddressById(Long customerAddressId) {
+        ResponseResult<CustomerAddressVO> result = new ResponseResult<CustomerAddressVO>();
+        CustomerAddressVO address = customerAddressService.selectCustomerAddressById(customerAddressId);
         result.setData(address);
         return result;
     }

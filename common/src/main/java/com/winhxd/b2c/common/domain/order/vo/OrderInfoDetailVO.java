@@ -222,40 +222,40 @@ public class OrderInfoDetailVO implements Serializable {
     public String getOrderStatusDesc() {
         if (null != this.orderStatus) {
             if(this.orderStatus.equals(OrderStatusEnum.SUBMITTED.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.SUBMITTED.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.SUBMITTED.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.WAIT_PAY.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.WAIT_PAY.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.WAIT_PAY.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.UNRECEIVED.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.UNRECEIVED.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.ALREADY_VALUATION.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.ALREADY_VALUATION.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.ALREADY_VALUATION.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.WAIT_DELIVERY.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.WAIT_DELIVERY.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.WAIT_DELIVERY.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.FINISHED.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.FINISHED.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.FINISHED.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.WAIT_REFUND.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.WAIT_REFUND.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.WAIT_REFUND.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.REFUNDING.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.REFUNDING.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.REFUNDING.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.REFUNDED.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.REFUNDED.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.REFUNDED.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.REFUND_FAIL.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.REFUND_FAIL.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.REFUND_FAIL.getStatusMark();
             }
             if(this.orderStatus.equals(OrderStatusEnum.CANCELED.getStatusCode())){
-                orderStatusDesc = OrderStatusEnum.CANCELED.getStatusDes();
+                orderStatusDesc = OrderStatusEnum.CANCELED.getStatusMark();
             }
         }
         return orderStatusDesc;

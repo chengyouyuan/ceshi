@@ -46,7 +46,7 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提(已确认);10:待配送(已确认);11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款;88:退款失败;", required = true)
     private Short orderStatus;
-    @ApiModelProperty(value = "订单状态描述", required = true)
+    @ApiModelProperty(value = "订单状态描述")
     private String orderStatusDesc;
     /**
      * 提货码

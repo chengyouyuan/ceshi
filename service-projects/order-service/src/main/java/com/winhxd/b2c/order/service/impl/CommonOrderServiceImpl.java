@@ -928,7 +928,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             if ((orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) && (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_DELIVERY.getStatusCode())) {
                 // 如果是非自提和送货确认状态，直接返回
-                logger.info("订单：{} 状态：{} 非待自提且非待送货状态，无需进行超时未自提操作", orderNo,
+                logger.info("订单：{} 状态：{} 非待自提且非待配送状态，无需进行超时未自提操作", orderNo,
                         OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
                 return;
             }
@@ -967,7 +967,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         logger.info("订单：orderNo={} 自提收货开始", condition.getOrderNo());
         Short orderStatusCode = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode();
-        //订单如果是送货上门，更改为待送货状态
+        //订单如果是送货上门，更改为待配送状态
         if (orderInfo.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP.getTypeCode())) {
             orderStatusCode = OrderStatusEnum.WAIT_DELIVERY.getStatusCode();
         }

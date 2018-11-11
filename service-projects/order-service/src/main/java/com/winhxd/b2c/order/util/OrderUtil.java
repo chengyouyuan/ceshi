@@ -267,7 +267,7 @@ public class OrderUtil {
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("订单{}给门店:storeId={},发送消息:{},失败", orderStatusDesc, storeId, storeMsg);
-            logger.error("订单待提货待送货给门店发送消息失败：", e);
+            logger.error("订单待提货待配送给门店发送消息失败：", e);
         }
     }
 

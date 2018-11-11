@@ -15,7 +15,7 @@ public class OrderCountByStatus4StoreVO {
     @ApiModelProperty(value = "待自提数量")
     private Integer waitSelfLiftingNum = 0;
 
-    @ApiModelProperty(value = "待送货数量")
+    @ApiModelProperty(value = "待待配送数量")
     private Integer waitDeliveryNum = 0;
     
     @ApiModelProperty(value = "待退款数量")

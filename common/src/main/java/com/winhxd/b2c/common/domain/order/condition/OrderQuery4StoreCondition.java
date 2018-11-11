@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class OrderQuery4StoreCondition extends PagedCondition {
     
-    @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提;10:待送货;11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款;")
+    @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提;10:待配送;11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款;")
     private Short orderStatus;
     
     @ApiModelProperty(value = "订单提货码")

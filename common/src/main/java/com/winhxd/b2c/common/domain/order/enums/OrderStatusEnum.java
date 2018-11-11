@@ -36,7 +36,7 @@ public enum OrderStatusEnum {
     /**
      * 待自提（已确认）
      */
-    WAIT_DELIVERY((short) 10, "订单待送货，取货码：{0}", "待送货"),
+    WAIT_DELIVERY((short) 10, "订单待配送，取货码：{0}", "待配送"),
     /**
      * 已完成
      */

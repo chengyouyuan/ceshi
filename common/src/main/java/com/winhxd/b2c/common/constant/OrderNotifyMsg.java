@@ -14,7 +14,7 @@ public class OrderNotifyMsg {
     
     public static final String WAIT_PICKUP_SELF_LIFTING_ORDER_NOTIFY_MSG_4_STORE = "[待自提]手机尾号{0}订单已付款待自提";
 
-    public static final String WAIT_PICKUP_DELIVERY_ORDER_NOTIFY_MSG_4_STORE = "[待送货]手机尾号{0}订单正在等待送货";
+    public static final String WAIT_PICKUP_DELIVERY_ORDER_NOTIFY_MSG_4_STORE = "[待配送]手机尾号{0}订单正在等待配送";
     
     public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER = "小店已接单，取货码为{0}，收货时请将提货码出示给小店";
     

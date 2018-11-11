@@ -123,7 +123,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         logger.info("{},orderNo={} 支付成功后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         Short orderStatusCode = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode();
         String orderStatusDesc = OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes();
-        //订单如果是送货上门，更改为待送货状态
+        //订单如果是送货上门，更改为待配送状态
         if (orderInfo.getPickupType().equals(PickUpTypeEnum.DELIVERY_PICK_UP.getTypeCode())) {
             orderStatusCode = OrderStatusEnum.WAIT_DELIVERY.getStatusCode();
             orderStatusDesc = OrderStatusEnum.WAIT_DELIVERY.getStatusDes();

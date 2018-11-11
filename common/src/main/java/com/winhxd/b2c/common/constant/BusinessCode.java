@@ -295,6 +295,10 @@ public final class BusinessCode {
     public static final int CODE_402102 = 402102;
     @ApiModelProperty("参数异常")
     public static final int CODE_402201 = 402201;
+    @ApiModelProperty("到店自提地址为空")
+    public static final int CODE_403201 = 403201;
+    @ApiModelProperty("送货上门地址为空")
+    public static final int CODE_403202 = 403202;
     @ApiModelProperty("参数错误")
     public static final int CODE_406101 = 406101;
     @ApiModelProperty("选择的订单号不是退款失败的订单")

@@ -17,7 +17,7 @@ public class OrderListForCustomerVO {
     private List<OrderListItemForCustomerVO> orderItemVoList;
     @ApiModelProperty(value = "订单编号", required = true)
     private String orderNo;
-    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款；3:待接单;7:已计价; 9:待自提(已确认);10:待送货(已确认);11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；", required = true)
+    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款；3:待接单;7:已计价; 9:待自提(已确认);10:10:待配送(已确认);11:待顾客确认;22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；", required = true)
     private Short orderStatus;
     @ApiModelProperty(value = "订单总金额", required = true)
     private BigDecimal orderTotalMoney;

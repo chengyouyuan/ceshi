@@ -59,10 +59,12 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
     public int saveCustomerAddress(CustomerAddressCondition customerAddressCondition, CustomerUser customerUser) {
         CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(customerAddressCondition,customerAddress);
-        customerAddress.setDefaultAddress(false);
+        customerAddress.setDefaultAddress(true);
         customerAddress.setCreated(new Date());
         customerAddress.setUpdated(new Date());
         customerAddress.setCustomerId(customerUser.getCustomerId());
+        //修改其他地址不是默认地址
+        customerAddressMapper.setDefaultCustomerAddressFalse(customerUser.getCustomerId());
         return customerAddressMapper.insertSelective(customerAddress);
     }
 
@@ -100,28 +102,19 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         CustomerAddress customerAddress = new CustomerAddress();
         BeanUtils.copyProperties(condition,customerAddress);
         customerAddress.setUpdated(new Date());
+        customerAddress.setDefaultAddress(true);
+        //修改其他地址不是默认地址
+        customerAddressMapper.setDefaultCustomerAddressFalse(customerUser.getCustomerId());
         return customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
     }
 
     @Override
     public int updateDefaultCustomerAddress(CustomerAddressCondition condition,CustomerUser customerUser) {
-        CustomerAddressQueryCondition query = new CustomerAddressQueryCondition();
-        query.setCustomerId(customerUser.getCustomerId());
-        query.setDefaultAddress(true);
-        List<CustomerAddressVO> addressList = customerAddressMapper.selectCustomerAddressByCondtion(query);
-        if(addressList != null && addressList.size() > 0){
-            CustomerAddressVO customerAddressVO = addressList.get(0);
-            if (!customerAddressVO.getId().equals(condition.getId())) {
-                CustomerAddress customerAddress = new CustomerAddress();
-                customerAddress.setId(customerAddressVO.getId());
-                customerAddress.setDefaultAddress(false);
-                customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
-                customerAddress.setId(condition.getId());
-                customerAddress.setDefaultAddress(true);
-                customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
-            }
-        }
-        return 0;
+        customerAddressMapper.setDefaultCustomerAddressFalse(customerUser.getCustomerId());
+        CustomerAddress customerAddress = new CustomerAddress();
+        customerAddress.setId(condition.getId());
+        customerAddress.setDefaultAddress(true);
+        return customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
     }
 
     @Override

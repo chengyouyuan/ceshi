@@ -3,7 +3,6 @@ package com.winhxd.b2c.customer.dao;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition;
 import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,6 +17,8 @@ public interface CustomerAddressMapper {
     int updateByPrimaryKeySelective(CustomerAddress customerAddress);
 
     List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
+
+    int setDefaultCustomerAddressFalse(Long customerId);
 
     int updateCustomerAddressByLabel(CustomerAddress condition);
 

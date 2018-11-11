@@ -46,13 +46,13 @@
       from customer_address  cu left join customer_address_label cal
     on cu.label_id = cal.id
     where cu.customer_id = #{userId,jdbcType=BIGINT}
+      order by updated desc
   </select>
 
   <select id="selectCustomerAddressByCondtion" parameterType="com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition" resultMap="SelectResultMap">
       select
       <include refid="Select_Column_List" />
-      from customer_address cu left join customer_address_label cal
-      on cu.label_id = cal.id
+      from customer_address cu left join customer_address_label cal on cu.label_id = cal.id
       <where>
         <if test="id!=null">
           and cu.id = #{id,jdbcType=BIGINT}
@@ -73,6 +73,7 @@
           and cu.default_address = #{defaultAddress,jdbcType=BIT}
         </if>
       </where>
+      order by updated desc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -226,6 +227,12 @@
       where id = #{id,jdbcType=BIGINT}
   </update>
 
+    <update id="setDefaultCustomerAddressFalse" parameterType="java.lang.Long">
+        update customer_address
+        set default_address = 0
+        where
+        customer_id = #{customerId,jdbcType=BIGINT}
+    </update>
 
     <update id="updateCustomerAddressByLabel" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerAddress">
         update customer_address

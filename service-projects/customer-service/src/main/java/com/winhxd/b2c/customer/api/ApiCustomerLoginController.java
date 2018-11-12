@@ -79,8 +79,8 @@ public class ApiCustomerLoginController {
 
 	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
-		String logTitle = "=/api-customer/customer/security/2021/v1/weChatLogin-C端小程序登录接口=";
-		logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", logTitle, JsonUtil.toJSONString(customerUserInfoCondition));
+        String logTitle = "=/api-customer/customer/security/2021/v1/weChatLogin-C端小程序登录接口=";
+        logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", logTitle, JsonUtil.toJSONString(customerUserInfoCondition));
 		if (null == customerUserInfoCondition) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
@@ -96,7 +96,7 @@ public class ApiCustomerLoginController {
 		 */
 		if (!customerUserInfoCondition.getVerificationCode().equals(cache
 				.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile()))) {
-			logger.info("{} - ,验证码错误", logTitle);
+            logger.info("{} - ,验证码错误", logTitle);
 			throw new BusinessException(BusinessCode.CODE_202108);
 		}
 		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
@@ -106,7 +106,7 @@ public class ApiCustomerLoginController {
 		 */
 		object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
 		if (object.getCode() != 0) {
-			logger.info("{} - ,网络请求超时", logTitle);
+            logger.info("{} - ,网络请求超时", logTitle);
 			throw new BusinessException(BusinessCode.CODE_202115);
 		}
 		mini = object.getData();
@@ -132,11 +132,11 @@ public class ApiCustomerLoginController {
 			result.setData(vo);
 		} else {
 			if(HXD_STATUS0.equals(db.getStatus())){
-				logger.info("{} -,您的账号-{}-存在异常行为，已被锁定，如有疑问请联系客服4006870066。", logTitle, db.getCustomerMobile());
+                logger.info("{} -,您的账号-{}-存在异常行为，已被锁定，如有疑问请联系客服4006870066。", logTitle, db.getCustomerMobile());
 				throw new BusinessException(BusinessCode.CODE_202109);
 			}
 			if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
-				logger.info("{} -,该微信号已被其他手机号绑定,该微信号的openid 为-{}-", logTitle, db.getOpenid());
+                logger.info("{} -,该微信号已被其他手机号绑定,该微信号的openid 为-{}-", logTitle, db.getOpenid());
 				throw new BusinessException(BusinessCode.CODE_202110);
 			}
 			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken());
@@ -176,8 +176,8 @@ public class ApiCustomerLoginController {
 	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
-		String logTitle = "=/api-customer/customer/security/2022/v1/sendVerification-C端通过账号发送验证码接口=";
-		logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", logTitle, JsonUtil.toJSONString(customerUserInfoCondition));
+        String logTitle = "=/api-customer/customer/security/2022/v1/sendVerification-C端通过账号发送验证码接口=";
+        logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", logTitle, JsonUtil.toJSONString(customerUserInfoCondition));
 		if (null == customerUserInfoCondition) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
@@ -185,7 +185,7 @@ public class ApiCustomerLoginController {
 		String content = "";
 		if (cache.exists(
 				CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
-			logger.info("{} - 发送验证码未超过一分钟", logTitle);
+            logger.info("{} - 发送验证码未超过一分钟", logTitle);
 			throw new BusinessException(BusinessCode.CODE_202212);
 		}
 		/**

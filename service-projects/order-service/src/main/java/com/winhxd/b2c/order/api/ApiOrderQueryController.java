@@ -52,7 +52,7 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/4010/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderListForCustomerVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
         String logTitle = "=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=";
-        LOGGER.info(logTitle + "--开始--{}", JsonUtil.toJSONString(condition));
+        LOGGER.info("{}--开始--{}", logTitle, JsonUtil.toJSONString(condition));
         ResponseResult<PagedList<OrderListForCustomerVO>> result = new ResponseResult<>();
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         try {

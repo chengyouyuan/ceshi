@@ -41,7 +41,7 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
             }
             currentSpan.error(businessException);
             currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(businessException.getErrorCode()));
-            log.error(getBusinessExceptionInfo(currentSpan.context().traceIdString(), message, businessException));
+            log.warn(getBusinessExceptionInfo(currentSpan.context().traceIdString(), message, businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             currentSpan.error(ex);

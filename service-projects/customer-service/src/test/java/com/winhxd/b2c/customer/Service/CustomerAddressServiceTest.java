@@ -77,7 +77,7 @@ public class CustomerAddressServiceTest {
 //        condition.setContacterMobile("13800003333");
         condition.setContacterName("我就tetst试试");
         condition.setContacterCountyCode("");
-//        condition.setLabelId(23L);
+        condition.setLabelId(23L);
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
         condition.setId(49L);

@@ -101,7 +101,7 @@ public class CustomerAddressServiceImpl implements CustomerAddressService {
         customerAddress.setDefaultAddress(true);
         //修改其他地址不是默认地址
         customerAddressMapper.setDefaultCustomerAddressFalse(customerUser.getCustomerId());
-        return customerAddressMapper.updateByPrimaryKeySelective(customerAddress);
+        return customerAddressMapper.updateByPrimaryKeySelectiveSupportLableNull(customerAddress);
     }
 
     @Override

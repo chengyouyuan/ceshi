@@ -75,9 +75,9 @@ public class CustomerAddressServiceTest {
 //       condition.setContacterDetailAddress("东升科技园3");
 //        condition.setContacterRegion("北京市海淀区西三旗3");
 //        condition.setContacterMobile("13800003333");
-        condition.setContacterName("我就tetst试试");
+        condition.setContacterName("我就111试试");
         condition.setContacterCountyCode("");
-        condition.setLabelId(23L);
+//        condition.setLabelId(23L);
         CustomerUser customerUser = new CustomerUser();
         customerUser.setCustomerId(20L);
         condition.setId(49L);

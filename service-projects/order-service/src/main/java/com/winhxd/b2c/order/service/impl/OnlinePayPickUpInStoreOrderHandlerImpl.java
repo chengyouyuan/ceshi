@@ -1,27 +1,12 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -38,7 +23,19 @@ import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.util.OrderUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 在线支付自提订单处理接口
@@ -249,7 +246,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
-        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", customerId, ret.getData().get(0));
         return ret.getData().get(0);
     }
 }

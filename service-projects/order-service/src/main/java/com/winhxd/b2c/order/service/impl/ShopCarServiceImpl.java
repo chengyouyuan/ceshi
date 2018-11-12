@@ -1,27 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
-import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -29,12 +7,10 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.enums.CustomerUserEnum;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -58,6 +34,18 @@ import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import com.winhxd.b2c.order.util.OrderUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author: wangbaokuo
@@ -255,7 +243,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
-        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", customerId, ret.getData().get(0));
         return ret.getData().get(0);
     }
 
@@ -265,7 +253,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         if (storeUserInfoVO == null) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
-        logger.info("storeId={} 获取用户信息成功，用户信息：{}", storeUserInfoVO);
+        logger.info("storeId={} 获取用户信息成功，用户信息：{}", storeId, storeUserInfoVO);
         return storeUserInfoVO;
     }
 
@@ -403,7 +391,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     .collect(Collectors.toList());
             skuCodes.removeAll(collect);
             shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
-            logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
+            logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常,商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);
         }
         // 检查商品价格是否有变动
@@ -415,7 +403,7 @@ public class ShopCarServiceImpl implements ShopCarService {
             ShopCartProdVO newCartProdsTemp = newCartProdsMap.get(skuCode);
             ShopCarProdInfoVO shopCarProdInfoVOTemp = originalCartProdsMap.get(skuCode);
             if (newCartProdsTemp == null || shopCarProdInfoVOTemp == null) {
-                logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
+                logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常,商品信息不存在或被下架");
                 throw new BusinessException(BusinessCode.CODE_402011);
             }
             if ((newCartProdsTemp.getSellMoney() == null && shopCarProdInfoVOTemp.getPrice() != null)
@@ -424,7 +412,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                             && shopCarProdInfoVOTemp.getPrice().compareTo(newCartProdsTemp.getSellMoney()) != 0)) {
                 // 如果价格有变化，不允许提交订单，重新刷新后可下单
                 logger.error(
-                        "ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常 商品价格信息有变化：skuCode={}，newPrice={}，oldPrice={}",
+                        "ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常,商品价格信息有变化：skuCode={}，newPrice={}，oldPrice={}",
                         skuCode, newCartProdsTemp.getSellMoney(), shopCarProdInfoVOTemp.getPrice());
                 throw new BusinessException(BusinessCode.CODE_402012);
             }
@@ -439,7 +427,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
                 BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
                 if(sellMoney.compareTo(price) != 0) {
-                    logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                    logger.error("商品加购异常,购物车商品价格有变动！skuCode={} ,sellMoney= {}", shopCarProdVO.getSkuCode(), shopCarProdVO.getSellMoney());
                     throw new BusinessException(BusinessCode.CODE_402012);
                 }
             }
@@ -450,10 +438,10 @@ public class ShopCarServiceImpl implements ShopCarService {
         ResponseResult<List<ShopCartProdVO>> shopCarProds = storeServiceClient.findShopCarProd(skuCodes, storeId);
         if (null == shopCarProds || shopCarProds.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(shopCarProds.getData())) {
             if (CollectionUtils.isNotEmpty(skuCodes)) {
-                logger.info("ShopCarServiceImpl{} -> getShopCarProdVO接口异常：无效的skuCode:"+skuCodes);
+                logger.info("ShopCarServiceImpl{} -> getShopCarProdVO接口异常：无效的skuCode= {}", skuCodes);
                 shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             }
-            logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常{} 商品信息不存在或被下架");
+            logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常,商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);
         }
         return shopCarProds.getData();

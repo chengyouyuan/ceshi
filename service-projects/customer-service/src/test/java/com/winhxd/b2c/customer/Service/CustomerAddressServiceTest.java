@@ -51,7 +51,7 @@ public class CustomerAddressServiceTest {
     @Test
     public void customerSaveAddressTest() throws Exception {
         CustomerAddressCondition condition = new CustomerAddressCondition();
-        condition.setContacterDetailAddress("东升科技园");
+        condition.setContacterDetailAddress("东升科技园test");
         condition.setContacterProvince("北京市");
         condition.setContacterCity("海淀区");
         condition.setContacterCounty("西三旗");

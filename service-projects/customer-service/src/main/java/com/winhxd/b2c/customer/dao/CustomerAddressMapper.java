@@ -16,6 +16,8 @@ public interface CustomerAddressMapper {
 
     int updateByPrimaryKeySelective(CustomerAddress customerAddress);
 
+    int updateByPrimaryKeySelectiveSupportLableNull(CustomerAddress customerAddress);
+
     List<CustomerAddressVO> selectCustomerAddressByUserId(Long userId);
 
     int setDefaultCustomerAddressFalse(Long customerId);

@@ -193,19 +193,19 @@
           <if test="contacterProvince != null">
               contacter_province = #{contacterProvince,jdbcType=VARCHAR},
           </if>
-          <if test="contacterProvinceCode != null">
+          <if test="contacterProvinceCode != null and contacterProvinceCode !=''">
               contacter_province_code = #{contacterProvinceCode,jdbcType=CHAR},
           </if>
           <if test="contacterCity != null">
               contacter_city = #{contacterCity,jdbcType=VARCHAR},
           </if>
-          <if test="contacterCityCode != null">
+          <if test="contacterCityCode != null and contacterCityCode !=''">
               contacter_city_code = #{contacterCityCode,jdbcType=CHAR},
           </if>
           <if test="contacterCounty != null">
               contacter_county = #{contacterCounty,jdbcType=VARCHAR},
           </if>
-          <if test="contacterCountyCode != null">
+          <if test="contacterCountyCode != null and contacterCountyCode !=''">
               contacter_county_code = #{contacterCountyCode,jdbcType=CHAR},
           </if>
           <if test="contacterDetailAddress != null">

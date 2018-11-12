@@ -225,7 +225,7 @@ public class SysUserController implements UserServiceClient {
         sMSCondition.setContent(content);
         sMSCondition.setMobile(mobilePhone);
         messageSendUtils.sendSms(sMSCondition);
-        logger.info(userAccount + ":发送的内容为:{}", content);
+        logger.info("{} - :发送的内容为: - {}", userAccount, content);
         return new ResponseResult<>();
     }
 

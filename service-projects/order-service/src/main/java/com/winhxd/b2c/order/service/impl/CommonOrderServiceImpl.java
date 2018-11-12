@@ -1888,7 +1888,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (CollectionUtils.isEmpty(ret.getDataWithException())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
         }
-        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", customerId, ret.getData().get(0));
         return ret.getData().get(0);
     }
 

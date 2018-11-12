@@ -46,7 +46,7 @@
       from customer_address  cu left join customer_address_label cal
     on cu.label_id = cal.id
     where cu.customer_id = #{userId,jdbcType=BIGINT}
-      order by updated desc
+      order by cu.updated desc
   </select>
 
   <select id="selectCustomerAddressByCondtion" parameterType="com.winhxd.b2c.common.domain.customer.condition.CustomerAddressQueryCondition" resultMap="SelectResultMap">

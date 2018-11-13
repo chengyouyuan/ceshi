@@ -144,7 +144,9 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         SysRegion sysRegion = regionServiceClient.getRegionByCode(regionCode).getData();
         if(sysRegion == null) {
             logger.error("开店测试区域查询，未查询到该门店的行政区域！区域编码为：{}", regionCode);
-            throw new BusinessException(BusinessCode.CODE_200004);
+            //throw new BusinessException(BusinessCode.CODE_200004);
+            //返回空，controller判断做回滚
+            return null;
         }
         List<String> regionCodeList = new ArrayList<>();
         regionCodeList.add(sysRegion.getProvinceCode());

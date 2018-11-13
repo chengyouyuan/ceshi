@@ -59,7 +59,7 @@ public final class BusinessCode {
     public static final int  CODE_100810 = 100810;
     @ApiModelProperty("此手机号已被其他微信绑定，不能再次绑定")
     public static final int  CODE_100811 = 100811;
-    @ApiModelProperty("请求超时")
+    @ApiModelProperty("绑定账户失败")
     public static final int  CODE_100815 = 100815;
     @ApiModelProperty("您还没有绑定惠下单账号")
     public static final int  CODE_100819 = 100819;

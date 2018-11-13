@@ -155,4 +155,11 @@ public interface StoreService {
      * @return
      */
     List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition);
+
+    /**
+     * 根据店铺ID，删除门店信息
+     * @param storeUserInfoId
+     * @return
+     */
+    int deleteStoreUserInfoById(Long storeUserInfoId);
 }

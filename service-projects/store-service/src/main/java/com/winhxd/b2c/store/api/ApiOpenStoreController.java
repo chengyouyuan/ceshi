@@ -109,6 +109,7 @@ public class ApiOpenStoreController {
         } else {
             openStoreVO.setRegionStatus((byte) 0);
             responseResult.setData(openStoreVO);
+            storeService.deleteStoreUserInfoById(storeUserInfo.getId());
             return responseResult;
         }
         //是否开过小店，0未开店

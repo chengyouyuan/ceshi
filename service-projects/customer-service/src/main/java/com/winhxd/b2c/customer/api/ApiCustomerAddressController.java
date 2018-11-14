@@ -180,7 +180,7 @@ public class ApiCustomerAddressController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "customer/2030/v1/addCustomerAddressLabel", method = RequestMethod.POST)
 	public ResponseResult<Boolean> addCustomerAddressLabel(@RequestBody CustomerAddressLabelCondition customerAddressLabelCondition) {
-        logger.info("customer/2030/v1/addCustomerAddressLabel -- 新增用户地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
+        logger.info("customer/2030/v1/addCustomerAddressLabel -- 新增用户的地址标签开始，入参：customerAddressLabelCondition--{}", JsonUtil.toJSONString(customerAddressLabelCondition));
 		String labelName = customerAddressLabelCondition.getLabelName();
 		if (customerAddressLabelCondition == null) {
             logger.error("接口2030新增用户地址标签参数为空");

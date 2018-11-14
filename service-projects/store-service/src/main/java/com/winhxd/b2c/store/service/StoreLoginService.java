@@ -13,4 +13,5 @@ public interface StoreLoginService {
 
 	int saveStoreInfo(StoreUserInfo info);
 
+    int deleteStoreUserInfoById(Long storeUserInfoId);
 }

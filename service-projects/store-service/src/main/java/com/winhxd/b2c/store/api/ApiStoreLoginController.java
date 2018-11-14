@@ -372,6 +372,7 @@ public class ApiStoreLoginController {
 		netease = messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
 		if (netease.getCode() != 0) {
 			logger.info("{} - , 云信获取用户信息失败");
+			storeLoginService.deleteStoreUserInfoById(db.getId());
 			throw new BusinessException(BusinessCode.CODE_100815);
 		}
 		accountVO = netease.getData();

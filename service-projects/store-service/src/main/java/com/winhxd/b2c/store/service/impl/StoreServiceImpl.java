@@ -322,4 +322,14 @@ public class StoreServiceImpl implements StoreService {
     public List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition) {
         return storeCustomerRelationMapper.selectCustomerIds(storeCustomerRegionCondition);
     }
+
+    /**
+     * 根据店铺ID，删除门店信息
+     * @param storeUserInfoId
+     * @return
+     */
+    @Override
+    public int deleteStoreUserInfoById(Long storeUserInfoId){
+        return storeUserInfoMapper.deleteByPrimaryKey(storeUserInfoId);
+    }
 }

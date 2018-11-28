@@ -96,10 +96,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		// 返回手机号参数
 		ResponseResult<StoreUserInfoVO> findStoreUserInfo = storeServiceClient.findStoreUserInfo(businessId);
-		String storeMobile = "";
-		if (findStoreUserInfo.getDataWithException() != null) {
-			storeMobile = findStoreUserInfo.getData().getStoreMobile();
-		}
+		String storeMobile = findStoreUserInfo.getDataWithException().getStoreMobile();
 		withdrawalPage.setMobile(storeMobile);
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息

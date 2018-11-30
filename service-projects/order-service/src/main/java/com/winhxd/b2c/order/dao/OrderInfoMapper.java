@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCon
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
@@ -360,4 +361,11 @@ public interface OrderInfoMapper {
      * @return true 订单号中有不符合退款的记录 false 反之
      */
     boolean getCheckOrderRefundFail(@Param("orderNoList") Set<String> orderNoList);
+
+    /**
+     * 查询订单商品详情列表
+     * @param orderIds
+     * @return
+     */
+    List<OrderInfoDetailListVO> findOrderDetailListByOrderIds(@Param("orderIds") List<Long> orderIds);
 }

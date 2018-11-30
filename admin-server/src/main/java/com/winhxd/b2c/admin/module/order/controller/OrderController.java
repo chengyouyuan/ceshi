@@ -1,14 +1,15 @@
 package com.winhxd.b2c.admin.module.order.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderArtificialRefundCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryCondition;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -17,7 +18,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +31,9 @@ import java.util.List;
 @RequestMapping("/order")
 @CheckPermission(PermissionEnum.ORDER_MANAGEMENT)
 public class OrderController {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
+
     @Autowired
     private OrderServiceClient orderServiceClient;
     
@@ -60,4 +66,34 @@ public class OrderController {
         condition.setList(list);
         return orderServiceClient.artificialRefund(condition);
     }
+
+    @ApiOperation(value = "订单列表导出Excel")
+    @CheckPermission(PermissionEnum.ORDER_MANAGEMENT_LIST)
+    @RequestMapping("/orderListExport")
+    public ResponseEntity<byte[]> orderListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+        ResponseResult<List<OrderInfoDetailVO>> responseResult = orderServiceClient.orderListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<OrderInfoDetailVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "订单列表明细");
+        }
+        return null;
+    }
+
+    @ApiOperation(value = "订单商品详情列表导出Excel")
+    @CheckPermission(PermissionEnum.ORDER_MANAGEMENT_LIST)
+    @RequestMapping("/orderDetialListExport")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询订单列表数据失败"),
+            @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseEntity<byte[]> orderDetialListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+        ResponseResult<List<OrderInfoDetailListVO>> responseResult = orderServiceClient.orderDetialListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<OrderInfoDetailListVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "订单商品列表明细");
+        }
+        return null;
+    }
+
+
+
 }

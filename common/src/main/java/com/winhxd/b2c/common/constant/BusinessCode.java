@@ -305,6 +305,10 @@ public final class BusinessCode {
     public static final int CODE_406202 = 406202;
     @ApiModelProperty("订单状态不允许退款")
     public static final int CODE_406203 = 406203;
+    @ApiModelProperty("请先限制条件查询后再导出")
+    public static final int CODE_406301 = 406301;
+    @ApiModelProperty("已超出规定的导出数量")
+    public static final int CODE_406302 = 406302;
 
 
     @ApiModelProperty("不存在符合的优惠券活动")

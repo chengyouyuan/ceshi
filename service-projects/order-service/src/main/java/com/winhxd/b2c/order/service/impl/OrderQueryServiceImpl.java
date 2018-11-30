@@ -3,15 +3,9 @@ package com.winhxd.b2c.order.service.impl;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.winhxd.b2c.common.domain.order.vo.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -20,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
@@ -40,11 +35,6 @@ import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -73,6 +63,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderInfoMapper orderInfoMapper;
     @Autowired
     private Cache cache;
+
+    @Value("${ORDER.EXPORT_SIZE}")
+    private int exportSize;
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
@@ -451,7 +444,60 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         storeOrderSalesSummaryVO.setStoreId(storeId);
         return storeOrderSalesSummaryVO;
     }
-    
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 导出订单列表EXCEL
+     * @param: [condition]
+     * @return： java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO>
+     * @Date: 2018/11/29 13:40
+     */
+    @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
+    public List<OrderInfoDetailVO> orderListExport(OrderInfoQuery4ManagementCondition condition) {
+        Boolean result = checkParameter(condition);
+        if (result){
+            List<OrderInfoDetailVO> list = new ArrayList<>();
+            List<Long> orderIds = this.orderInfoMapper.listOrder4Management(condition);
+            if (orderIds != null && !orderIds.isEmpty()) {
+                list = orderInfoMapper.listOrderInOrderIds(orderIds);
+                logger.info("exportSize:"+exportSize);
+                if (list.size() > exportSize){
+                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
+                }
+            }
+            return list;
+        }else {
+            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
+        }
+    }
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单商品详情列表导出 EXCEL
+     * @param: [condition]
+     * @return： java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO>
+     * @Date: 2018/11/29 17:31
+     */
+    @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
+    public List<OrderInfoDetailListVO> orderDetialListExport(OrderInfoQuery4ManagementCondition condition) {
+        Boolean result = checkParameter(condition);
+        if (result){
+            List<OrderInfoDetailListVO> list = new ArrayList<>();
+            List<Long> orderIds = this.orderInfoMapper.listOrder4Management(condition);
+            if (orderIds != null && !orderIds.isEmpty()) {
+                list = orderInfoMapper.findOrderDetailListByOrderIds(orderIds);
+                if (list.size() > exportSize){
+                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
+                }
+            }
+            return list;
+        }else {
+            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
+        }
+    }
+
     private StoreOrderSalesSummaryVO calculateStoreCompletedOrderSalesSummary(long storeId, Date startDateTime,
             Date endDateTime) {
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreCompletedOrderTurnover(storeId, startDateTime, endDateTime);
@@ -464,5 +510,52 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         storeOrderSalesSummaryVO.setStoreId(storeId);
         return storeOrderSalesSummaryVO;
+    }
+
+    /**
+     * 导出EXCEL参数校验
+     * @param condition
+     * @return
+     */
+    private Boolean checkParameter(OrderInfoQuery4ManagementCondition condition){
+        if (StringUtils.isNotBlank(condition.getOrderNo())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getPickupType())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getCustomerId())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getStoreId())){
+            return true;
+        }
+        if (StringUtils.isNotBlank(condition.getOrderConsignee())){
+            return true;
+        }
+        if (StringUtils.isNotBlank(condition.getOrderConsigneeMobile())){
+            return true;
+        }
+        if (condition.getRegionCode().length > 0){
+            return true;
+        }
+        //下单时间
+        if (Objects.nonNull(condition.getDateInterval().getStart())){
+            return true;
+        }
+        //下单金额
+        if (Objects.nonNull(condition.getMoneyInterval().getStart())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getValuationType())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getUseCoupon())){
+            return true;
+        }
+        if (Objects.nonNull(condition.getOrderStatus())){
+            return true;
+        }
+        return false;
     }
 }

@@ -572,6 +572,12 @@
         <if test="condition.orderNo != null and condition.orderNo !=''">
             <bind name="orderNo" value="condition.orderNo + '%'"/>
         </if>
+        <if test="condition.orderConsignee != null and condition.orderConsignee !=''">
+            <bind name="orderConsignee" value="'%' + condition.orderConsignee + '%'"/>
+        </if>
+        <if test="condition.orderConsigneeMobile != null and condition.orderConsigneeMobile !=''">
+            <bind name="orderConsigneeMobile" value="'%' + condition.orderConsigneeMobile + '%'"/>
+        </if>
         select
         id
         from order_info info
@@ -630,6 +636,15 @@
             <foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
                 #{item}
             </foreach>
+        </if>
+        <if test="condition.pickupType != null">
+            and pickup_type = #{condition.pickupType}
+        </if>
+        <if test="condition.orderConsignee != null and condition.orderConsignee !=''">
+            and order_consignee like #{orderConsignee}
+        </if>
+        <if test="condition.orderConsigneeMobile != null and condition.orderConsigneeMobile !=''">
+            and order_consignee_mobile like #{orderConsigneeMobile}
         </if>
         <include refid="order_info_orderBy"></include>
     </select>
@@ -930,4 +945,38 @@
             #{orderNoList}
         </foreach>
     </select>
+    <!--根据订单id查询订单商品列表详情-->
+    <select id="findOrderDetailListByOrderIds" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO">
+        select
+            info.order_no orderNo,
+            info.customer_id customerId,
+            info.store_id storeId,
+            info.valuation_type valuationType,
+            info.order_status orderStatus,
+            info.coupon_titles couponTitles,
+            info.real_payment_money realPaymentMoney,
+            info.order_total_money orderTotalMoney,
+            info.order_total_money-info.real_payment_money discountMoney,
+            info.sku_quantity skuQuantity,
+            info.created created,
+            info.pickup_type pickupType,
+            info.refund_fail_reason refundFailReason,
+            info.order_consignee orderConsignee,
+            info.order_consignee_mobile orderConsigneeMobile,
+            info.order_address orderAddress,
+            item.id  itemId,
+            item.sku_code  skuCode,
+            item.amount  amount,
+            item.price  price,
+            item.sku_url  skuUrl,
+            item.sku_desc  skuDesc
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        and info.id in
+        <foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <include refid="order_info_list_orderBy"></include>
+    </select>
+
 </mapper>

@@ -277,6 +277,7 @@ public class OrderServiceController implements OrderServiceClient {
             result.setData(list);
         } catch (BusinessException e) {
             result.setCode(e.getErrorCode());
+            result.setMessage(e.getMessage());
         } catch (Exception e) {
             logger.error(logTitle + " 订单列表导出 EXCEL=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -302,6 +303,7 @@ public class OrderServiceController implements OrderServiceClient {
             result.setData(list);
         }catch (BusinessException e) {
             result.setCode(e.getErrorCode());
+            result.setMessage(e.getMessage());
         } catch (Exception e) {
             logger.error(logTitle + " 订单商品详情列表导出 EXCEL=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

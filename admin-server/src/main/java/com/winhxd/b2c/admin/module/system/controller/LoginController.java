@@ -112,8 +112,8 @@ public class LoginController {
         BeanUtils.copyProperties(sysUser,userInfo);
         userInfo.setToken(token);
 
-        //将token和用户信息放入缓存，并设置token过期时间为30分钟
-        cache.setex(cacheKey,30 * 60, JsonUtil.toJSONString(userInfo));
+        //将token和用户信息放入缓存，并设置token过期时间为12个小时
+        cache.setex(cacheKey,12 * 60 * 60, JsonUtil.toJSONString(userInfo));
 
         //将token写到客户端的cookie里面
         Cookie tokenCookie = null;
@@ -130,8 +130,8 @@ public class LoginController {
         } else {
             tokenCookie.setValue(token);
         }
-        // 设置为30min
-        tokenCookie.setMaxAge(30 * 60);
+        // 设置为12小时
+        tokenCookie.setMaxAge(12 * 60 * 60);
         tokenCookie.setPath("/");
         response.addCookie(tokenCookie);
 

@@ -78,9 +78,9 @@ public class OrderInfoDetailListVO implements Serializable {
     @Excel(name = "商品总数", width = 10)
     private Integer skuQuantity;
 
-    @ApiModelProperty(value = "商品SKU")
-    @Excel(name = "商品SKU", width = 20)
-    private String skuCode;
+    @ApiModelProperty(value = "商品条码")
+    @Excel(name = "商品条码", width = 20)
+    private String barCode;
 
     @ApiModelProperty(value = "商品名称")
     @Excel(name = "商品名称", width = 50)
@@ -346,14 +346,6 @@ public class OrderInfoDetailListVO implements Serializable {
         this.storeName = storeName;
     }
 
-    public String getSkuCode() {
-        return skuCode;
-    }
-
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
-    }
-
     public Integer getAmount() {
         return amount;
     }
@@ -384,5 +376,13 @@ public class OrderInfoDetailListVO implements Serializable {
 
     public void setRefundFailReason(String refundFailReason) {
         this.refundFailReason = refundFailReason;
+    }
+
+    public String getBarCode() {
+        return barCode;
+    }
+
+    public void setBarCode(String barCode) {
+        this.barCode = barCode;
     }
 }

@@ -21,6 +21,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,14 +70,13 @@ public class OrderController {
     @ApiOperation(value = "订单列表导出Excel")
     @CheckPermission(PermissionEnum.ORDER_MANAGEMENT_LIST)
     @RequestMapping("/orderListExport")
-    //应返回ResponseEntity<byte[]>暂定Object
-    public Object orderListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+    public ResponseEntity<byte[]> orderListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
         ResponseResult<List<OrderInfoDetailVO>> responseResult = orderServiceClient.orderListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {
             List<OrderInfoDetailVO> list = responseResult.getData();
             return ExcelUtils.exp(list, "订单列表明细");
         }
-        return responseResult;
+        return null;
     }
 
     @ApiOperation(value = "订单商品详情列表导出Excel")
@@ -85,14 +85,13 @@ public class OrderController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询订单列表数据失败"),
             @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    //应返回ResponseEntity<byte[]>暂定Object
-    public Object orderDetialListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+    public ResponseEntity<byte[]> orderDetialListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
         ResponseResult<List<OrderInfoDetailListVO>> responseResult = orderServiceClient.orderDetialListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {
             List<OrderInfoDetailListVO> list = responseResult.getData();
             return ExcelUtils.exp(list, "订单商品列表明细");
         }
-        return responseResult;
+        return null;
     }
 
 

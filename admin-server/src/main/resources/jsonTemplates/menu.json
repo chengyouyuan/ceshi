@@ -88,6 +88,8 @@
       "id": "5",
       "menuName": "财务管理",
       "path": "",
+      "configKey": "",
+      "permission": "",
       "children": [
         {
           "id": "5_1",

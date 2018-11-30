@@ -38,9 +38,9 @@ public enum MenuEnum {
      */
     VERIFY_MANAGEMENT("财务管理", PermissionEnum.VERIFY_MANAGEMENT),
     VERIFY_MANAGEMENT_LIST("财务管理", VERIFY_MANAGEMENT, "", "/financeManage/index", PermissionEnum.VERIFY_MANAGEMENT_LIST),
-    VERIFY_MANAGEMENT_SUMMARY_LIST("结算审核", VERIFY_MANAGEMENT, "/template/module/pay/pay_verify_list.json", PermissionEnum.VERIFY_MANAGEMENT_VERIFY),
-    VERIFY_MANAGEMENT_DETAIL_LIST("费用明细", VERIFY_MANAGEMENT, "/template/module/pay/accounting_detail_list.json", PermissionEnum.VERIFY_MANAGEMENT_VERIFY),
-    VERIFY_MANAGEMENT_WITHDRAWALS_LIST("提款申请", VERIFY_MANAGEMENT, "/template/module/pay/withdrawals_list.json", PermissionEnum.VERIFY_MANAGEMENT_VERIFY),
+    VERIFY_MANAGEMENT_SUMMARY_LIST("结算审核", VERIFY_MANAGEMENT, "/template/module/pay/pay_verify_list.json", PermissionEnum.VERIFY_MANAGEMENT_SUMMARY_LIST),
+    VERIFY_MANAGEMENT_DETAIL_LIST("费用明细", VERIFY_MANAGEMENT, "/template/module/pay/accounting_detail_list.json", PermissionEnum.VERIFY_MANAGEMENT_DETAIL_LIST),
+    VERIFY_MANAGEMENT_WITHDRAWALS_LIST("提款申请", VERIFY_MANAGEMENT, "/template/module/pay/withdrawals_list.json", PermissionEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST),
 
 
     /**

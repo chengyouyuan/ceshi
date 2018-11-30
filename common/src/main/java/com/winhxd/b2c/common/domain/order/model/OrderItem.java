@@ -51,4 +51,6 @@ public class OrderItem {
 
     private String createdByName;
 
+    private String barCode;
+
 }

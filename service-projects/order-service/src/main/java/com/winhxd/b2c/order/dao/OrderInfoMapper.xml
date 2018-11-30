@@ -965,7 +965,7 @@
             info.order_consignee_mobile orderConsigneeMobile,
             info.order_address orderAddress,
             item.id  itemId,
-            item.sku_code  skuCode,
+            item.bar_code  barCode,
             item.amount  amount,
             item.price  price,
             item.sku_url  skuUrl,

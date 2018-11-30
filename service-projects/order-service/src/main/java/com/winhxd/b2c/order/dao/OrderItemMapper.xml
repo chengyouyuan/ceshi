@@ -15,10 +15,11 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_no, sku_code, sku_desc, sku_url, amount, price, created, created_by, updated, updated_by, 
-    updated_by_name, created_by_name
+    updated_by_name, created_by_name, bar_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -39,11 +40,11 @@
     insert into order_item (id, order_no, sku_code, sku_desc, sku_url, 
       amount, price, created, 
       created_by, updated, updated_by, 
-      updated_by_name, created_by_name)
+      updated_by_name, created_by_name, bar_code)
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuDesc,jdbcType=VARCHAR}, 
       #{skuUrl,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR})
+      #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR}, #{barCode,jdbcType=VARCHAR})
   </insert>
   <!-- 批量保存订单明细 -->
   <insert id="insertItems"
@@ -51,7 +52,7 @@
 	insert into order_item (order_no, sku_code, sku_desc, 
 	sku_url, amount, price, created,
 	created_by, updated, updated_by,
-	updated_by_name, created_by_name)
+	updated_by_name, created_by_name, bar_code)
 	values
 	<foreach collection="list" item="item" index="index" separator=",">
 		(
@@ -59,7 +60,7 @@
 		#{item.skuUrl,jdbcType=VARCHAR}, #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
 		#{item.created,jdbcType=TIMESTAMP},
 		#{item.createdBy,jdbcType=BIGINT}, #{item.updated,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-		#{item.updatedByName,jdbcType=VARCHAR}, #{item.createdByName,jdbcType=VARCHAR}
+		#{item.updatedByName,jdbcType=VARCHAR}, #{item.createdByName,jdbcType=VARCHAR}, #{item.barCode,jdbcType=VARCHAR}
 		)
 	</foreach>
   </insert>
@@ -105,6 +106,9 @@
       <if test="createdByName != null">
         created_by_name,
       </if>
+      <if test="barCode != null">
+        bar_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -146,6 +150,9 @@
       <if test="createdByName != null">
         #{createdByName,jdbcType=VARCHAR},
       </if>
+      <if test="barCode != null">
+        #{barCode,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
@@ -153,6 +160,9 @@
     <set>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="barCode != null">
+        bar_code = #{barCode,jdbcType=VARCHAR},
       </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -203,6 +213,7 @@
       updated = #{updated,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      bar_code = #{barCode,jdbcType=VARCHAR},
       created_by_name = #{createdByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -83,6 +84,7 @@ public class OrderServiceController implements OrderServiceClient {
             @RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
         String logTitle = "/order/4053/v1/listOrder4Management/";
         logger.info("{} 后台订单列表查询开始", logTitle);
+        logger.info("{} 后台订单列表参数", infoQuery4ManagementCondition);
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             result.setData(orderQueryService.listOrder4Management(infoQuery4ManagementCondition));
@@ -255,6 +257,56 @@ public class OrderServiceController implements OrderServiceClient {
         int updateResult = orderService.artificialRefund(adminUser,condition);
         result.setData(updateResult);
         logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
+        return result;
+    }
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO>>
+     * @Date: 2018/11/29 16:51
+     */
+    @Override
+    public ResponseResult<List<OrderInfoDetailVO>> orderListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+        String logTitle = "/order/4063/v1/orderListExport/";
+        logger.info("{} 订单列表导出 EXCEL开始,入参 {}", logTitle,condition);
+        ResponseResult<List<OrderInfoDetailVO>> result = new ResponseResult<>();
+        try {
+            List<OrderInfoDetailVO> list = orderQueryService.orderListExport(condition);
+            result.setData(list);
+        } catch (BusinessException e) {
+            result.setCode(e.getErrorCode());
+        } catch (Exception e) {
+            logger.error(logTitle + " 订单列表导出 EXCEL=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        logger.info("{} 订单列表导出 EXCEL结束", logTitle);
+        return result;
+    }
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单商品详情列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO>>
+     * @Date: 2018/11/29 18:10
+     */
+    @Override
+    public ResponseResult<List<OrderInfoDetailListVO>> orderDetialListExport(@RequestBody OrderInfoQuery4ManagementCondition condition) {
+        String logTitle = "/order/4064/v1/orderDetialListExport/";
+        logger.info("{} 订单商品详情列表导出 EXCEL开始,入参 {}", logTitle,condition);
+        ResponseResult<List<OrderInfoDetailListVO>> result = new ResponseResult<>();
+        try {
+            List<OrderInfoDetailListVO> list = orderQueryService.orderDetialListExport(condition);
+            result.setData(list);
+        }catch (BusinessException e) {
+            result.setCode(e.getErrorCode());
+        } catch (Exception e) {
+            logger.error(logTitle + " 订单商品详情列表导出 EXCEL=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        logger.info("{} 订单商品详情列表导出 EXCEL结束", logTitle);
         return result;
     }
 }

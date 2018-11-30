@@ -15,10 +15,7 @@ import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.ReviewStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
-import com.winhxd.b2c.common.domain.pay.model.PayBankCard;
-import com.winhxd.b2c.common.domain.pay.model.PayBankroll;
-import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
-import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
+import com.winhxd.b2c.common.domain.pay.model.*;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
@@ -96,11 +93,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		// 返回手机号参数
 		ResponseResult<StoreUserInfoVO> findStoreUserInfo = storeServiceClient.findStoreUserInfo(businessId);
-		String storeMobile = "";
-		if (findStoreUserInfo.getDataWithException() != null) {
-			storeMobile = findStoreUserInfo.getData().getStoreMobile();
-		}
-		withdrawalPage.setMobile(storeMobile);
+        StoreUserInfoVO storeUserInfo = findStoreUserInfo.getDataWithException();
+		withdrawalPage.setMobile(storeUserInfo.getStoreMobile());
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息
 			List<PayBankCard> bankCards = payBankCardMapper.selectByStoreId(businessId);
@@ -115,28 +109,30 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 //				 withdrawalPage.setMobile(bankCard.getMobile());
 				 withdrawalPage.setSwiftCode(bankCard.getSwiftCode()); 
 			}
-			
 		}else if(weixType == condition.getWithdrawType()){
 			String openId = UserContext.getCurrentStoreUser().getOpenId();
 			if(StringUtils.isBlank(openId)){
 				LOGGER.error("缓存中的微信的openid为空");
 				throw new BusinessException(BusinessCode.CODE_610802);
 			}
-			//获取登录微信钱包数据
-			if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
-				StoreUserInfoVO data = findStoreUserInfo.getData();
-				if(!openId.equals(data.getOpenid())){
-					LOGGER.error("缓存中的openid:{}和门店表中的openid:{}不对应", openId, data.getOpenid());
-					throw new BusinessException(BusinessCode.CODE_610802);
-				}
-				withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getWechatName()+")");
-				withdrawalPage.setNick(data.getWechatName());
-				withdrawalPage.setOpenid(data.getOpenid());
-			} else {
-				LOGGER.warn("门店表中的openId为空");
-				throw new BusinessException(BusinessCode.CODE_610802);
-			}
-
+            //获取绑定微信钱包已存在绑定信息
+            List<PayStoreWallet> payStoreWalletList = payStoreWalletMapper.selectByStoreId(businessId);
+            if(CollectionUtils.isNotEmpty(payStoreWalletList)){
+                //从提现钱包绑定关系表中获得openId[[优先级高于登录微信号]]
+                PayStoreWallet wallet=payStoreWalletList.get(0);
+                withdrawalPage.setUserAcountName(ACCOUNT_NAME + "(" + wallet.getNick() + ")");
+                withdrawalPage.setNick(wallet.getNick());
+                withdrawalPage.setOpenid(wallet.getOpenid());
+            } else {
+                //从门店登录绑定关系中获得openId
+                if (!openId.equals(storeUserInfo.getOpenid())) {
+                    LOGGER.error("缓存中的openid:{}和门店表中的openid:{}不对应", openId, storeUserInfo.getOpenid());
+                    throw new BusinessException(BusinessCode.CODE_610802);
+                }
+                withdrawalPage.setUserAcountName(ACCOUNT_NAME + "(" + storeUserInfo.getWechatName() + ")");
+                withdrawalPage.setNick(storeUserInfo.getWechatName());
+                withdrawalPage.setOpenid(storeUserInfo.getOpenid());
+            }
 		}
 		// 获取当前门店的资金信息
 		PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(businessId);
@@ -146,11 +142,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			presentedMoney= payBankroll.getPresentedMoney();
 			presentedMoney=presentedMoney==null?BigDecimal.valueOf(0):presentedMoney;
 		}
-		 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
+		withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 		LOGGER.info("最大提现额度:[{}]", payWithDrawalConfig.getMaxMoney());
-		 withdrawalPage.setRate(payWithDrawalConfig.getRate());
-		 withdrawalPage.setPresented_money(presentedMoney);
-		 withdrawalPage.setMinMoeny(payWithDrawalConfig.getMinMoney());
+		withdrawalPage.setRate(payWithDrawalConfig.getRate());
+		withdrawalPage.setPresented_money(presentedMoney);
+		withdrawalPage.setMinMoeny(payWithDrawalConfig.getMinMoney());
+
 		return withdrawalPage;
 	}
 	

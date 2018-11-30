@@ -295,10 +295,11 @@ public class VerifyServiceImpl implements VerifyService {
                     storeSet.add(vo.getStoreId());
                 }
             }
-            Map<Long, String> storeMap = new HashMap<>(20);
+            Map<Long, String> storeMap = new HashMap<>(16);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult.getDataWithException() != null) {
-                    for (StoreUserInfoVO vo : responseResult.getData()) {
+            List<StoreUserInfoVO> storeUserInfoList = responseResult.getDataWithException();
+            if (storeUserInfoList != null) {
+                for (StoreUserInfoVO vo : storeUserInfoList) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
                 }
@@ -328,10 +329,11 @@ public class VerifyServiceImpl implements VerifyService {
                     storeSet.add(vo.getStoreId());
                 }
             }
-            Map<Long, String> storeMap = new HashMap<>(20);
+            Map<Long, String> storeMap = new HashMap<>(16);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult.getDataWithException() != null) {
-                    for (StoreUserInfoVO vo : responseResult.getData()) {
+            List<StoreUserInfoVO> storeUserInfoList = responseResult.getDataWithException();
+            if (storeUserInfoList != null) {
+                for (StoreUserInfoVO vo : storeUserInfoList) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
             }
@@ -507,8 +509,9 @@ public class VerifyServiceImpl implements VerifyService {
             }
             Map<Long, String> storeMap = new HashMap<>(16);
             ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-            if (responseResult.getDataWithException() != null) {
-                    for (StoreUserInfoVO vo : responseResult.getData()) {
+            List<StoreUserInfoVO> storeUserInfoList = responseResult.getDataWithException();
+            if (storeUserInfoList != null) {
+                for (StoreUserInfoVO vo : storeUserInfoList) {
                         storeMap.put(vo.getId(), vo.getStoreName());
                     }
             }

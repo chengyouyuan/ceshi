@@ -25,6 +25,22 @@
         }
       },
       {
+        "name": "导出订单明细",
+        "event": {
+          "type": "export",
+          "ajaxType": "post",
+          "path": "/order/orderListExport"
+        }
+      },
+      {
+        "name": "导出订单商品明细",
+        "event": {
+          "type": "export",
+          "ajaxType": "post",
+          "path": "/order/orderDetialListExport"
+        }
+      },
+      {
         "name": "手动退款",
         "event": {
           "type": "batch",
@@ -48,12 +64,28 @@
         "title": "订单编号"
       },
       {
+        "name": "pickupTypeDesc",
+        "title": "取货方式"
+      },
+      {
         "name": "nickName",
         "title": "下单用户"
       },
       {
         "name": "customerMobile",
         "title": "用户电话"
+      },
+      {
+        "name": "orderConsignee",
+        "title": "收货人"
+      },
+      {
+        "name": "orderConsigneeMobile",
+        "title": "收货电话"
+      },
+      {
+        "name": "orderAddress",
+        "title": "收货地址"
       },
       {
         "name": "storeName",
@@ -73,7 +105,7 @@
       },
       {
         "name": "skuQuantity",
-        "title": "商品数量"
+        "title": "商品总数"
       },
       {
         "name": "couponTitles",
@@ -132,6 +164,21 @@
         "isHidden": false
       },
       {
+        "name": "pickupType",
+        "inputModel": "select",
+        "title": "取货方式",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "到店自提"
+        },
+          {
+            "value": "2",
+            "label": "送货上门"
+          }]
+      },
+      {
         "name": "customerId",
         "inputModel": "inputDia",
         "title": "下单用户",
@@ -147,6 +194,22 @@
         "placeholder": "请输入下单店铺",
         "path": "",
         "configKey": "/template/module/store/store_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "orderConsignee",
+        "inputModel": "input",
+        "title": "收货人",
+        "value": "",
+        "placeholder": "请输入收货人",
+        "isHidden": false
+      },
+      {
+        "name": "orderConsigneeMobile",
+        "inputModel": "input",
+        "title": "收货电话",
+        "value": "",
+        "placeholder": "请输入收货电话",
         "isHidden": false
       },
       {
@@ -220,6 +283,9 @@
         },{
         	"value": "9",
         	"label": "待自提"
+        },{
+          "value": "10",
+          "label": "待配送"
         },{
         	"value": "22",
         	"label": "已完成"

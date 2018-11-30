@@ -3,8 +3,9 @@ package com.winhxd.b2c.common.domain.order.condition;
 import com.winhxd.b2c.common.domain.common.PagedCondition;
 import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
 import com.winhxd.b2c.common.domain.common.inputmodel.NumInterval;
-
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * 门店、用户订单列表查询
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @date  2018年8月6日 下午2:58:44
  * @version 
  */
+@ApiModel("门店、用户订单列表查询传参")
+@Data
 public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     @ApiModelProperty(value = "门店id")
@@ -46,94 +49,14 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     
     @ApiModelProperty(value = "地理区域编码")
     private String[] regionCode;
-    
 
-    public Long getStoreId() {
-        return storeId;
-    }
+    @ApiModelProperty(value = "提货方式:1自提;2配送;")
+    private Short pickupType;
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+    @ApiModelProperty(value = "收货人")
+    private String orderConsignee;
 
-    public Long getCustomerId() {
-        return customerId;
-    }
+    @ApiModelProperty(value = "收货电话")
+    private String orderConsigneeMobile;
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public String[] getOrderNos() {
-        return orderNos;
-    }
-
-    public void setOrderNos(String[] orderNos) {
-        this.orderNos = orderNos;
-    }
-
-    public DateInterval getDateInterval() {
-        return dateInterval;
-    }
-
-    public void setDateInterval(DateInterval dateInterval) {
-        this.dateInterval = dateInterval;
-    }
-
-    public NumInterval getMoneyInterval() {
-        return moneyInterval;
-    }
-
-    public void setMoneyInterval(NumInterval moneyInterval) {
-        this.moneyInterval = moneyInterval;
-    }
-
-    public Short getValuationType() {
-        return valuationType;
-    }
-
-    public void setValuationType(Short valuationType) {
-        this.valuationType = valuationType;
-    }
-
-    public Short getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Short payType) {
-        this.payType = payType;
-    }
-
-    public Short getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(Short orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public String[] getRegionCode() {
-        return regionCode;
-    }
-
-    public void setRegionCode(String[] regionCode) {
-        this.regionCode = regionCode;
-    }
-
-    public String getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    public Short getUseCoupon() {
-        return useCoupon;
-    }
-
-    public void setUseCoupon(Short useCoupon) {
-        this.useCoupon = useCoupon;
-    }
-    
 }

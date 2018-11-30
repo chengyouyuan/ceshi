@@ -1,21 +1,14 @@
 package com.winhxd.b2c.order.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.*;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 订单查询接口,提供订单查询方法
@@ -150,4 +143,29 @@ public interface OrderQueryService {
      * @return
      */
     StoreOrderSalesSummaryVO calculateStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
+
+    /**
+     * 根据条件 查询订单列表，后台管理系统用
+     *
+     * @author wangbin
+     * @param condition 入参
+     * @return
+     */
+    /**
+     * @Author: zhoufenglong
+     * @Description: 导出订单列表EXCEL
+     * @param: [condition]
+     * @return： java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO>
+     * @Date: 2018/11/29 13:39
+     */
+    List<OrderInfoDetailVO> orderListExport(OrderInfoQuery4ManagementCondition condition);
+    
+    /** 
+     * @Author: zhoufenglong
+     * @Description: 订单商品详情列表导出 EXCEL
+     * @param: [condition]
+     * @return： java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO>
+     * @Date: 2018/11/29 17:25
+     */
+    List<OrderInfoDetailListVO> orderDetialListExport(OrderInfoQuery4ManagementCondition condition);
 }

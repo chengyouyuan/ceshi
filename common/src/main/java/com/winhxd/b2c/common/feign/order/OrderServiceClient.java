@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.feign.order;
 import java.util.List;
 
 import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -78,6 +79,26 @@ public interface OrderServiceClient {
      */
     @RequestMapping(value = "/order/4062/v1/artificialRefund/", method = RequestMethod.POST)
     ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition);
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO>>
+     * @Date: 2018/11/29 13:53
+     */
+    @RequestMapping(value = "/order/4063/v1/orderListExport/", method = RequestMethod.POST)
+    ResponseResult<List<OrderInfoDetailVO>> orderListExport(@RequestBody OrderInfoQuery4ManagementCondition condition);
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单商品详情列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO>>
+     * @Date: 2018/11/29 17:23
+     */
+    @RequestMapping(value = "/order/4064/v1/orderDetialListExport/", method = RequestMethod.POST)
+    ResponseResult<List<OrderInfoDetailListVO>> orderDetialListExport(@RequestBody OrderInfoQuery4ManagementCondition condition);
 }
 
 @Component
@@ -167,6 +188,32 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<Integer> artificialRefund(OrderArtificialRefundCondition condition) {
         logger.error("OrderServiceFallback -> artificialRefund", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO>>
+     * @Date: 2018/11/29 13:53
+     */
+    @Override
+    public ResponseResult<List<OrderInfoDetailVO>> orderListExport(OrderInfoQuery4ManagementCondition condition) {
+        logger.error("OrderServiceFallback -> orderListExport", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 订单商品详情列表导出 EXCEL
+     * @param: [condition]
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailListVO>>
+     * @Date: 2018/11/29 17:23
+     */
+    @Override
+    public ResponseResult<List<OrderInfoDetailListVO>> orderDetialListExport(OrderInfoQuery4ManagementCondition condition) {
+        logger.error("OrderServiceFallback -> orderDetialListExport", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

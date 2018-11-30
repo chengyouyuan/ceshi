@@ -171,7 +171,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
 		Long businessId = storeUser.getBusinessId();
-		String openId = storeUser.getOpenId();
 		// 加入redis控制访问频率
 		String limitTimeKey = CacheName.LIMIT_INTERFACE_ACCESS + businessId;
 		if (cache.exists(limitTimeKey)) {
@@ -223,10 +222,22 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setCreatedByName(condition.getStroeName());
 			payWithdrawal.setUpdatedByName(condition.getStroeName());
 		}else if(weixType == condition.getWithdrawType()){
-			if(!StringUtils.equals(condition.getBuyerId(),openId)){
-				result.setMessage("参数错误：门店和微信钱包不匹配");
-				throw new BusinessException(BusinessCode.CODE_610026);
-			}
+		    //校验前端所传微信钱包openId是否与数据库匹配
+            List<PayStoreWallet> payStoreWalletList = payStoreWalletMapper.selectByStoreId(businessId);
+            if(CollectionUtils.isNotEmpty(payStoreWalletList)){
+                //从提现钱包绑定关系表中获得openId[[优先级高]]
+                PayStoreWallet wallet=payStoreWalletList.get(0);
+                if(!StringUtils.equals(condition.getBuyerId(),wallet.getOpenid())){
+                    LOGGER.error("参数错误：客户端(storeId={})传参OpenId与当前已绑定微信钱包账号不匹配：{}", businessId, condition.getBuyerId());
+                    throw new BusinessException(BusinessCode.CODE_610026);
+                }
+            } else {
+                //从登陆用户表中获得openId
+                if(!StringUtils.equals(condition.getBuyerId(),storeUser.getOpenId())){
+                    LOGGER.error("参数错误：客户端(storeId={})传参OpenId与当前登陆用户账号不匹配：{}", businessId, condition.getBuyerId());
+                    throw new BusinessException(BusinessCode.CODE_610026);
+                }
+            }
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 			payWithdrawal.setBuyerId(condition.getBuyerId());

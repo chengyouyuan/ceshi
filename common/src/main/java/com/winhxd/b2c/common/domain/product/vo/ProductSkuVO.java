@@ -23,6 +23,9 @@ public class ProductSkuVO {
 	@ApiModelProperty(value = "sku编码")
 	private String skuCode;
 	
+	@ApiModelProperty(value = "条形码")
+	private String barCode;
+	
 	@ApiModelProperty(value = "商品名称")
 	private String skuName;
 	

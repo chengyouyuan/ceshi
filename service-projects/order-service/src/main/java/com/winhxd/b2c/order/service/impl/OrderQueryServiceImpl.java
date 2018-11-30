@@ -64,8 +64,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Autowired
     private Cache cache;
 
-    @Value("${ORDER.EXPORT_SIZE}")
-    private int exportSize;
+    /**
+     * 订单导出数量限制（需求修改暂时不做限制）
+     */
+//    @Value("${ORDER.EXPORT_SIZE}")
+//    private int exportSize;
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
@@ -455,21 +458,22 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Override
     @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
     public List<OrderInfoDetailVO> orderListExport(OrderInfoQuery4ManagementCondition condition) {
-        Boolean result = checkParameter(condition);
-        if (result){
+        //需求修改暂时不需要校验参数
+//        Boolean result = checkParameter(condition);
+//        if (result){
             List<OrderInfoDetailVO> list = new ArrayList<>();
             List<Long> orderIds = this.orderInfoMapper.listOrder4Management(condition);
             if (orderIds != null && !orderIds.isEmpty()) {
                 list = orderInfoMapper.listOrderInOrderIds(orderIds);
-                logger.info("exportSize:"+exportSize);
-                if (list.size() > exportSize){
-                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
-                }
+                //需求修改当前对导出数量不做限制
+//                if (list.size() > exportSize){
+//                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
+//                }
             }
             return list;
-        }else {
-            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
-        }
+//        }else {
+//            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
+//        }
     }
 
     /**
@@ -482,20 +486,22 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Override
     @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
     public List<OrderInfoDetailListVO> orderDetialListExport(OrderInfoQuery4ManagementCondition condition) {
-        Boolean result = checkParameter(condition);
-        if (result){
+        //需求修改暂时不需要校验参数
+//        Boolean result = checkParameter(condition);
+//        if (result){
             List<OrderInfoDetailListVO> list = new ArrayList<>();
             List<Long> orderIds = this.orderInfoMapper.listOrder4Management(condition);
             if (orderIds != null && !orderIds.isEmpty()) {
                 list = orderInfoMapper.findOrderDetailListByOrderIds(orderIds);
-                if (list.size() > exportSize){
-                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
-                }
+                //需求修改当前对导出数量不做限制
+//                if (list.size() > exportSize){
+//                    throw new BusinessException(BusinessCode.CODE_406302,"已超出规定的导出数量");
+//                }
             }
             return list;
-        }else {
-            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
-        }
+//        }else {
+//            throw new BusinessException(BusinessCode.CODE_406301,"请先限制条件查询后再导出");
+//        }
     }
 
     private StoreOrderSalesSummaryVO calculateStoreCompletedOrderSalesSummary(long storeId, Date startDateTime,

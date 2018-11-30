@@ -1238,6 +1238,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 if (skuVO != null) {
                     orderItem.setSkuDesc(skuVO.getSkuName());
                     orderItem.setSkuUrl(skuVO.getSkuImage());
+                    orderItem.setBarCode(skuVO.getBarCode());
                 }
             }
         }

@@ -97,21 +97,171 @@ public class VerifyDetailExcelVO {
     @Excel(name = "操作人", width = 30)
     private String operatedByName;
 
-    public Date getFinishendTime(Data time) {
+    public String getVerifyStatusName() {
+        return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public Date getFinishedTime() {
         return recordedTime;
     }
 
-    public String getDetailTypeName() {
-        return AccountingDetail.DetailTypeEnum.getMemoOfCode(getDetailType());
+    public Date getRecordedTime() {
+        return recordedTime;
     }
 
     public String getThirdPartyVerifyStatusName() {
         return AccountingDetail.ThirdPartyVerifyStatusEnum.getMemoOfCode(getThirdPartyVerifyStatus());
     }
 
-    public String getVerifyStatusName() {
-        return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    public String getOrderNo() {
+        return orderNo;
     }
 
+    public String getDetailTypeName() {
+        return AccountingDetail.DetailTypeEnum.getMemoOfCode(getDetailType());
+    }
 
+    public BigDecimal getDetailMoney() {
+        return detailMoney;
+    }
+
+    public BigDecimal getThirdPartyFeeMoney() {
+        return thirdPartyFeeMoney;
+    }
+
+    public Integer getDetailType() {
+        return detailType;
+    }
+
+    public Integer getOrderCompleteStatus() {
+        return orderCompleteStatus;
+    }
+
+    public Date getInsertTime() {
+        return insertTime;
+    }
+
+    public Integer getThirdPartyVerifyStatus() {
+        return thirdPartyVerifyStatus;
+    }
+
+    public Date getThirdPartyVerifyTime() {
+        return thirdPartyVerifyTime;
+    }
+
+    public Integer getVerifyStatus() {
+        return verifyStatus;
+    }
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public Date getVerifyTime() {
+        return verifyTime;
+    }
+
+    public Date getOperatedTime() {
+        return operatedTime;
+    }
+
+    public Long getOperatedBy() {
+        return operatedBy;
+    }
+
+    public String getOperatedByName() {
+        return operatedByName;
+    }
+
+    public void setVerifyStatusName(String verifyStatusName) {
+        this.verifyStatusName = verifyStatusName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public void setFinishedTime(Date finishedTime) {
+        this.finishedTime = finishedTime;
+    }
+
+    public void setRecordedTime(Date recordedTime) {
+        this.recordedTime = recordedTime;
+    }
+
+    public void setThirdPartyVerifyStatusName(String thirdPartyVerifyStatusName) {
+        this.thirdPartyVerifyStatusName = thirdPartyVerifyStatusName;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public void setDetailTypeName(String detailTypeName) {
+        this.detailTypeName = detailTypeName;
+    }
+
+    public void setDetailMoney(BigDecimal detailMoney) {
+        this.detailMoney = detailMoney;
+    }
+
+    public void setThirdPartyFeeMoney(BigDecimal thirdPartyFeeMoney) {
+        this.thirdPartyFeeMoney = thirdPartyFeeMoney;
+    }
+
+    public void setDetailType(Integer detailType) {
+        this.detailType = detailType;
+    }
+
+    public void setOrderCompleteStatus(Integer orderCompleteStatus) {
+        this.orderCompleteStatus = orderCompleteStatus;
+    }
+
+    public void setInsertTime(Date insertTime) {
+        this.insertTime = insertTime;
+    }
+
+    public void setThirdPartyVerifyStatus(Integer thirdPartyVerifyStatus) {
+        this.thirdPartyVerifyStatus = thirdPartyVerifyStatus;
+    }
+
+    public void setThirdPartyVerifyTime(Date thirdPartyVerifyTime) {
+        this.thirdPartyVerifyTime = thirdPartyVerifyTime;
+    }
+
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
+
+    public void setVerifyTime(Date verifyTime) {
+        this.verifyTime = verifyTime;
+    }
+
+    public void setOperatedTime(Date operatedTime) {
+        this.operatedTime = operatedTime;
+    }
+
+    public void setOperatedBy(Long operatedBy) {
+        this.operatedBy = operatedBy;
+    }
+
+    public void setOperatedByName(String operatedByName) {
+        this.operatedByName = operatedByName;
+    }
 }

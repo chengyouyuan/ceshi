@@ -87,7 +87,7 @@ public class VerifyDetailExcelVO {
     private Date verifyTime;
 
     @ApiModelProperty("操作时间")
-    @Excel(name = "操作时间", width = 30)
+    @Excel(name = "操作时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date operatedTime;
 
     @ApiModelProperty("操作人")

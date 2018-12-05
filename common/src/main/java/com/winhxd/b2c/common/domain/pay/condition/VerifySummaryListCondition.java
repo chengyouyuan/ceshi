@@ -56,4 +56,7 @@ public class VerifySummaryListCondition extends PagedCondition implements Serial
 
     @ApiModelProperty("实结款结束")
     private BigDecimal realVerifyMoneyEnd;
+
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
 }

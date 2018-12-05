@@ -70,6 +70,7 @@ public class VerifyController {
             @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseEntity<byte[]> verifyListExport(@RequestBody VerifySummaryListCondition condition) {
+        condition.setIsQueryAll(true);
         DoubleDate recordedDate = condition.getRecordedDate();
         if (recordedDate != null) {
             condition.setRecordedDateStart(recordedDate.getStart());
@@ -106,6 +107,7 @@ public class VerifyController {
             @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseEntity<byte[]> verifyListExport(@RequestBody VerifyDetailListCondition condition) {
+        condition.setIsQueryAll(true);
         DoubleDate recordedDate = condition.getRecordedDate();
         if (recordedDate != null) {
             condition.setRecordedDateStart(recordedDate.getStart());

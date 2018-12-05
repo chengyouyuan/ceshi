@@ -118,9 +118,9 @@ public class VerifyController {
             condition.setVerifyDateStart(verifyDate.getStart());
             condition.setVerifyDateEnd(verifyDate.getEnd());
         }
-        ResponseResult<List<VerifyDetailVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
+        ResponseResult<List<VerifyDetailExcelVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {
-            List<VerifyDetailVO> list = responseResult.getData();
+            List<VerifyDetailExcelVO> list = responseResult.getData();
             return ExcelUtils.exp(list, "费用明细列表");
         }
         return null;

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
+import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailExcelVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -16,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api(tags = "结算")
 @RestController
@@ -196,10 +199,15 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细导出查询")
     @PostMapping("/pay/6086/v1/accountingDetailListExport")
-    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
+    public ResponseResult<List<VerifyDetailExcelVO>> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
         logger.info("/pay/6086/v1/accountingDetailListExport门店费用明细导出查询，参数为--{}", JsonUtil.toJSONString(condition));
         List<VerifyDetailVO> list = verifyService.findAccountingDetailList(condition);
-        return new ResponseResult<>(list);
+        List<VerifyDetailExcelVO> excelList = list.stream().map(verifyDetailVO -> {
+            VerifyDetailExcelVO verifyDetailExcelVO = new VerifyDetailExcelVO();
+            BeanUtils.copyProperties(verifyDetailVO, verifyDetailExcelVO);
+            return verifyDetailExcelVO;
+        }).collect(Collectors.toList());
+        return new ResponseResult<>(excelList);
     }
 
 }

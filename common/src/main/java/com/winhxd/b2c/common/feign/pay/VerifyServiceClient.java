@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
+import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailExcelVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import feign.hystrix.FallbackFactory;
@@ -83,7 +84,7 @@ public interface VerifyServiceClient {
      * @return
      */
     @RequestMapping(value = "/pay/6086/v1/accountingDetailListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition);
+    ResponseResult<List<VerifyDetailExcelVO>> accountingDetailListExport(VerifyDetailListCondition condition);
 
 
     /**
@@ -215,7 +216,7 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
     }
 
     @Override
-    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
+    public ResponseResult<List<VerifyDetailExcelVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

@@ -42,10 +42,6 @@ public class VerifySummaryVO {
     @Excel(name = "核销时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date operatedTime;
 
-    @ApiModelProperty("操作人")
-    @Excel(name = "操作人", width = 30)
-    private String operatedByName;
-
     @ApiModelProperty("实付款")
     @Excel(name = "实收总额", width = 30)
     private BigDecimal realPay;
@@ -61,6 +57,10 @@ public class VerifySummaryVO {
     @ApiModelProperty("实结款")
     @Excel(name = "实结总额", width = 30)
     private BigDecimal realVerify;
+
+    @ApiModelProperty("操作人")
+    @Excel(name = "操作人", width = 30)
+    private String operatedByName;
 
     public String getVerifyStatusName() {
         return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());

@@ -185,4 +185,21 @@ public class VerifyController {
         List<PayWithdrawalsVO> list = verifyService.findPayWithdrawalsList(condition);
         return new ResponseResult<>(list);
     }
+
+    @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
+    @PostMapping("/pay/6085/v1/verifyListExport")
+    public ResponseResult<List<VerifySummaryVO>> verifyListExport(@RequestBody VerifySummaryListCondition condition) {
+        logger.info("/pay/6085/v1/verifyListExport结算列表查询开始，参数为--{}", JsonUtil.toJSONString(condition));
+        List<VerifySummaryVO> verifyList = verifyService.findVerifyList(condition);
+        return new ResponseResult<>(verifyList);
+    }
+
+    @ApiOperation(value = "费用明细导出查询")
+    @PostMapping("/pay/6086/v1/accountingDetailListExport")
+    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
+        logger.info("/pay/6086/v1/accountingDetailListExport门店费用明细导出查询，参数为--{}", JsonUtil.toJSONString(condition));
+        List<VerifyDetailVO> list = verifyService.findAccountingDetailList(condition);
+        return new ResponseResult<>(list);
+    }
+
 }

@@ -2,17 +2,18 @@ package com.winhxd.b2c.admin.module.pay.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
-import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
-import com.winhxd.b2c.common.domain.pay.vo.DoubleDecimal;
-import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
+import com.winhxd.b2c.common.domain.pay.vo.*;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -61,6 +62,68 @@ public class VerifyController {
         }
         return verifyServiceClient.verifyList(condition);
     }
+
+    @ApiOperation(value = "结算列表导出excel")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
+    @RequestMapping("/verifyListExport")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询订单列表数据失败"),
+            @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseEntity<byte[]> verifyListExport(@RequestBody VerifySummaryListCondition condition) {
+        DoubleDate recordedDate = condition.getRecordedDate();
+        if (recordedDate != null) {
+            condition.setRecordedDateStart(recordedDate.getStart());
+            condition.setRecordedDateEnd(recordedDate.getEnd());
+        }
+        DoubleDate verifyDate = condition.getVerifyDate();
+        if (verifyDate != null) {
+            condition.setVerifyDateStart(verifyDate.getStart());
+            condition.setVerifyDateEnd(verifyDate.getEnd());
+        }
+        DoubleDecimal realPayMoney = condition.getRealPayMoney();
+        if (realPayMoney != null) {
+            condition.setRealPayMoneyStart(realPayMoney.getStart());
+            condition.setRealPayMoneyEnd(realPayMoney.getEnd());
+        }
+        DoubleDecimal realVerifyMoney = condition.getRealVerifyMoney();
+        if (realVerifyMoney != null) {
+            condition.setRealVerifyMoneyStart(realVerifyMoney.getStart());
+            condition.setRealVerifyMoneyEnd(realVerifyMoney.getEnd());
+        }
+        ResponseResult<List<VerifySummaryVO>> responseResult = verifyServiceClient.verifyListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<VerifySummaryVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "结算明细列表");
+        }
+        return null;
+    }
+
+
+    @ApiOperation(value = "费用明细列表导出excel")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
+    @RequestMapping("/accountingDetailListExport")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询订单列表数据失败"),
+            @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    public ResponseEntity<byte[]> verifyListExport(@RequestBody VerifyDetailListCondition condition) {
+        DoubleDate recordedDate = condition.getRecordedDate();
+        if (recordedDate != null) {
+            condition.setRecordedDateStart(recordedDate.getStart());
+            condition.setRecordedDateEnd(recordedDate.getEnd());
+        }
+        DoubleDate verifyDate = condition.getVerifyDate();
+        if (verifyDate != null) {
+            condition.setVerifyDateStart(verifyDate.getStart());
+            condition.setVerifyDateEnd(verifyDate.getEnd());
+        }
+        ResponseResult<List<VerifyDetailVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<VerifyDetailVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "费用明细列表");
+        }
+        return null;
+    }
+
 
     @ApiOperation(value = "账单结算", notes = "按汇总结算")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)

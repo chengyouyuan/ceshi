@@ -68,6 +68,25 @@ public interface VerifyServiceClient {
     ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition);
 
     /**
+     * 结算列表导出
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6085/v1/verifyListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<VerifySummaryVO>> verifyListExport(VerifySummaryListCondition condition);
+
+    /**
+     * 费用明细列表导出
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6086/v1/accountingDetailListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition);
+
+
+    /**
      * 结算-按汇总结算
      *
      * @param condition
@@ -185,6 +204,18 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
 
     @Override
     public ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<VerifySummaryVO>> verifyListExport(VerifySummaryListCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

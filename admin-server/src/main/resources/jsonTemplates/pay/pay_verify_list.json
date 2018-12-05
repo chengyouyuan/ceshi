@@ -32,6 +32,14 @@
             "message": "确认继续操作吗"
           }
         }
+      },
+      {
+        "name": "导出Excel",
+        "event": {
+          "type": "export",
+          "ajaxType": "post",
+          "path": "/pay/verify/verifyListExport"
+        }
       }
     ],
     "columns": [

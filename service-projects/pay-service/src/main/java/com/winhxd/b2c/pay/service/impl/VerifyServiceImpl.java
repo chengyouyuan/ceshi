@@ -281,14 +281,16 @@ public class VerifyServiceImpl implements VerifyService {
      */
     @Override
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Page<VerifySummaryVO> page;
         if (condition.getVerifyStatus() != null && AccountingDetail.VerifyStatusEnum.VERIFIED.getCode() == condition.getVerifyStatus()) {
             page = accountingDetailMapper.selectVerifiedList(condition);
         } else {
             page = accountingDetailMapper.selectVerifyingList(condition);
         }
-        if (page.getTotal() > 0) {
+        if (page.getTotal() > 0 || (condition.getIsQueryAll() && page.size() > 0)) {
             Set<Long> storeSet = new HashSet<>();
             for (VerifySummaryVO vo : page.getResult()) {
                 if (!storeSet.contains(vo.getStoreId())) {
@@ -322,7 +324,7 @@ public class VerifyServiceImpl implements VerifyService {
             PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
         Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
-        if (page.getTotal() > 0) {
+        if (page.getTotal() > 0 || (condition.getIsQueryAll() && page.size() > 0)) {
             Set<Long> storeSet = new HashSet<>();
             for (VerifyDetailVO vo : page.getResult()) {
                 if (!storeSet.contains(vo.getStoreId())) {

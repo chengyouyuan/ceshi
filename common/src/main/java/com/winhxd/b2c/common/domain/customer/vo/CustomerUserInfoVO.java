@@ -21,7 +21,7 @@ public class CustomerUserInfoVO {
      * 昵称
      */
     @ApiModelProperty("昵称")
-    @Excel(name = "用户名", orderNum = "5", width = 30)
+    @Excel(name = "用户名", orderNum = "1", width = 30)
     private String nickName;
     /**
      * 用户id
@@ -62,7 +62,7 @@ public class CustomerUserInfoVO {
      * 用户状态,默认有效1，无效(黑名单)0,默认是有效
      */
     @ApiModelProperty("用户状态,默认有效1，无效(黑名单)0,默认是有效")
-    @Excel(name = "用户状态", orderNum = "6", width = 30, replace = {"有效_1", "无效_0"})
+    @Excel(name = "用户状态", orderNum = "5", width = 30, replace = {"有效_1", "无效_0"})
     private Integer status = 1;
 
     private static final long serialVersionUID = 1L;

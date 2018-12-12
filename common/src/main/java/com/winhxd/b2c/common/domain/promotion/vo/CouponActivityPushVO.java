@@ -12,23 +12,24 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
- * @author shijinxing
- * @date 2018/8/6
- */
-@ApiModel("优惠券活动")
+ * @program: retail2c
+ * @description: 优惠券推券活动VO
+ * @author: ChenYanqi
+ * @create: 2018-12-12 14:20
+ **/
+@ApiModel("优惠券推券活动VO")
 @Data
-public class CouponActivityVO {
+public class CouponActivityPushVO {
 
     @ApiModelProperty(value = "优惠券活动ID")
     private Long id;
 
     @ApiModelProperty(value = "活动编码")
-    @Excel(name = "领券活动编码", width = 40)
+    @Excel(name = "推券活动编码", width = 40)
     private String code;
 
     @ApiModelProperty(value = "活动名称")
-    @Excel(name = "领券活动名称", width = 30)
+    @Excel(name = "推券活动名称", width = 30)
     private String name;
 
     @ApiModelProperty(value = "活动状态名称1开启2停止3停止并撤销")
@@ -38,18 +39,6 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "引用数量")
     @Excel(name = "引用数量", width = 30)
     private Integer citeNum;
-
-    @ApiModelProperty(value = "配置可领券小店数量")
-    @Excel(name = "配置可领券小店数量", width = 30)
-    private Integer storeNum;
-
-    @ApiModelProperty(value = "配置可领券小店数量")
-    @Excel(name = "优惠券数量限制类型", width = 30)
-    private String couponNumTypeName;
-
-    @ApiModelProperty(value = "优惠券数量的限制数量")
-    @Excel(name = "优惠券限制数量", width = 30)
-    private Integer couponNum;
 
     @ApiModelProperty(value = "己领取数量")
     @Excel(name = "已领取数量", width = 30)
@@ -94,6 +83,15 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "修改时间")
     @Excel(name = "修改时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date updated;
+
+    @ApiModelProperty(value = "配置可领券小店数量")
+    private Integer storeNum;
+
+    @ApiModelProperty(value = "配置可领券小店数量")
+    private String couponNumTypeName;
+
+    @ApiModelProperty(value = "优惠券数量的限制数量")
+    private Integer couponNum;
 
     @ApiModelProperty(value = "活动说明")
     private String exolian;

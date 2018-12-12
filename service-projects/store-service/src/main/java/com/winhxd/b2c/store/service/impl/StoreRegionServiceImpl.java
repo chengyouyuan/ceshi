@@ -49,7 +49,10 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public PagedList<StoreRegionVO> findStoreRegions(StoreRegionCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        Page page = new Page();
+        if (!condition.getIsQueryAll()) {
+            page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         PagedList<StoreRegionVO> pagedList = new PagedList();
         StoreRegion region = new StoreRegion();
         BeanUtils.copyProperties(condition, region);

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.RegexConstant;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -25,12 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -66,6 +66,18 @@ public class BackStageStoreController {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);
         logger.info("{} - 门店账户列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
+    }
+
+    @ApiOperation(value = "门店管理导出Excel")
+    @RequestMapping("/storeListExport")
+    public ResponseEntity<byte[]> storeListExport(@RequestBody BackStageStoreInfoCondition condition) {
+        condition.setIsQueryAll(true);
+        ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.findStoreList(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<BackStageStoreVO> list = responseResult.getData().getData();
+            return ExcelUtils.exp(list, "门店管理");
+        }
+        return null;
     }
 
     @ApiOperation(value = "查询门店账户详细信息接口", notes = "查询门店账户详细信息接口")

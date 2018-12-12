@@ -110,7 +110,9 @@ public class StoreServiceImpl implements StoreService {
             regionCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
-        PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
+        if (!storeCondition.getIsQueryAll()) {
+            PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
+        }
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         storeUserInfo.setStoreRegionCode(regionCode);
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());

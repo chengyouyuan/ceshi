@@ -69,7 +69,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         PagedList<CouponActivityVO> pagedList = new PagedList<>();
-        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         List<CouponActivityVO> activity = couponActivityService.findCouponActivity(condition);
         PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
         pagedList.setData(pageInfo.getList());

@@ -60,7 +60,7 @@
         }
       },
       {
-        "name": "导出Excel",
+        "name": "导出",
         "event": {
           "type": "export",
           "ajaxType": "post",

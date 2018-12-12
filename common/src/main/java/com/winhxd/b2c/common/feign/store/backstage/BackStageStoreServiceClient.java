@@ -1,16 +1,5 @@
 package com.winhxd.b2c.common.feign.store.backstage;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -22,8 +11,17 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCond
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
-
 import feign.hystrix.FallbackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  *
@@ -194,7 +192,7 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
-	@Override
+    @Override
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(BackStageStoreProdCondition condition) {
 		logger.error("StoreServiceClientFallBack -> findStoreProdManage 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);

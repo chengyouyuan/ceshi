@@ -199,14 +199,14 @@
           "children": [
             {
               "id": "9_4_1",
-              "menuName": "模版新增",
+              "menuName": "模板新增",
               "path": "/promotion/addtemplate",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_4_2",
-              "menuName": "模版列表",
+              "menuName": "模板列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_templete_list.json",
               "permission": ""

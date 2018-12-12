@@ -109,7 +109,9 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     public PagedList<CouponTemplateVO> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
 
         PagedList<CouponTemplateVO> pagedList = new PagedList<>();
-        PageHelper.startPage(couponTemplateCondition.getPageNo(),couponTemplateCondition.getPageSize());
+        if (!couponTemplateCondition.getIsQueryAll()) {
+            PageHelper.startPage(couponTemplateCondition.getPageNo(), couponTemplateCondition.getPageSize());
+        }
         checkApplyRuleName(couponTemplateCondition);
 
         List<CouponTemplateVO> couponTemplateVOList = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);

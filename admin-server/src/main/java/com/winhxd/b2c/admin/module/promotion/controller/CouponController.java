@@ -28,6 +28,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -82,6 +83,22 @@ public class CouponController {
 		logger.info("获取优惠券活动领券列表，type="+condition.getType());
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
+
+	@ApiOperation("领券列表导出")
+	@PostMapping(value = "/couponActivityPullExport")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_LIST)
+	public ResponseEntity<byte[]> couponActivityPullExport(@RequestBody CouponActivityCondition condition) {
+		condition.setIsQueryAll(true);
+		condition.setType((short) 1);
+		logger.info("优惠券活动领券列表导出，type=" + condition.getType());
+		ResponseResult<PagedList<CouponActivityVO>> responseResult = couponActivityServiceClient.queryCouponActivity(condition);
+		if (responseResult != null && responseResult.getCode() == 0) {
+			List<CouponActivityVO> list = responseResult.getData().getData();
+			return ExcelUtils.exp(list, "领券管理列表");
+		}
+		return null;
+	}
+
 	/**
 	 *
 	 *@Deccription  获取优惠券活动列表（推券）
@@ -97,6 +114,26 @@ public class CouponController {
 		condition.setType((short) 2);
 		logger.info("获取优惠券活动推券列表，type="+condition.getType());
 		return couponActivityServiceClient.queryCouponActivity(condition);
+	}
+
+	@ApiOperation("优惠券活动推券列表导出")
+	@PostMapping(value = "/couponActivityPushExport")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_LIST)
+	public ResponseEntity<byte[]> couponActivityPushExport(@RequestBody CouponActivityCondition condition) {
+		condition.setIsQueryAll(true);
+		condition.setType((short) 2);
+		logger.info("优惠券活动推券列表导出，type=" + condition.getType());
+		ResponseResult<PagedList<CouponActivityVO>> responseResult = couponActivityServiceClient.queryCouponActivity(condition);
+		if (responseResult != null && responseResult.getCode() == 0) {
+			List<CouponActivityVO> list = responseResult.getData().getData();
+			List<CouponActivityPushVO> pushList = list.stream().map(couponActivityVO -> {
+				CouponActivityPushVO couponActivityPushVO = new CouponActivityPushVO();
+				BeanUtils.copyProperties(couponActivityVO, couponActivityPushVO);
+				return couponActivityPushVO;
+			}).collect(Collectors.toList());
+			return ExcelUtils.exp(pushList, "推券管理列表");
+		}
+		return null;
 	}
 
 	@ApiOperation("优惠券活动导入小店信息")
@@ -465,6 +502,20 @@ public class CouponController {
 	public ResponseResult<PagedList<CouponTemplateVO>> getCouponTemplatePage(@RequestBody CouponTemplateCondition condition){
 		return couponTemplateServiceClient.findCouponTemplatePageByCondition(condition);
 	}
+
+	@ApiOperation("优惠券模板列表导出")
+	@PostMapping(value = "/couponTemplateListExport")
+	@CheckPermission(PermissionEnum.PROMOTION_TEMPLETE_MANAGEMENT_LIST)
+	public ResponseEntity<byte[]> couponTemplateListExport(@RequestBody CouponTemplateCondition condition) {
+		condition.setIsQueryAll(true);
+		ResponseResult<PagedList<CouponTemplateVO>> responseResult = couponTemplateServiceClient.findCouponTemplatePageByCondition(condition);
+		if (responseResult != null && responseResult.getCode() == 0) {
+			List<CouponTemplateVO> list = responseResult.getData().getData();
+			return ExcelUtils.exp(list, "优惠券模板列表");
+		}
+		return null;
+	}
+
 
 	/**
 	 *

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -17,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 后台提报商品controller
@@ -91,7 +92,18 @@ public class StoreSubmitProductController {
         result=backStageStoreServiceClient.modifyStoreSubmitProd(condition);
         return result;
     }
-	
+
+	@ApiOperation(value = "门店提报商品管理导出Excel")
+	@RequestMapping("/store/storeSubmitProdListExport")
+	public ResponseEntity<byte[]> storeSubmitProdListExport(@RequestBody BackStageStoreSubmitProdCondition condition) {
+		condition.setIsQueryAll(true);
+		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> responseResult = backStageStoreServiceClient.findStoreSubmitProdList(condition);
+		if (responseResult != null && responseResult.getCode() == 0) {
+			List<BackStageStoreSubmitProdVO> list = responseResult.getData().getData();
+			return ExcelUtils.exp(list, "门店提报商品管理");
+		}
+		return null;
+	}
 	
 
 

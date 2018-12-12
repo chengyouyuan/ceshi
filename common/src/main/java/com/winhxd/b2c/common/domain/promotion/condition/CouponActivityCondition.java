@@ -63,4 +63,7 @@ public class CouponActivityCondition extends PagedCondition implements Serializa
     @ApiModelProperty(value = "创建时间")
     private DateInterval dateInterval;
 
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
+
 }

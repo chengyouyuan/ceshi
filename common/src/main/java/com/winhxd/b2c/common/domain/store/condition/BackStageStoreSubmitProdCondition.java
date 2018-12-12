@@ -2,7 +2,6 @@ package com.winhxd.b2c.common.domain.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winhxd.b2c.common.domain.common.PagedCondition;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,4 +35,7 @@ public class BackStageStoreSubmitProdCondition extends PagedCondition{
 	private String storeMobile;
     @ApiModelProperty("审核备注")
     private String auditRemark;
+	@ApiModelProperty("是否查询全部数据")
+	private Boolean isQueryAll = false;
+
 }

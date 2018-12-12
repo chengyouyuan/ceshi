@@ -131,7 +131,7 @@ public class CouponController {
 				BeanUtils.copyProperties(couponActivityVO, couponActivityPushVO);
 				return couponActivityPushVO;
 			}).collect(Collectors.toList());
-			return ExcelUtils.exp(pushList, "推券管理列表");
+            return ExcelUtils.exp(pushList, "推券管理列表");
 		}
 		return null;
 	}

@@ -78,6 +78,7 @@ public class CustomerUserController {
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
+        condition.setIsQueryAll(true);
         ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO> list = result.getData().getData();
         if (CollectionUtils.isEmpty(list)) {

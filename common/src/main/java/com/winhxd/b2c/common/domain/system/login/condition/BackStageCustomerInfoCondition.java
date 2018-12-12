@@ -37,4 +37,7 @@ public class BackStageCustomerInfoCondition extends PagedCondition {
     @ApiModelProperty("是否绑定门店，1是，0否")
     private Integer bindStatus;
 
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
+
 }

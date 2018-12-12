@@ -10,7 +10,6 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.customer.dao.CustomerUserInfoMapper;
 import com.winhxd.b2c.customer.service.CustomerService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public PagedList<CustomerUserInfoVO> findCustomerPageInfo(BackStageCustomerInfoCondition condition) {
         PagedList<CustomerUserInfoVO> pagedList = new PagedList<>();
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         List<CustomerUserInfoVO> customers = customerUserInfoMapper.selectCustomer(condition);
         PageInfo<CustomerUserInfoVO> pageInfo = new PageInfo<>(customers);
         pagedList.setData(pageInfo.getList());

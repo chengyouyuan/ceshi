@@ -71,11 +71,17 @@ public class StoreServiceController implements StoreServiceClient {
 
     @Override
     public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-		// 检查参数
-		checkParam(customerId, storeUserId);
-
-		//检查用户id和storeuserId有效
-		checkStoreUserInfoVO(storeUserId);
+        if(customerId == null) {
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        if (storeUserId == null) {
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
+        //检查用户id和storeuserId有效
+		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
+        if(storeUserInfoVO == null){
+        	throw new BusinessException(BusinessCode.CODE_200004);
+		}
 		if(!checkCustomerExist(customerId)){
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
@@ -85,23 +91,7 @@ public class StoreServiceController implements StoreServiceClient {
         return result;
     }
 
-	private void checkStoreUserInfoVO(@RequestParam("storeUserId") Long storeUserId) {
-		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
-		if (storeUserInfoVO == null) {
-			throw new BusinessException(BusinessCode.CODE_200004);
-		}
-	}
-
-	private void checkParam(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-		if (customerId == null) {
-			throw new BusinessException(BusinessCode.CODE_200001);
-		}
-		if (storeUserId == null) {
-			throw new BusinessException(BusinessCode.CODE_200002);
-		}
-	}
-
-	public boolean checkCustomerExist(Long customerId) {
+    public boolean checkCustomerExist(Long customerId){
 		List<Long> ids = new ArrayList<>();
 		ids.add(customerId);
 		List<CustomerUserInfoVO>  list = customerServiceClient.findCustomerUserByIds(ids).getDataWithException();

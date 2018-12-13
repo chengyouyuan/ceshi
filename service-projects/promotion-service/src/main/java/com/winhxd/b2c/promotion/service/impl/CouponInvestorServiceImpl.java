@@ -193,5 +193,5 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         return list;
     }
 
-    
+
 }

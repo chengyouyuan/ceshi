@@ -18,10 +18,11 @@
     <result column="session_key" property="sessionKey" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT"/>
     <result column="token" property="token" jdbcType="VARCHAR" />
+    <result column="digital_union_id" property="digitalUnionId" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     customer_id, customer_mobile, openid, lat, lon, nick_name, head_img, created, created_by, 
-    created_by_name, updated, updated_by, updated_by_name, session_key, status,token
+    created_by_name, updated, updated_by, updated_by_name, session_key, status,token,digital_union_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -52,6 +53,7 @@
       <result property="nickName" column="nick_name"/>
       <result property="headImg" column="head_img"/>
       <result property="created" column="created"/>
+    <result property="storeId" column="store_user_id"/>
   </resultMap>
   <select id="selectCustomerUserByIds" resultMap="customerUserInfoVO1">
     select *
@@ -85,10 +87,12 @@
     </where>
   </select>
   <select id="selectCustomer" resultMap="customerUserInfoVO1">
-    select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created
-    from customer_user_info cui  left join store_customer_relation csr
-    on cui.customer_id = csr.customer_id left join store_user_info sui  on csr.store_user_id = sui.id
-      <where>
+    select
+    cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created,csr.store_user_id
+    from customer_user_info cui
+    left join store_customer_relation csr on cui.customer_id = csr.customer_id
+    left join store_user_info sui on csr.store_user_id = sui.id
+    <where>
       <if test="customerId != null">
          and cui.customer_id =  #{customerId,jdbcType=BIGINT}
       </if>
@@ -107,13 +111,16 @@
       <if test="storeName != null and storeName != ''">
         and sui.store_name like CONCAT('%',  #{storeName,jdbcType=VARCHAR}, '%')
       </if>
+      <if test="storeId != null">
+        and sui.id = #{storeId,jdbcType=BIGINT}
+      </if>
       <if test="bindStatus != null and bindStatus == 1">
         and sui.store_name is not null
       </if>
-        <if test="bindStatus != null and bindStatus == 0">
-          and sui.store_name is  null
-        </if>
-      </where>
+      <if test="bindStatus != null and bindStatus == 0">
+        and sui.store_name is null
+      </if>
+    </where>
   </select>
 
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
@@ -121,12 +128,12 @@
       lat, lon, nick_name, head_img, 
       created, created_by, created_by_name, 
       updated, updated_by, updated_by_name, 
-      session_key, status,token)
+      session_key, status,token,digital_union_id)
     values (#{customerId,jdbcType=BIGINT}, #{customerMobile,jdbcType=CHAR}, #{openid,jdbcType=CHAR}, 
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{nickName,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
-      #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
+      #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},#{token,jdbcType=VARCHAR},#{digitalUnionId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" useGeneratedKeys="true" keyProperty="customerId">
     insert into customer_user_info
@@ -180,6 +187,9 @@
       <if test="token != null" >
         token,
       </if>
+      <if test="digitalUnionId != null">
+        digital_union_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >
@@ -230,6 +240,9 @@
       <if test="token != null" >
         #{token,jdbcType=VARCHAR},
       </if>
+      <if test="digitalUnionId != null">
+        #{digitalUnionId,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
@@ -279,6 +292,9 @@
       </if>
        <if test="token != null" >
         token = #{token,jdbcType=VARCHAR},
+       </if>
+      <if test="digitalUnionId != null">
+        digital_union_id = #{digitalUnionId,jdbcType=VARCHAR}
       </if>
     </set>
     where customer_id = #{customerId,jdbcType=BIGINT}
@@ -299,7 +315,8 @@
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       session_key = #{sessionKey,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
-      token = #{token,jdbcType=VARCHAR}
+      token = #{token,jdbcType=VARCHAR},
+      digital_union_id = #{digitalUnionId,jdbcType=CHAR}
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -48,6 +48,26 @@ public class CustomerUserInfo implements Serializable {
     private String token;
     /**用户状态,默认有效1，无效(黑名单)0,默认是有效*/
     private Integer status = 1;
+    /**
+     * 会话秘钥
+     */
+    private String sessionKey;
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 数盟id
+     *
+     * @return
+     */
+    private String digitalUnionId;
+
+    public String getDigitalUnionId() {
+        return digitalUnionId;
+    }
+
+    public void setDigitalUnionId(String digitalUnionId) {
+        this.digitalUnionId = digitalUnionId;
+    }
 
     public Integer getStatus() {
         return status;
@@ -56,13 +76,6 @@ public class CustomerUserInfo implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
-    /**
-     * 会话秘钥
-
-     */
-    private String  sessionKey;
-    private static final long serialVersionUID = 1L;
 
     public Long getCustomerId() {
         return customerId;

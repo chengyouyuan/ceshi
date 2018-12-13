@@ -26,6 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerUserInfoMapper customerUserInfoMapper;
 
+
     @Autowired
     private Cache cache;
 
@@ -97,4 +98,6 @@ public class CustomerServiceImpl implements CustomerService {
         pagedList.setTotalRows(pageInfo.getTotal());
         return pagedList;
     }
+
+
 }

@@ -30,6 +30,9 @@ public class BackStageCustomerInfoCondition extends PagedCondition {
     @ApiModelProperty("门店名称")
     private String storeName;
 
+    @ApiModelProperty("门店id")
+    private Long storeId;
+
     /**用户状态,默认有效true，无效(黑名单)false,默认是有效*/
     @ApiModelProperty("用户状态,默认有效1，无效(黑名单)0,默认是有效")
     private Integer status;

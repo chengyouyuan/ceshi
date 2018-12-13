@@ -4,8 +4,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
-import com.winhxd.b2c.common.domain.customer.model.CustomerAddress;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;

@@ -65,6 +65,9 @@ public class CustomerUserInfoVO {
     @Excel(name = "用户状态", orderNum = "5", width = 30, replace = {"有效_1", "无效_0"})
     private Integer status = 1;
 
+    @ApiModelProperty("名店id")
+    private Long storeId;
+
     private static final long serialVersionUID = 1L;
 
 }

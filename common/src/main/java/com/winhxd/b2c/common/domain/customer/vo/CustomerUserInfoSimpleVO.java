@@ -17,5 +17,6 @@ public class CustomerUserInfoSimpleVO {
     private String customerMobile;
 	@ApiModelProperty(value = "TOKEN")
     private String token;
-
+    @ApiModelProperty(value = "C端用户微信openid")
+    private String openid;
 }

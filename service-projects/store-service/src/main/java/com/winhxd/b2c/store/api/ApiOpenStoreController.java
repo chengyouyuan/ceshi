@@ -535,7 +535,7 @@ public class ApiOpenStoreController {
      * 查询门店营业信息，包括营业额、浏览人数、下单人数、订单数
      *
      * @param businessId      门店主键id
-     * @param storeCustomerId 门店用户id
+     * @param storeCustomerId 门店用户i
      * @param startDatetime   开始时间
      * @param endDatetime     结束时间
      * @param flag            是否查询昨日

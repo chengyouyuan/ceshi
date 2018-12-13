@@ -100,6 +100,7 @@ public class CustomerUserController {
         condition.setStatus(0);
         return customerServiceClient.updateStatus(condition);
     }
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_BLACK)
     @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
@@ -179,4 +180,6 @@ public class CustomerUserController {
         }
         return null;
     }
+
+
 }

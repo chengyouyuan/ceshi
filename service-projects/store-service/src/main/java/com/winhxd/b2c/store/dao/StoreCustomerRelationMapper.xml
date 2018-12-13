@@ -115,6 +115,16 @@
   </select>
 
   <!--根据店铺ID，店铺状态查询绑定的用户ID-->
+  <update id="changeBuind" parameterType="java.util.Map">
+    UPDATE store_customer_relation
+    SET store_user_id = #{storeId,jdbcType=BIGINT}
+    WHERE customer_id IN
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item.customerId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!-- 解绑  status 绑定状态 0未绑定，1已绑定，默认是绑定状态-->
   <select id="selectCustomerIds" resultType="java.lang.Long">
     SELECT sr.customer_id FROM store_customer_relation sr
     LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
@@ -128,5 +138,26 @@
     <if test="storeStatus != null and storeStatus != ''">
       and ui.store_status = #{storeStatus}
     </if>
+  </select>
+
+  <!-- 换绑 -->
+  <delete id="unBundling" parameterType="java.util.List">
+    DELETE FROM store_customer_relation
+    WHERE status = 1 AND customer_id IN
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
+  <!--根据用户ID，查询门店id-->
+  <select id="selectStoreIds" resultType="java.lang.Long">
+    SELECT sr.store_user_id
+    FROM store_customer_relation sr
+    LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
+    WHERE sr.status = 1
+    and sr.customer_id in
+    <foreach item="customerId" collection="customerIds" separator="," open="(" close=")" index="">
+      #{customerId}
+    </foreach>
   </select>
 </mapper>

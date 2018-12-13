@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStoreCustomerCountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerBindingStatusCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
@@ -30,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -211,4 +213,75 @@ public class BackStageStoreController {
         ResponseResult<PagedList<StoreUserInfoVO>> responseResult = storeServiceClient.queryStorePageInfo(condition);
         return responseResult;
     }
+
+
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_UNBUNDLING)
+    @ApiOperation(value = "顾客批量解绑", notes = "顾客批量解绑")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
+    @PostMapping(value = "/batchUnBundling")
+    public ResponseResult<Boolean> batchUnBundling(@RequestBody List<CustomerBindingStatusCondition> condition) {
+        logger.info("顾客批量解绑, 参数：condition={}", JsonUtil.toJSONString(condition));
+        if (CollectionUtils.isEmpty(condition)) {
+            logger.error("CustomerUserController -> batchUnBundling方法参数customerId为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        ResponseResult<Boolean> result = storeServiceClient.unBundling(condition);
+        return result;
+    }
+
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_UNBUNDLING)
+    @ApiOperation(value = "顾客解绑", notes = "顾客解绑")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
+    @PostMapping(value = "/unBundling")
+    public ResponseResult<Boolean> unBundling(@RequestBody CustomerBindingStatusCondition condition) {
+        logger.info("顾客解绑, 参数：condition={}", JsonUtil.toJSONString(condition));
+        if (condition == null) {
+            logger.error("CustomerUserController -> unBundling方法参数customerId为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        List<CustomerBindingStatusCondition> conditions = new ArrayList<>();
+        conditions.add(condition);
+        ResponseResult<Boolean> result = storeServiceClient.unBundling(conditions);
+        return result;
+    }
+
+
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_CHANGEBIND)
+    @ApiOperation(value = "顾客批量解绑", notes = "顾客批量解绑")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
+    @PostMapping(value = "/batchChangeBind")
+    public ResponseResult<Boolean> batchChangeBind(@RequestBody List<CustomerBindingStatusCondition> condition) {
+        logger.info("顾客批量解绑, 参数：condition={}", JsonUtil.toJSONString(condition));
+        if (CollectionUtils.isEmpty(condition)) {
+            logger.error("CustomerUserController -> batchUnBundling方法参数customerId为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        ResponseResult<Boolean> result = storeServiceClient.changeBind(condition);
+        return result;
+    }
+
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_CHANGEBIND)
+    @ApiOperation(value = "顾客批量解绑", notes = "顾客批量解绑")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
+    @PostMapping(value = "/changeBind")
+    public ResponseResult<Boolean> changeBind(@RequestBody CustomerBindingStatusCondition condition) {
+        logger.info("顾客批量解绑, 参数：condition={}", JsonUtil.toJSONString(condition));
+        if (condition == null) {
+            logger.error("CustomerUserController -> batchUnBundling方法参数customerId为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        List<CustomerBindingStatusCondition> conditions = new ArrayList<>();
+        conditions.add(condition);
+        ResponseResult<Boolean> result = storeServiceClient.changeBind(conditions);
+        return result;
+    }
+
 }

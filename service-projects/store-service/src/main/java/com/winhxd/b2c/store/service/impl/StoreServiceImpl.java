@@ -3,8 +3,11 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.customer.enums.CustomerBindStoreStatusEnum;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
@@ -14,16 +17,20 @@ import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
 import com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation;
+import com.winhxd.b2c.common.domain.store.model.StoreCustomerRelationLog;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerBindingStatusCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
+import com.winhxd.b2c.store.dao.StoreCustomerRelationLogMapper;
 import com.winhxd.b2c.store.dao.StoreCustomerRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
@@ -36,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +66,18 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private MessageServiceClient messageServiceClient;
 
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
+
+    @Autowired
+    private Cache cache;
+
+    private static final String CHECK_STORE_UNBIND_KEY = "check:store:unbind:lock:";
+    private static final String CHECK_STORE_CHANGEBIND_KEY = "check:store:changebind:lock:";
+
+    @Autowired
+    private StoreCustomerRelationLogMapper storeCustomerRelationLogMapper;
+
     @Override
     public StoreBindingStatus bindCustomer(Long customerId, Long storeUserId) {
         StoreCustomerRelation record = new StoreCustomerRelation();
@@ -79,7 +99,7 @@ public class StoreServiceImpl implements StoreService {
         record.setStatus(1);
         //todo,需要判断storeUserId是否有效,以免产生脏数据；
         StoreUserInfo store = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
-        if(null == store){
+        if (null == store) {
             throw new BusinessException(BusinessCode.CODE_102902);
         }
         storeCustomerRelationMapper.insert(record);
@@ -333,5 +353,97 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public int deleteStoreUserInfoById(Long storeUserInfoId){
         return storeUserInfoMapper.deleteByPrimaryKey(storeUserInfoId);
+    }
+
+    @Override
+    public int unBundling(List<CustomerBindingStatusCondition> condition) {
+
+        List<Long> customerIds = getCustomerIds(condition);
+        // 查询数据校验
+        checkStore(customerIds);
+
+
+        RedisLock lock = new RedisLock(cache, CHECK_STORE_UNBIND_KEY, 1000);
+        int num = 0;
+        try {
+            if (lock.tryLock(1, TimeUnit.SECONDS)) {
+                // 先解绑
+                num = storeCustomerRelationMapper.unBundling(customerIds);
+                // 往门店用户绑定关系日志表添加数据
+
+                if (num >= 1) {
+                    this.batchAddStoreCustomerRelationLog(condition);
+                }
+
+            } else {
+                throw new BusinessException(BusinessCode.CODE_1001);
+            }
+        } finally {
+            lock.lock();
+        }
+        return num;
+    }
+
+    private List<Long> getCustomerIds(List<CustomerBindingStatusCondition> condition) {
+        List<Long> customerIds = condition.stream().map(con -> con.getCustomerId()).collect(Collectors.toList());
+        if (org.springframework.util.CollectionUtils.isEmpty(customerIds)) {
+            throw new BusinessException(BusinessCode.CODE_200010);
+        }
+        return customerIds;
+    }
+
+    private void checkStore(List<Long> customerIds) {
+        List<Long> storeIds = storeCustomerRelationMapper.selectStoreIds(customerIds);
+        if (org.springframework.util.CollectionUtils.isEmpty(storeIds)) {
+            throw new BusinessException(BusinessCode.CODE_200009);
+        }
+    }
+
+    private void batchAddStoreCustomerRelationLog(List<CustomerBindingStatusCondition> condition) {
+        List<StoreCustomerRelationLog> list = condition.stream().map(con -> {
+            StoreCustomerRelationLog storeCustomerRelationLog = new StoreCustomerRelationLog();
+            storeCustomerRelationLog.setCustomerId(con.getCustomerId());
+            storeCustomerRelationLog.setStoreId(con.getStoreId());
+            storeCustomerRelationLog.setLogTime(new Date());
+            storeCustomerRelationLog.setBindStatus((int) CustomerBindStoreStatusEnum.UN_BIND.getStatus());
+            return storeCustomerRelationLog;
+        }).collect(Collectors.toList());
+
+        storeCustomerRelationLogMapper.batchAddStoreCustomerRelationLog(list);
+    }
+
+    @Override
+    public int changeBind(List<CustomerBindingStatusCondition> condition) {
+        List<Long> customerIds = getCustomerIds(condition);
+        checkStore(customerIds);
+
+        Map<String, Object> paraMap = conditionToMap(condition);
+
+        RedisLock lock = new RedisLock(cache, CHECK_STORE_CHANGEBIND_KEY, 1000);
+        int num = 0;
+        try {
+            if (lock.tryLock(1, TimeUnit.SECONDS)) {
+                // 先换绑
+                num = storeCustomerRelationMapper.changeBuind(paraMap);
+
+                // 往门店用户绑定关系日志表添加数据
+                if (num >= 1) {
+                    this.batchAddStoreCustomerRelationLog(condition);
+                }
+
+            } else {
+                throw new BusinessException(BusinessCode.CODE_1001);
+            }
+        } finally {
+            lock.lock();
+        }
+        return num;
+    }
+
+    private Map<String, Object> conditionToMap(List<CustomerBindingStatusCondition> condition) {
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("storeId", condition.get(0).getStoreId());
+        paraMap.put("list", condition);
+        return paraMap;
     }
 }

@@ -35,9 +35,9 @@ public class PayTransfersToWxChangeVO {
     @ApiModelProperty("微信订单号")
     private String paymentNo;
 
+
     @ApiModelProperty("处理结果")
     private boolean transfersResult;
-
     @ApiModelProperty("错误代码")
     private String errorCode;
 

@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerBindingStatusCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 
 import java.util.List;
@@ -162,4 +163,20 @@ public interface StoreService {
      * @return
      */
     int deleteStoreUserInfoById(Long storeUserInfoId);
+
+    /**
+     * 解绑
+     *
+     * @param condition
+     * @return
+     */
+    int unBundling(List<CustomerBindingStatusCondition> condition);
+
+    /**
+     * 换绑
+     *
+     * @param condition
+     * @return
+     */
+    int changeBind(List<CustomerBindingStatusCondition> condition);
 }

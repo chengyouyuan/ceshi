@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerBindingStatusCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -70,17 +71,11 @@ public class StoreServiceController implements StoreServiceClient {
 
     @Override
     public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-        if(customerId == null) {
-            throw new BusinessException(BusinessCode.CODE_200001);
-        }
-        if (storeUserId == null) {
-            throw new BusinessException(BusinessCode.CODE_200002);
-        }
-        //检查用户id和storeuserId有效
-		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
-        if(storeUserInfoVO == null){
-        	throw new BusinessException(BusinessCode.CODE_200004);
-		}
+		// 检查参数
+		checkParam(customerId, storeUserId);
+
+		//检查用户id和storeuserId有效
+		checkStoreUserInfoVO(storeUserId);
 		if(!checkCustomerExist(customerId)){
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
@@ -90,7 +85,23 @@ public class StoreServiceController implements StoreServiceClient {
         return result;
     }
 
-    public boolean checkCustomerExist(Long customerId){
+	private void checkStoreUserInfoVO(@RequestParam("storeUserId") Long storeUserId) {
+		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
+		if (storeUserInfoVO == null) {
+			throw new BusinessException(BusinessCode.CODE_200004);
+		}
+	}
+
+	private void checkParam(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
+		if (customerId == null) {
+			throw new BusinessException(BusinessCode.CODE_200001);
+		}
+		if (storeUserId == null) {
+			throw new BusinessException(BusinessCode.CODE_200002);
+		}
+	}
+
+	public boolean checkCustomerExist(Long customerId) {
 		List<Long> ids = new ArrayList<>();
 		ids.add(customerId);
 		List<CustomerUserInfoVO>  list = customerServiceClient.findCustomerUserByIds(ids).getDataWithException();
@@ -289,6 +300,28 @@ public class StoreServiceController implements StoreServiceClient {
 		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		StoreUserInfoVO storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
 		responseResult.setData(storeInfo);
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<Boolean> unBundling(@RequestBody List<CustomerBindingStatusCondition> condition) {
+		ResponseResult<Boolean> responseResult = new ResponseResult<>();
+
+		int i = storeService.unBundling(condition);
+
+		boolean flag = i >= 1 ? true : false;
+		responseResult.setData(flag);
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<Boolean> changeBind(@RequestBody List<CustomerBindingStatusCondition> condition) {
+		ResponseResult<Boolean> responseResult = new ResponseResult<>();
+
+		int i = storeService.changeBind(condition);
+
+		boolean flag = i >= 1 ? true : false;
+		responseResult.setData(flag);
 		return responseResult;
 	}
 }

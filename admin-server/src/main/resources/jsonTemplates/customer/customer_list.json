@@ -17,6 +17,32 @@
         }
       },
       {
+        "name": "批量换绑",
+        "icon": null,
+        "event": {
+          "type": "batch",
+          "ajaxType": "get",
+          "path": ""
+        }
+      },
+      {
+        "name": "批量解绑",
+        "icon": null,
+        "event": {
+          "type": "batch",
+          "ajaxType": "post",
+          "path": "/store/batchUnBundling",
+          "confirm": {
+            "title": "确认提示",
+            "message": "确定要解绑门店吗？解绑后顾客将需要重新扫码绑定！"
+          },
+          "params": [
+            "customerId",
+            "storeId"
+          ]
+        }
+      },
+      {
         "name": "重置",
         "icon": null,
         "event": {
@@ -35,6 +61,10 @@
       }
     ],
     "columns": [
+      {
+        "type": "selection",
+        "name": "id"
+      },
       {
         "type": "index",
         "name": "customerId",
@@ -82,6 +112,32 @@
               },
               "path": "/customerDetails/index",
               "configKey": ""
+            }
+          },
+          {
+            "name": "换绑",
+            "inputModel": "inputDia",
+            "title": "换绑门店",
+            "placeholder": "",
+            "path": "",
+            "configKey": "/template/module/store/store_list_win.json",
+            "isHidden": false
+          },
+          {
+            "name": "解绑",
+            "icon": null,
+            "event": {
+              "type": "ajax",
+              "ajaxType": "post",
+              "path": "/store/unBundling",
+              "confirm": {
+                "title": "确认提示",
+                "message": "确定要解绑门店吗？解绑后顾客将需要重新扫码绑定！"
+              },
+              "params": [
+                "customerId",
+                "storeId"
+              ]
             }
           },
           {
@@ -158,6 +214,15 @@
             "value": "1",
             "label": "否"
           }]
+      },
+      {
+        "name": "storeId",
+        "inputModel": "inputDia",
+        "title": "绑定门店",
+        "placeholder": "",
+        "path": "",
+        "configKey": "/template/module/store/store_list_win.json",
+        "isHidden": false
       },
       {
         "name": "bindStatus",

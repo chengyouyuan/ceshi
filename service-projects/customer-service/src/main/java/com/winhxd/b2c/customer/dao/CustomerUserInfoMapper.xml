@@ -121,6 +121,7 @@
         and sui.store_name is null
       </if>
     </where>
+    ORDER BY cui.created DESC, csr.status DESC
   </select>
 
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >

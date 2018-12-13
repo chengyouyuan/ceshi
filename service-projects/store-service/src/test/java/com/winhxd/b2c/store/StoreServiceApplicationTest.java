@@ -26,6 +26,13 @@ public class StoreServiceApplicationTest {
 
     @Test
     public void testChangeBind() {
+        List<CustomerBindingStatusCondition> conditions = getCustomerBindingStatusConditions();
+
+        storeService.changeBind(conditions);
+
+    }
+
+    private List<CustomerBindingStatusCondition> getCustomerBindingStatusConditions() {
         List<CustomerBindingStatusCondition> conditions = new ArrayList<>();
 
         CustomerBindingStatusCondition condition = new CustomerBindingStatusCondition();
@@ -37,8 +44,15 @@ public class StoreServiceApplicationTest {
         condition2.setCustomerId(19L);
         condition2.setStoreId(93L);
         conditions.add(condition2);
+        return conditions;
+    }
 
-        storeService.changeBind(conditions);
 
+    @Test
+    public void testUnBundling() {
+        List<CustomerBindingStatusCondition> conditions = getCustomerBindingStatusConditions();
+
+        int num = storeService.unBundling(conditions);
+        System.out.println(num);
     }
 }

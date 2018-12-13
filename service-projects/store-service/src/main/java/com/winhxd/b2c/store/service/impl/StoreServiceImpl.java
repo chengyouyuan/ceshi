@@ -75,6 +75,11 @@ public class StoreServiceImpl implements StoreService {
     private static final String CHECK_STORE_UNBIND_KEY = "check:store:unbind:lock:";
     private static final String CHECK_STORE_CHANGEBIND_KEY = "check:store:changebind:lock:";
 
+    // 顾客解绑
+    private static final Short UNBIND = 2;
+    // 顾客换绑
+    private static final Short CHANGE_BIND = 3;
+
     @Autowired
     private StoreCustomerRelationLogMapper storeCustomerRelationLogMapper;
 
@@ -357,11 +362,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public int unBundling(List<CustomerBindingStatusCondition> condition) {
-
         List<Long> customerIds = getCustomerIds(condition);
         // 查询数据校验
         checkStore(customerIds);
-
 
         RedisLock lock = new RedisLock(cache, CHECK_STORE_UNBIND_KEY, 1000);
         int num = 0;
@@ -372,7 +375,7 @@ public class StoreServiceImpl implements StoreService {
                 // 往门店用户绑定关系日志表添加数据
 
                 if (num >= 1) {
-                    this.batchAddStoreCustomerRelationLog(condition);
+                    this.batchAddStoreCustomerRelationLog(condition, UNBIND);
                 }
 
             } else {
@@ -399,13 +402,17 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
-    private void batchAddStoreCustomerRelationLog(List<CustomerBindingStatusCondition> condition) {
+    private void batchAddStoreCustomerRelationLog(List<CustomerBindingStatusCondition> condition, Short stauts) {
         List<StoreCustomerRelationLog> list = condition.stream().map(con -> {
             StoreCustomerRelationLog storeCustomerRelationLog = new StoreCustomerRelationLog();
             storeCustomerRelationLog.setCustomerId(con.getCustomerId());
             storeCustomerRelationLog.setStoreId(con.getStoreId());
             storeCustomerRelationLog.setLogTime(new Date());
-            storeCustomerRelationLog.setBindStatus((int) CustomerBindStoreStatusEnum.UN_BIND.getStatus());
+            if (CustomerBindStoreStatusEnum.UN_BIND.getStatus() == stauts.shortValue()) {
+                storeCustomerRelationLog.setBindStatus((int) CustomerBindStoreStatusEnum.UN_BIND.getStatus());
+            } else if (CustomerBindStoreStatusEnum.CHANGE_BIND.getStatus() == stauts.shortValue()) {
+                storeCustomerRelationLog.setBindStatus((int) CustomerBindStoreStatusEnum.CHANGE_BIND.getStatus());
+            }
             return storeCustomerRelationLog;
         }).collect(Collectors.toList());
 
@@ -416,8 +423,8 @@ public class StoreServiceImpl implements StoreService {
     public int changeBind(List<CustomerBindingStatusCondition> condition) {
         List<Long> customerIds = getCustomerIds(condition);
         checkStore(customerIds);
-
-        Map<String, Object> paraMap = conditionToMap(condition);
+        // 转map是为了更好的传参 执行sql
+        Map<String, Object> paraMap = customerBindingStatusConditionToMap(condition);
 
         RedisLock lock = new RedisLock(cache, CHECK_STORE_CHANGEBIND_KEY, 1000);
         int num = 0;
@@ -428,7 +435,7 @@ public class StoreServiceImpl implements StoreService {
 
                 // 往门店用户绑定关系日志表添加数据
                 if (num >= 1) {
-                    this.batchAddStoreCustomerRelationLog(condition);
+                    this.batchAddStoreCustomerRelationLog(condition, CHANGE_BIND);
                 }
 
             } else {
@@ -440,8 +447,9 @@ public class StoreServiceImpl implements StoreService {
         return num;
     }
 
-    private Map<String, Object> conditionToMap(List<CustomerBindingStatusCondition> condition) {
+    private Map<String, Object> customerBindingStatusConditionToMap(List<CustomerBindingStatusCondition> condition) {
         Map<String, Object> paraMap = new HashMap<>();
+        // 批量换绑，门店id是一样的。
         paraMap.put("storeId", condition.get(0).getStoreId());
         paraMap.put("list", condition);
         return paraMap;

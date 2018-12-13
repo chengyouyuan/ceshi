@@ -71,17 +71,17 @@ public class StoreServiceController implements StoreServiceClient {
 
     @Override
     public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-        if(customerId == null) {
+        if (customerId == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
         if (storeUserId == null) {
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         //检查用户id和storeuserId有效
-		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
-        if(storeUserInfoVO == null){
-        	throw new BusinessException(BusinessCode.CODE_200004);
-		}
+        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
+        if (storeUserInfoVO == null) {
+            throw new BusinessException(BusinessCode.CODE_200004);
+        }
 		if(!checkCustomerExist(customerId)){
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
@@ -91,7 +91,7 @@ public class StoreServiceController implements StoreServiceClient {
         return result;
     }
 
-    public boolean checkCustomerExist(Long customerId){
+    public boolean checkCustomerExist(Long customerId) {
 		List<Long> ids = new ArrayList<>();
 		ids.add(customerId);
 		List<CustomerUserInfoVO>  list = customerServiceClient.findCustomerUserByIds(ids).getDataWithException();
@@ -293,25 +293,25 @@ public class StoreServiceController implements StoreServiceClient {
 		return responseResult;
 	}
 
-	@Override
-	public ResponseResult<Boolean> unBundling(@RequestBody List<CustomerBindingStatusCondition> condition) {
-		ResponseResult<Boolean> responseResult = new ResponseResult<>();
+    @Override
+    public ResponseResult<Boolean> unBundling(@RequestBody List<CustomerBindingStatusCondition> condition) {
+        ResponseResult<Boolean> responseResult = new ResponseResult<>();
 
-		int i = storeService.unBundling(condition);
+        int i = storeService.unBundling(condition);
 
-		boolean flag = i >= 1 ? true : false;
-		responseResult.setData(flag);
-		return responseResult;
-	}
+        boolean flag = i >= 1 ? true : false;
+        responseResult.setData(flag);
+        return responseResult;
+    }
 
-	@Override
-	public ResponseResult<Boolean> changeBind(@RequestBody List<CustomerBindingStatusCondition> condition) {
-		ResponseResult<Boolean> responseResult = new ResponseResult<>();
+    @Override
+    public ResponseResult<Boolean> changeBind(@RequestBody List<CustomerBindingStatusCondition> condition) {
+        ResponseResult<Boolean> responseResult = new ResponseResult<>();
 
-		int i = storeService.changeBind(condition);
+        int i = storeService.changeBind(condition);
 
-		boolean flag = i >= 1 ? true : false;
-		responseResult.setData(flag);
-		return responseResult;
-	}
+        boolean flag = i >= 1 ? true : false;
+        responseResult.setData(flag);
+        return responseResult;
+    }
 }

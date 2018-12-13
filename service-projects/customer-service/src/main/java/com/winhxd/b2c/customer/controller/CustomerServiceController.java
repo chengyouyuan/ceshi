@@ -51,8 +51,8 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> updateStatus(@RequestBody BackStageCustomerInfoCondition condition) {
-        ResponseResult<Void> responseResult = new ResponseResult<>();
+    public ResponseResult<Boolean> updateStatus(@RequestBody BackStageCustomerInfoCondition condition) {
+        ResponseResult<Boolean> responseResult = new ResponseResult<>();
         if (condition.getCustomerId() == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
@@ -60,7 +60,9 @@ public class CustomerServiceController implements CustomerServiceClient {
             throw new BusinessException(BusinessCode.CODE_200007);
         }
         int line = customerService.modifyCustomerStatus(condition);
-        responseResult.setCode(line == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200008);
+        boolean flag = line == 1 ? true : false;
+
+        responseResult.setData(flag);
         return responseResult;
     }
 

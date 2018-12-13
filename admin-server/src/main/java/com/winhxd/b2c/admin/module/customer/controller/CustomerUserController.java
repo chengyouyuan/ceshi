@@ -92,7 +92,7 @@ public class CustomerUserController {
     @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/addBlackList")
-    public ResponseResult<Void> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
+    public ResponseResult<Boolean> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);
@@ -105,7 +105,7 @@ public class CustomerUserController {
     @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/removeBlackList")
-    public ResponseResult<Void> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
+    public ResponseResult<Boolean> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);

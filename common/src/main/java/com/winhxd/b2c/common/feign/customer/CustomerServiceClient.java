@@ -44,7 +44,7 @@ public interface CustomerServiceClient {
      * @Description 更新用户的状态
      */
     @RequestMapping(value = "/customer/2006/v1/updateStatus", method = RequestMethod.POST)
-    ResponseResult<Void> updateStatus(@RequestBody BackStageCustomerInfoCondition condition);
+    ResponseResult<Boolean> updateStatus(@RequestBody BackStageCustomerInfoCondition condition);
 
     /**
      * @param ids 用户id
@@ -134,7 +134,7 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<Void> updateStatus(BackStageCustomerInfoCondition condition) {
+    public ResponseResult<Boolean> updateStatus(BackStageCustomerInfoCondition condition) {
         logger.error("CustomerServiceClientFallBack -> updateStatus错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

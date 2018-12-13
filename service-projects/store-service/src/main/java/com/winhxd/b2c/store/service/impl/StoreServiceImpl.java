@@ -422,7 +422,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public int changeBind(List<CustomerBindingStatusCondition> condition) {
         List<Long> customerIds = getCustomerIds(condition);
-        checkStore(customerIds);
         // 转map是为了更好的传参 执行sql
         Map<String, Object> paraMap = customerBindingStatusConditionToMap(condition);
 

@@ -153,7 +153,6 @@
   <select id="selectStoreIds" resultType="java.lang.Long">
     SELECT sr.store_user_id
     FROM store_customer_relation sr
-    LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
     WHERE sr.status = 1
     and sr.customer_id in
     <foreach item="customerId" collection="customerIds" separator="," open="(" close=")" index="">

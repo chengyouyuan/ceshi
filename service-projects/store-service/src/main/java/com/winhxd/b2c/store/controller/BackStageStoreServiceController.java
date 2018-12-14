@@ -1,20 +1,9 @@
 package com.winhxd.b2c.store.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
-import com.winhxd.b2c.common.exception.BusinessException;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -22,12 +11,9 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.*;
 import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
@@ -38,6 +24,14 @@ import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreService;
 import com.winhxd.b2c.store.service.StoreSubmitProductService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by caiyulong on 2018/8/6.
@@ -136,7 +130,11 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 					}
 				}
 			}
-			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+
+            if (!condition.getIsQueryAll()) {
+                PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+            }
+
 			//最终查询
 			PagedList<BackStageStoreProdVO> resultVO = storeProductManageService.findStoreProdManageList(condition);
 			List<String> finalSkuCodes = new ArrayList<>(resultVO.getData().size());
@@ -206,7 +204,9 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> responseResult = null;
 		if (condition != null) {
 			responseResult = new ResponseResult<>();
-			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+            if (!condition.getIsQueryAll()) {
+                PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+            }
 			PagedList<BackStageStoreSubmitProdVO> list = this.storeSubmitProductService
 					.findBackStageVOByCondition(condition);
 			responseResult.setData(list);

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -12,8 +13,55 @@ import java.util.Date;
 public class CouponTemplateVO {
     @ApiModelProperty(value = "主键")
     private Long id;
+
+    @ApiModelProperty(value = "优惠券模板编码(UUID）")
+    @Excel(name = "优惠券编码", width = 40)
+    private String code;
+
     @ApiModelProperty(value = "优惠券标题")
+    @Excel(name = "优惠券标题", width = 30)
     private String title;
+
+    @ApiModelProperty(value = "优惠券标签")
+    @Excel(name = "优惠券标签", width = 30)
+    private String couponLabel;
+
+    @ApiModelProperty(value = "适用对象范围类型--转汉字")
+    @Excel(name = "优惠券适用范围", width = 30)
+    private String applyRuleTypeName;
+
+    @ApiModelProperty(value = "出资方规则名称")
+    @Excel(name = "出资方规则名称", width = 30)
+    private String investorName;
+
+    @ApiModelProperty(value = "优惠券优惠方式名称")
+    @Excel(name = "坎级规则名称", width = 30)
+    private String gradeName;
+
+    @ApiModelProperty(value = "优惠券类型规则名称")
+    @Excel(name = "适用范围名称", width = 30)
+    private String applyRuleName;
+
+    @ApiModelProperty(value = "状态--转汉字")
+    @Excel(name = "状态", width = 30)
+    private String statusName;
+
+    @ApiModelProperty(value = "创建人")
+    @Excel(name = "创建人", width = 30)
+    private String createdByName;
+
+    @ApiModelProperty(value = "创建时间(使用时间)")
+    @Excel(name = "创建时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date created;
+
+    @ApiModelProperty(value = "修改人")
+    @Excel(name = "修改人", width = 30)
+    private String updatedByName;
+
+    @ApiModelProperty(value = "修改时间")
+    @Excel(name = "修改时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date updated;
+
     @ApiModelProperty(value = "优惠券说明")
     private String exolian;
     @ApiModelProperty(value = "备注")
@@ -26,48 +74,29 @@ public class CouponTemplateVO {
     private Long applyRuleId;
     @ApiModelProperty(value = "角标")
     private String corner;
-    @ApiModelProperty(value = "优惠券标签")
-    private String couponLabel;
+
     @ApiModelProperty(value = "优惠券标签颜色")
     private Integer couponLabelColor;
     @ApiModelProperty(value = "是否有效 0有效1无效")
     private Short status;
     @ApiModelProperty(value = "无效原因")
     private String reason;
-    @ApiModelProperty(value = "优惠券模板编码(UUID）")
-    private String code;
+
     @ApiModelProperty(value = "优惠券金额计算方式  1订单金额 2商品金额")
     private Short calType;
     @ApiModelProperty(value = "支付方式 1扫码支付 2线上支付")
     private Short payType;
     @ApiModelProperty(value = "创建人id")
     private Long createdBy;
-    @ApiModelProperty(value = "创建人")
-    private String createdByName;
-    @ApiModelProperty(value = "创建时间(使用时间)")
-    private Date created;
+
     @ApiModelProperty(value = "修改人id")
     private Long updatedBy;
-    @ApiModelProperty(value = "修改人")
-    private String updatedByName;
-    @ApiModelProperty(value = "修改时间")
-    private Date updated;
-    @ApiModelProperty(value = "出资方规则名称")
-    private String investorName;
-    @ApiModelProperty(value = "优惠券优惠方式名称")
-    private String gradeName;
-    @ApiModelProperty(value = "优惠券类型规则名称")
-    private String applyRuleName;
+
     @ApiModelProperty(value = "优惠券类型规则类型")
     private Short applyRuleType;
-    @ApiModelProperty(value = "适用对象范围类型--转汉字")
-    private String applyRuleTypeName;
+
     @ApiModelProperty(value = "计算方式--转汉字")
     private String calTypeName;
-    @ApiModelProperty(value = "状态--转汉字")
-    private String statusName;
-
-
 
 
     public Long getId() {

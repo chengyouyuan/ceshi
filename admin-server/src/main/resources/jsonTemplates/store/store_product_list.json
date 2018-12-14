@@ -23,6 +23,14 @@
           "type": "reset",
           "path": ""
         }
+      },
+      {
+        "name": "导出",
+        "event": {
+          "type": "export",
+          "ajaxType": "post",
+          "path": "/store/storeProdManageListExport"
+        }
       }
     ],
     "columns": [

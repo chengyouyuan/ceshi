@@ -9,15 +9,17 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 /**
  * @program: retail2c
  * @description: 结算费用明细导出VO类
  * @author: ChenYanqi
  * @create: 2018-12-05 17:20
  **/
-@Data
 @ApiModel("结算费用明细导出VO类")
+@Data
 public class VerifyDetailExcelVO {
+
 
     @ApiModelProperty("结算状态")
     @Excel(name = "结算状态", width = 30)

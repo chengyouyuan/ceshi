@@ -55,4 +55,8 @@ public class CouponTemplateCondition extends PagedCondition implements Serializa
     private String corner;
     @ApiModelProperty(value = "日期")
     private DateInterval dateInterval;
+
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
+
 }

@@ -4,7 +4,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.customer.condition.CustomerAddressCondition;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerAddressVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
@@ -52,8 +51,8 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> updateStatus(@RequestBody BackStageCustomerInfoCondition condition) {
-        ResponseResult<Void> responseResult = new ResponseResult<>();
+    public ResponseResult<Boolean> updateStatus(@RequestBody BackStageCustomerInfoCondition condition) {
+        ResponseResult<Boolean> responseResult = new ResponseResult<>();
         if (condition.getCustomerId() == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
@@ -61,7 +60,9 @@ public class CustomerServiceController implements CustomerServiceClient {
             throw new BusinessException(BusinessCode.CODE_200007);
         }
         int line = customerService.modifyCustomerStatus(condition);
-        responseResult.setCode(line == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200008);
+        boolean flag = line == 1 ? true : false;
+
+        responseResult.setData(flag);
         return responseResult;
     }
 
@@ -131,4 +132,6 @@ public class CustomerServiceController implements CustomerServiceClient {
         result.setData(address);
         return result;
     }
+
+
 }

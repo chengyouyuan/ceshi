@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface StoreCustomerRelationMapper {
     int deleteByPrimaryKey(Long id);
@@ -35,4 +37,28 @@ public interface StoreCustomerRelationMapper {
      * @return
      */
     List<Long> selectCustomerIds(StoreCustomerRegionCondition storeCustomerRegionCondition);
+
+    /**
+     * 解绑
+     *
+     * @param list
+     * @return
+     */
+    int unBundling(List<Long> list);
+
+    /**
+     * 换绑
+     *
+     * @param paraMap
+     * @return
+     */
+    int changeBuind(Map<String, Object> paraMap);
+
+    /**
+     * 根据用户ID，查询门店id
+     *
+     * @param customerIds
+     * @return
+     */
+    List<Long> selectStoreIds(@Param("customerIds") List<Long> customerIds);
 }

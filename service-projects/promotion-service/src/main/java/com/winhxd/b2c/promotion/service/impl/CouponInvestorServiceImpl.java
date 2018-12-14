@@ -129,6 +129,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
      * @return
      */
     public Map<Long, Object> getCouponInvestorMap(List<Map<Long, Object>> list) {
+
         Map<Long, Object> resultMap = new HashMap<>(list.size());
         for (Map<Long, Object> map : list) {
             Long id = (Long) map.get("id");
@@ -191,4 +192,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         }
         return list;
     }
+
+
 }

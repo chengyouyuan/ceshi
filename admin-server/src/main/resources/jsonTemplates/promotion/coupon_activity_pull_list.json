@@ -34,6 +34,14 @@
           "type": "reset",
           "path": ""
         }
+      },
+      {
+        "name": "导出",
+        "event": {
+          "type": "export",
+          "ajaxType": "post",
+          "path": "/promotion/couponActivityPullExport"
+        }
       }
     ],
     "columns": [
@@ -126,11 +134,11 @@
       },
       {
         "name": "couponNumTypeName",
-        "title": "配置可领券小店数量"
+        "title": "优惠券数量限制类型"
       },
       {
         "name": "couponNum",
-        "title": "优惠券数量的限制数量"
+        "title": "优惠券限制数量"
       },
       {
         "name": "getNum",

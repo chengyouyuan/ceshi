@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.store.condition.*;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerBindingStatusCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -177,6 +178,24 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1070/v1/queryStoreUserInfoByCustomerId", method = RequestMethod.GET)
     ResponseResult<StoreUserInfoVO> queryStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
+
+    /**
+     * 解绑
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/store/1071/v1/unBundling", method = RequestMethod.POST)
+    ResponseResult<Boolean> unBundling(@RequestBody List<CustomerBindingStatusCondition> condition);
+
+    /**
+     * 换绑
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/store/1072/v1/changeBind", method = RequestMethod.POST)
+    ResponseResult<Boolean> changeBind(List<CustomerBindingStatusCondition> condition);
 }
 
 /**
@@ -281,5 +300,15 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
+    @Override
+    public ResponseResult<Boolean> unBundling(List<CustomerBindingStatusCondition> condition) {
+        logger.error("StoreServiceClientFallBack -> unBundling{}", throwable.getMessage());
+        return new ResponseResult<Boolean>(BusinessCode.CODE_1001);
+    }
 
+    @Override
+    public ResponseResult<Boolean> changeBind(List<CustomerBindingStatusCondition> condition) {
+        logger.error("StoreServiceClientFallBack -> batchChangeBind{}", throwable.getMessage());
+        return new ResponseResult<Boolean>(BusinessCode.CODE_1001);
+    }
 }

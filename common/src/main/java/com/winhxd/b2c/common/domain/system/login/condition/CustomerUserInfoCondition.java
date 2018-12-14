@@ -1,7 +1,6 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,4 +27,6 @@ public class CustomerUserInfoCondition extends ApiCondition{
     private String headImg;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
+	@ApiModelProperty(value = "数盟id")
+	private String digitalUnionId;
 }

@@ -78,6 +78,7 @@ public class CustomerUserController {
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
+        condition.setIsQueryAll(true);
         ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO> list = result.getData().getData();
         if (CollectionUtils.isEmpty(list)) {
@@ -91,7 +92,7 @@ public class CustomerUserController {
     @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/addBlackList")
-    public ResponseResult<Void> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
+    public ResponseResult<Boolean> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);
@@ -99,11 +100,12 @@ public class CustomerUserController {
         condition.setStatus(0);
         return customerServiceClient.updateStatus(condition);
     }
+
     @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_BLACK)
     @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/removeBlackList")
-    public ResponseResult<Void> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
+    public ResponseResult<Boolean> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);
@@ -178,4 +180,6 @@ public class CustomerUserController {
         }
         return null;
     }
+
+
 }

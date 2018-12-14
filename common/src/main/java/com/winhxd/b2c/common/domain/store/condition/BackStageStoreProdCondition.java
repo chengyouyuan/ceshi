@@ -1,11 +1,11 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * 门店商品后台condition
@@ -65,5 +65,7 @@ public class BackStageStoreProdCondition {
     @ApiModelProperty("页号")
     private Integer pageNo=1;
 
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
 
 }

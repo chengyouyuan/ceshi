@@ -37,4 +37,7 @@ public class BackStageStoreInfoCondition extends PagedCondition {
     @ApiModelProperty(value = "筛选的最小级别regionCode集合")
     private List<String> regionCodeList;
 
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
+
 }

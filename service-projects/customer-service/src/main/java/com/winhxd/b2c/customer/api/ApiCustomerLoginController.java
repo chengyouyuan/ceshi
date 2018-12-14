@@ -123,6 +123,9 @@ public class ApiCustomerLoginController {
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 			vo.setToken(customerUserInfo.getToken());
+			// 为获取数盟id，添加返回参数openId
+			vo.setOpenid(mini.getOpenid());
+
 			CustomerUser user = new CustomerUser();
 			user.setCustomerId(customerUserInfo.getCustomerId());
 			user.setOpenid(mini.getOpenid());
@@ -150,9 +153,13 @@ public class ApiCustomerLoginController {
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(db.getCustomerMobile());
 			vo.setToken(customerUserInfo.getToken());
+			// 为获取数盟id，添加返回参数openId
+			vo.setOpenid(mini.getOpenid());
+
 			CustomerUser user = new CustomerUser();
 			user.setOpenid(db.getOpenid());
 			user.setCustomerId(db.getCustomerId());
+
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
 			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 					AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
@@ -257,6 +264,38 @@ public class ApiCustomerLoginController {
 		vo.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
 		vo.setToken(customerUserInfo.getToken());
 		result.setData(vo);
+		return result;
+	}
+
+
+	/**
+	 * 添加数盟id
+	 *
+	 * @param customerUserInfoCondition
+	 * @return
+	 */
+	@ApiOperation(value = "微信小程序添加数盟id")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	@RequestMapping(value = "customer/2035/v1/addDigitalUnionId", method = RequestMethod.POST)
+	public ResponseResult<Boolean> addDigitalUnionId(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+		String logTitle = "=/api-customer/customer/2035/v1/addDigitalUnionId-C端小程序添加数盟id接口=";
+		logger.info("{} -微信小程序添加数盟id, 参数：customerUserInfoCondition={}", logTitle, JsonUtil.toJSONString(customerUserInfoCondition));
+		if (StringUtils.isBlank(customerUserInfoCondition.getDigitalUnionId())) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+
+		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+		customerUserInfo.setCustomerId(currentCustomerUser.getCustomerId());
+		customerUserInfo.setDigitalUnionId(customerUserInfoCondition.getDigitalUnionId());
+		int num = customerLoginService.updateCustomerInfo(customerUserInfo);
+		boolean flag = num == 1 ? true : false;
+
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		result.setData(flag);
+
 		return result;
 	}
 }

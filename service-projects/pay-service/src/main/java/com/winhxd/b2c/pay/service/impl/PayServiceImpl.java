@@ -716,7 +716,7 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public int transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-		String  log =logLabel + "微信提现至余额transfersToChange";
+		String log = logLabel + "微信提现至余额transfersToChange";
 		logger.info(log+"--开始");
 		if (toWxBalanceCondition==null) {
 			logger.info(log+"--参数为空");
@@ -864,7 +864,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
 		if (StringUtils.isBlank(toWxBankCondition.getPartnerTradeNo())) {
-			logger.error(log + "--提现流水号号为空");
+			logger.error(log + "--提现流水号为空");
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -15,7 +16,10 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -44,6 +48,26 @@ public class StoreRegionController {
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
     }
+
+    @ApiOperation("门店测试区域导出")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
+    })
+    @PostMapping(value = "/store/storeRegionsExport")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_LIST)
+    public ResponseEntity<byte[]> storeRegionsExport(@RequestBody StoreRegionCondition condition) {
+        condition.setIsQueryAll(true);
+        ResponseResult<PagedList<StoreRegionVO>> responseResult = storeServiceClient.findStoreRegions(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<StoreRegionVO> list = responseResult.getData().getData();
+            return ExcelUtils.exp(list, "门店测试区域管理");
+        }
+        return null;
+    }
+
     @ApiOperation("删除测试区域配置")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),

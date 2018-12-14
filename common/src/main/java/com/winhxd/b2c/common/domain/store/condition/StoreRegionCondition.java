@@ -26,4 +26,7 @@ public class StoreRegionCondition extends PagedCondition {
 
     @ApiModelProperty(value = "创建时间")
     private Date created;
+
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
 }

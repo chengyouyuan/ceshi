@@ -106,7 +106,7 @@ public class VerifyController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询订单列表数据失败"),
             @ApiResponse(code = BusinessCode.CODE_406301, message = "请先限制条件查询后再导出！"),
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    public ResponseEntity<byte[]> verifyListExport(@RequestBody VerifyDetailListCondition condition) {
+    public ResponseEntity<byte[]> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
         condition.setIsQueryAll(true);
         DoubleDate recordedDate = condition.getRecordedDate();
         if (recordedDate != null) {

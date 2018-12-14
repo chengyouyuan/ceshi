@@ -116,12 +116,20 @@
           },
           {
             "name": "换绑",
-            "inputModel": "inputDia",
-            "title": "换绑门店",
-            "placeholder": "",
-            "path": "",
-            "configKey": "/template/module/store/store_list_win.json",
-            "isHidden": false
+            "icon": null,
+            "event": {
+              "type": "dialog-report",
+              "params": [
+                "customerId",
+                "storeId"
+              ],
+              "path": "",
+              "configKey": "/template/module/store/store_list_win.json",
+              "sure": {
+                "ajaxType": "post",
+                "path": "/store/changeBind"
+              }
+            }
           },
           {
             "name": "解绑",

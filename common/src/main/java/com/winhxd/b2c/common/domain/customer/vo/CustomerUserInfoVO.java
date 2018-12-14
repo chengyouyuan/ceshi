@@ -62,7 +62,7 @@ public class CustomerUserInfoVO {
      * 用户状态,默认有效1，无效(黑名单)0,默认是有效
      */
     @ApiModelProperty("用户状态,默认有效1，无效(黑名单)0,默认是有效")
-    @Excel(name = "用户状态", orderNum = "5", width = 30, replace = {"有效_1", "无效_0"})
+    @Excel(name = "黑名单", orderNum = "5", width = 30, replace = {"是_1", "否_0"})
     private Integer status = 1;
 
     @ApiModelProperty("名店id")

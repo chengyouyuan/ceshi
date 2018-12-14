@@ -49,7 +49,8 @@ public class UserManager {
                         String json = cache.get(cacheKey);
                         if (StringUtils.isNotBlank(json)) {
                             UserInfo userInfo = JsonUtil.parseJSONObject(json, UserInfo.class);
-                            cache.expire(cacheKey, 30 * 60);
+                            //改为缓存12小时
+                            cache.expire(cacheKey, 12 * 60 * 60);
                             currentUser.set(userInfo);
 
                             AdminUser adminUser = new AdminUser();

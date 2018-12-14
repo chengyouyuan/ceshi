@@ -17,11 +17,10 @@
         }
       },
       {
-        "name": "批量换绑",
+        "name": "重置",
         "icon": null,
         "event": {
-          "type": "batch",
-          "ajaxType": "get",
+          "type": "reset",
           "path": ""
         }
       },
@@ -40,14 +39,6 @@
             "customerId",
             "storeId"
           ]
-        }
-      },
-      {
-        "name": "重置",
-        "icon": null,
-        "event": {
-          "type": "reset",
-          "path": ""
         }
       },
       {
@@ -112,23 +103,6 @@
               },
               "path": "/customerDetails/index",
               "configKey": ""
-            }
-          },
-          {
-            "name": "换绑",
-            "icon": null,
-            "event": {
-              "type": "dialog-report",
-              "params": [
-                "customerId",
-                "storeId"
-              ],
-              "path": "",
-              "configKey": "/template/module/store/store_list_win.json",
-              "sure": {
-                "ajaxType": "post",
-                "path": "/store/changeBind"
-              }
             }
           },
           {

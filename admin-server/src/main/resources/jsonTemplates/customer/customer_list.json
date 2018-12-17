@@ -143,7 +143,7 @@
             "name": "换绑",
             "icon": null,
             "event": {
-              "type": "dialog-report",
+              "type": "dialog-report-column",
               "path": "",
               "configKey": "/template/module/store/store_list_win.json",
               "params": [

@@ -215,7 +215,7 @@ public class BackStageStoreController {
     }
 
 
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_UNBUNDLING)
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_UN_BIND)
     @ApiOperation(value = "顾客批量解绑", notes = "顾客批量解绑")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -231,7 +231,7 @@ public class BackStageStoreController {
         return result;
     }
 
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_UNBUNDLING)
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_UN_BIND)
     @ApiOperation(value = "顾客解绑", notes = "顾客解绑")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -250,8 +250,8 @@ public class BackStageStoreController {
     }
 
 
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_CHANGEBIND)
-    @ApiOperation(value = "顾客批量解绑", notes = "顾客批量解绑")
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_CHANGE_BIND)
+    @ApiOperation(value = "顾客批量换绑", notes = "顾客批量换绑")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
@@ -266,7 +266,7 @@ public class BackStageStoreController {
         return result;
     }
 
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_CHANGEBIND)
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_CHANGE_BIND)
     @ApiOperation(value = "顾客解绑", notes = "顾客解绑")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),

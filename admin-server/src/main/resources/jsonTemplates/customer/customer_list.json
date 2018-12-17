@@ -42,6 +42,23 @@
         }
       },
       {
+        "name": "批量换绑",
+        "icon": null,
+        "event": {
+          "type": "dialog-report",
+          "path": "",
+          "configKey": "/template/module/store/store_list_win.json",
+          "params": [
+            "customerId",
+            "storeId"
+          ],
+          "sure": {
+            "ajaxType": "post",
+            "path": "/store/batchChangeBind"
+          }
+        }
+      },
+      {
         "name": "导出",
         "icon": null,
         "event": {
@@ -120,6 +137,23 @@
                 "customerId",
                 "storeId"
               ]
+            }
+          },
+          {
+            "name": "换绑",
+            "icon": null,
+            "event": {
+              "type": "dialog-report",
+              "path": "",
+              "configKey": "/template/module/store/store_list_win.json",
+              "params": [
+                "customerId",
+                "storeId"
+              ],
+              "sure": {
+                "ajaxType": "post",
+                "path": "/store/changeBind"
+              }
             }
           },
           {

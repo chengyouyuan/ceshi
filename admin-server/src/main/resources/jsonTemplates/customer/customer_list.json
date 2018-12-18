@@ -57,6 +57,7 @@
             "path": "/store/batchChangeBind",
             "callBack": {
               "showMessage": true,
+              "refresh": true,
               "autoClose": true
             }
           }
@@ -159,6 +160,7 @@
                 "path": "/store/changeBind",
                 "callBack": {
                   "showMessage": true,
+                  "refresh": true,
                   "autoClose": true
                 }
               }

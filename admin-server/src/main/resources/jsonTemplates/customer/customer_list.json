@@ -56,6 +56,7 @@
             "ajaxType": "post",
             "path": "/store/batchChangeBind",
             "callBack": {
+              "showMessage": true,
               "autoClose": true
             }
           }
@@ -157,6 +158,7 @@
                 "ajaxType": "post",
                 "path": "/store/changeBind",
                 "callBack": {
+                  "showMessage": true,
                   "autoClose": true
                 }
               }

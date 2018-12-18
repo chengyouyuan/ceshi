@@ -54,7 +54,10 @@
           ],
           "sure": {
             "ajaxType": "post",
-            "path": "/store/batchChangeBind"
+            "path": "/store/batchChangeBind",
+            "callBack": {
+              "autoClose": true
+            }
           }
         }
       },
@@ -152,7 +155,10 @@
               ],
               "sure": {
                 "ajaxType": "post",
-                "path": "/store/changeBind"
+                "path": "/store/changeBind",
+                "callBack": {
+                  "autoClose": true
+                }
               }
             }
           },

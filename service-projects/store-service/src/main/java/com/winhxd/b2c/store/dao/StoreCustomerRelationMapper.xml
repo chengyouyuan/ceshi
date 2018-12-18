@@ -117,10 +117,11 @@
   <!--根据店铺ID，店铺状态查询绑定的用户ID-->
   <update id="changeBuind" parameterType="java.util.Map">
     UPDATE store_customer_relation
-    SET store_user_id = #{storeId,jdbcType=BIGINT}
+    SET store_user_id = #{storeId,jdbcType=BIGINT},
+    binding_time = now()
     WHERE customer_id IN
-    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-      #{item.customerId,jdbcType=BIGINT}
+    <foreach item="customerId" index="index" collection="customerIdList" open="(" separator="," close=")">
+      #{customerId,jdbcType=BIGINT}
     </foreach>
   </update>
 
@@ -159,4 +160,25 @@
       #{customerId}
     </foreach>
   </select>
+
+  <!--根据用户ID，查询门店id-->
+  <select id="selectByCustomerIdList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM store_customer_relation sr
+    WHERE sr.status = 1
+    and sr.customer_id in
+    <foreach item="customerId" collection="customerIdList" separator="," open="(" close=")" index="">
+      #{customerId}
+    </foreach>
+  </select>
+
+  <!--批量插入数据-->
+  <insert id="batchBind">
+    insert into store_customer_relation (customer_id,store_user_id,binding_time, status)
+    values
+    <foreach collection="customerIdList" item="customerId" index="index" separator=",">
+      (#{customerId}, #{storeId},now(), 1)
+    </foreach>
+  </insert>
 </mapper>

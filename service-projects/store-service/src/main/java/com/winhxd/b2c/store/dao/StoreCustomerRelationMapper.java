@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface StoreCustomerRelationMapper {
@@ -49,10 +48,10 @@ public interface StoreCustomerRelationMapper {
     /**
      * 换绑
      *
-     * @param paraMap
+     * @param storeId,customerIdList
      * @return
      */
-    int changeBuind(Map<String, Object> paraMap);
+    int changeBuind(@Param("storeId") Long storeId, @Param("customerIdList") List<Long> customerIdList);
 
     /**
      * 根据用户ID，查询门店id
@@ -61,4 +60,14 @@ public interface StoreCustomerRelationMapper {
      * @return
      */
     List<Long> selectStoreIds(@Param("customerIds") List<Long> customerIds);
+
+    /**
+     * 根据customerIdList 关联数据
+     *
+     * @param customerIdList
+     * @return
+     */
+    List<StoreCustomerRelation> selectByCustomerIdList(@Param("customerIdList") List<Long> customerIdList);
+
+    int batchBind(@Param("storeId") Long storeId, @Param("customerIdList") List<Long> customerIdList);
 }

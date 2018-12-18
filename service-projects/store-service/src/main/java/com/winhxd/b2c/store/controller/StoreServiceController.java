@@ -295,23 +295,23 @@ public class StoreServiceController implements StoreServiceClient {
 
     @Override
     public ResponseResult<Boolean> unBundling(@RequestBody List<CustomerBindingStatusCondition> condition) {
+		if (condition == null) {
+			throw new BusinessException(BusinessCode.CODE_200001);
+		}
         ResponseResult<Boolean> responseResult = new ResponseResult<>();
-
         int i = storeService.unBundling(condition);
-
-        boolean flag = i >= 1 ? true : false;
-        responseResult.setData(flag);
+		responseResult.setData(true);
         return responseResult;
     }
 
     @Override
     public ResponseResult<Boolean> changeBind(@RequestBody List<CustomerBindingStatusCondition> condition) {
+		if (condition == null) {
+			throw new BusinessException(BusinessCode.CODE_200001);
+		}
         ResponseResult<Boolean> responseResult = new ResponseResult<>();
-
         int i = storeService.changeBind(condition);
-
-        boolean flag = i >= 1 ? true : false;
-        responseResult.setData(flag);
+		responseResult.setData(true);
         return responseResult;
     }
 }

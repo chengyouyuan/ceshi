@@ -8,6 +8,8 @@ import lombok.Data;
 @ApiModel(value = "用户请求参数", description = "后台用户解绑和换绑请求参数")
 public class CustomerBindingStatusCondition {
 
+    @ApiModelProperty("换绑接口门店id")
+    private Long id;
     @ApiModelProperty("门店id")
     private Long storeId;
     @ApiModelProperty("用户id")

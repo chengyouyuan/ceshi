@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -361,23 +362,27 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int unBundling(List<CustomerBindingStatusCondition> condition) {
-        List<Long> customerIds = getCustomerIds(condition);
-        // 查询数据校验
-        checkStore(customerIds);
-
+        List<Long> customerIdList = condition.stream().map(con -> con.getCustomerId()).collect(Collectors.toList());
         RedisLock lock = new RedisLock(cache, CHECK_STORE_UNBIND_KEY, 1000);
         int num = 0;
         try {
             if (lock.tryLock(1, TimeUnit.SECONDS)) {
-                // 先解绑
-                num = storeCustomerRelationMapper.unBundling(customerIds);
-                // 往门店用户绑定关系日志表添加数据
-
-                if (num >= 1) {
-                    this.batchAddStoreCustomerRelationLog(condition, UNBIND);
+                List<StoreCustomerRelation> relationList = storeCustomerRelationMapper.selectByCustomerIdList(customerIdList);
+                if (relationList != null && relationList.size() > 0) {
+                    customerIdList = relationList.stream().map(relation -> relation.getCustomerId()).collect(Collectors.toList());
+                    // 先解绑
+                    num = storeCustomerRelationMapper.unBundling(customerIdList);
+                    // 往门店用户绑定关系日志表添加数据
+                    List<CustomerBindingStatusCondition> conditionList = relationList.stream().map(relation -> {
+                        CustomerBindingStatusCondition cond = new CustomerBindingStatusCondition();
+                        cond.setCustomerId(relation.getCustomerId());
+                        cond.setStoreId(relation.getStoreUserId());
+                        return cond;
+                    }).collect(Collectors.toList());
+                    this.batchAddStoreCustomerRelationLog(conditionList, UNBIND);
                 }
-
             } else {
                 throw new BusinessException(BusinessCode.CODE_1001);
             }
@@ -420,23 +425,31 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public int changeBind(List<CustomerBindingStatusCondition> condition) {
-        List<Long> customerIds = getCustomerIds(condition);
-        // 转map是为了更好的传参 执行sql
-        Map<String, Object> paraMap = customerBindingStatusConditionToMap(condition);
-
+    @Transactional(rollbackFor = Exception.class)
+    public int changeBind(List<CustomerBindingStatusCondition> conditionList) {
+        //换绑storeId, 传的是ID而非storeId
+        Long storeId = conditionList.get(0).getId();
+        List<Long> customerIdList = conditionList.stream().map(con -> {
+            con.setStoreId(storeId);
+            return con.getCustomerId();
+        }).collect(Collectors.toList());
         RedisLock lock = new RedisLock(cache, CHECK_STORE_CHANGEBIND_KEY, 1000);
         int num = 0;
         try {
             if (lock.tryLock(1, TimeUnit.SECONDS)) {
-                // 先换绑
-                num = storeCustomerRelationMapper.changeBuind(paraMap);
-
-                // 往门店用户绑定关系日志表添加数据
-                if (num >= 1) {
-                    this.batchAddStoreCustomerRelationLog(condition, CHANGE_BIND);
+                List<StoreCustomerRelation> relationList = storeCustomerRelationMapper.selectByCustomerIdList(customerIdList);
+                List<Long> customerIds = relationList.stream().map(relation -> relation.getCustomerId()).collect(Collectors.toList());
+                if (relationList != null && relationList.size() > 0) {
+                    // 已绑定的换绑
+                    num = storeCustomerRelationMapper.changeBuind(storeId, customerIds);
                 }
-
+                //未绑定的绑定
+                List<Long> unBindCustomerIdList = customerIdList.stream().filter(cusId -> !customerIds.contains(cusId)).collect(Collectors.toList());
+                if (unBindCustomerIdList != null && unBindCustomerIdList.size() > 0) {
+                    num = storeCustomerRelationMapper.batchBind(storeId, unBindCustomerIdList);
+                }
+                // 往门店用户绑定关系日志表添加数据
+                this.batchAddStoreCustomerRelationLog(conditionList, CHANGE_BIND);
             } else {
                 throw new BusinessException(BusinessCode.CODE_1001);
             }

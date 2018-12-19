@@ -135,7 +135,7 @@ public class UserController {
     @PostMapping(value = "/user/updatePassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
-        logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
+        logger.info("{} - 修改密码开始", MODULE_NAME);
 
         if(null == passwordDTO.getId()){
             return new ResponseResult(BusinessCode.CODE_1007);
@@ -289,7 +289,7 @@ public class UserController {
     })
     @PostMapping("/user/resetPassword")
     public ResponseResult<Void> resetPassword(@RequestBody SysUserResetPasswordCondition sysUserResetPasswordCondition) {
-        logger.info("重置密码, 参数--{}", JsonUtil.toJSONString(sysUserResetPasswordCondition));
+        logger.info("{}重置密码开始", sysUserResetPasswordCondition.getUserAccount());
         if (StringUtils.isEmpty(sysUserResetPasswordCondition.getUserAccount())) {
             logger.error("重置密码用户名为空");
             throw new BusinessException(BusinessCode.CODE_1007);

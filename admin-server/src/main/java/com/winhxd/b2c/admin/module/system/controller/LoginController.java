@@ -61,7 +61,7 @@ public class LoginController {
     })
     @PostMapping(value = "/login")
     public ResponseResult<Boolean> login(@RequestBody SysUserLoginDTO userLoginDTO, HttpServletRequest request, HttpServletResponse response) {
-        logger.info("{} - 用户登录, 参数：userLoginDTO={}", MODULE_NAME, userLoginDTO);
+        logger.info("{} - 用户登录, 开始", MODULE_NAME);
 
         userLoginDTO.setPassword(DigestUtils.md5DigestAsHex(userLoginDTO.getPassword().getBytes()));
 
@@ -136,7 +136,7 @@ public class LoginController {
         response.addCookie(tokenCookie);
 
         // 登录成功
-        logger.info("{} - 用户登录成功, 账号={}", MODULE_NAME, userLoginDTO);
+        logger.info("{} - 用户登录成功, 账号={}", MODULE_NAME, userLoginDTO.getAccount());
         result.setData(true);
         return result;
     }
